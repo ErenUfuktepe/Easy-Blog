@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Easy Blog</title>
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container">
+        <div class="form-center">
+            <div class="login-form">
+                <form class="needs-validation" novalidate>
+                    <div class="form-group">
+                        <div class="mb-5">
+                            <h2>Sign In</h2>
+                        </div>
+                        <div class="alert alert-danger" role="alert" style="display:none;"><i class="fa fa-info-circle"></i><a id="login-response"></a></div>
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                            </div>
+                            <input type="email" class="form-control" id="login-email" placeholder="Email" required>
+                            <div class="invalid-feedback">
+                                Invalid email address!
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            </div>
+                            <input type="password" class="form-control" id="login-password" placeholder="Password" required>
+                            <div class="invalid-feedback">
+                                Invalid password!
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <input type="button" class="btn btn-primary form-control" value="Login" onclick="Login()">
+                        </div>
+                        <p class="message"><a href="#" data-toggle="modal" data-target="#confirm-email">Forgot Password?</a></p>
+                        <p class="message change">Not registered? <a href="@Url.Action("Register", "User")">Create an account</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirm-email" tabindex="-1" role="dialog" aria-labelledby="confirm-email" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirm Email</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="alert alert-danger" role="alert" style="display:none;"><i class="fa fa-info-circle"></i><a id="confirm-email-response"></a></div>
+                        <label for="email-confirm">Email address</label>
+                        <input type="email" class="form-control" id="email-confirm" aria-describedby="email-help" placeholder="Email" required>
+                        <small id="email-help" class="form-text text-muted">Please confirm your email address.</small>
+                        <div class="email-phone-checkbox">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exampleRadios" id="email-checkbox" value="email">
+                                <label class="form-check-label" for="email-checkbox" id="email-checkbox-value"></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="exampleRadios" id="phone-checkbox" value="phone" checked>
+                                <label class="form-check-label" for="phone-checkbox" id="phone-checkbox-value"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="RefreshPage()">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="ConfirmEmail()" id="confirm-email-button">Confirm</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#handshake" onclick="HandshakeTimer()" data-dismiss="modal" id="send-code-button">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="handshake" tabindex="-1" role="dialog" aria-labelledby="handshake" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Confirm Email</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="countdown">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" id="timer" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="60" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <label for="handshake-code">Code</label>
+                        <input type="text" class="form-control" id="handshake-code" aria-describedby="code-help">
+                        <small id="code-help" class="form-text text-muted">Please enter the code that you received.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="RefreshPage()">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/main1.js"></script>
+
+</body>
+</html>

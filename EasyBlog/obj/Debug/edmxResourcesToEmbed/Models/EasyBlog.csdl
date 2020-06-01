@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EasyBlogModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="UserInformation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="surname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="createdDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="modifiedDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="lastLoginDate" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="UserLogin" Relationship="Self.FK__UserLogin__passw__160F4887" FromRole="UserInformation" ToRole="UserLogin" />
+  </EntityType>
+  <EntityType Name="UserLogin">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="UserInformation" Relationship="Self.FK__UserLogin__passw__160F4887" FromRole="UserLogin" ToRole="UserInformation" />
+  </EntityType>
+  <Association Name="FK__UserLogin__passw__160F4887">
+    <End Role="UserInformation" Type="Self.UserInformation" Multiplicity="1" />
+    <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="UserInformation">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="UserLogin">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EasyBlogEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="UserInformations" EntityType="Self.UserInformation" />
+    <EntitySet Name="UserLogins" EntityType="Self.UserLogin" />
+    <AssociationSet Name="FK__UserLogin__passw__160F4887" Association="Self.FK__UserLogin__passw__160F4887">
+      <End Role="UserInformation" EntitySet="UserInformations" />
+      <End Role="UserLogin" EntitySet="UserLogins" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

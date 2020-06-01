@@ -1,0 +1,267 @@
+﻿body {
+    font-family: -webkit-pictograph;
+    background: #f8f9fa;
+}
+
+.form-center {
+    width: auto;
+    padding: 15% 0 15% 0;
+    margin: auto;
+}
+
+.login-form {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    max-width: 450px;
+    margin: 0 auto 100px;
+    padding: 45px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.message {
+    margin: 15px 0 0;
+    color: #b3b3b3;
+    font-size: 12px;
+}
+
+    .message a {
+        text-decoration: none;
+    }
+
+.modal-header {
+    background: #007bff;
+}
+
+.modal-content {
+    border: 0px;
+}
+
+.countdown {
+    padding: 15px;
+}
+
+.email-phone-checkbox {
+    display: none;
+}
+
+.alert {
+    font-size: smaller;
+}
+
+#send-code-button {
+    display: none;
+}
+
+.text-muted {
+    font-size: x-small;
+}
+
+#strong-password {
+    display: none;
+}
+
+.green {
+    color: #44df44 !important;
+}
+
+.red {
+    color: red !important;
+}
+
+.navbar {
+    padding: 15px;
+    background: white !important;
+    z-index: 1000;
+    position: fixed;
+    width: -webkit-fill-available;
+}
+
+.navbar-nav {
+    margin-left: auto;
+}
+
+.navbar-nav li {
+    margin-right: 15px;
+}
+
+.flex-column {
+    width: 225px;
+    height: 100vh;
+    position: fixed;
+    padding: 25px;
+    background: white;
+    transition: all ease-in-out 0.5s;
+    padding-top: 100px;
+    z-index: 1;
+}
+
+.flex-column a {
+    color: #ba9e9e;
+}
+
+.flex-column a:hover {
+    color: dimgray;
+}
+
+.nav-container {
+    margin: 0px;
+    max-width: 100%;
+}
+
+.navbar-brand {
+    color: dimgray !important;
+}
+
+.navbar-nav .dropdown-menu {
+    position: absolute;
+}
+
+.footer p {
+    font-size: x-small;
+    text-align: center;
+    color: #ba9e9e;
+}
+
+.dropdown-item {
+    color: #ba9e9e;
+}
+
+.nav-position {
+    position: fixed;
+    margin: 0px !important;
+    padding: 0px;
+    display: contents;
+    z-index: 1000;
+}
+
+.active-page {
+    overflow: auto;
+    padding-top: 100px;
+    margin: auto;
+}
+
+.setting-form {
+    position: relative;
+    z-index: 0;
+    background: #FFFFFF;
+    max-width: 900px;
+    margin: 0 auto 100px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 6px 6px rgba(16,27,30,0.4);
+    border-radius: 27px;
+}
+
+.toggle {
+    background: #FFFFFF;
+    border: none;
+    cursor: pointer;
+    display: block;
+    outline: none;
+    padding: 0.25em;
+    position: relative;
+    text-align: center;
+    width: 100%;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.toggle:before {
+    background: #44596B;
+    content: '';
+    height: 2px;
+    margin-right: 37px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    width: 14px;
+}
+
+.toggle:after {
+    background: #44596B;
+    content: '';
+    height: 2px;
+    margin-right: 37px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 14px;
+}
+
+.toggle.active:before {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.toggle.active h2, .acc_ctrl:focus h2 {
+    position: relative;
+}
+
+img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 250px;
+    height: 250px;
+}
+
+img:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+}
+
+.image-padding{
+    padding: 5px;
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+.input-padding{
+    padding: 15px;
+}
+
+.table-icon{
+    padding: 5px;
+}
+
+a.table-icon {
+    color: #ba9e9e;
+}
+
+a:hover.table-icon {
+    color: dimgray;
+}
+
+button.close{
+    padding: 5px ;
+}
+
+.sub-text {
+    display:inherit; 
+    width:90%;
+}
+.new-item {
+    float: right;
+    padding: 0px;
+    padding-left: 5px;
+}
+
+
+#main-components {
+    display: none;
+}

@@ -1,0 +1,115 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Easy Blog</title>
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container">
+        <div class="form-center">
+            <div class="login-form">
+                <form class="needs-validation">
+                    <div class="form-group">
+                        <div class="mb-5">
+                            <h2>Register</h2>
+                        </div>
+                        <div class="alert alert-danger" role="alert" style="display:none;"><i class="fa fa-info-circle"></i><a id="register-response"></a></div>
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="First Name*" id="first-name" required>
+                            <div class="invalid-feedback">
+                                This field is required.
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Last Name*" id="last-name" required>
+                            <div class="invalid-feedback">
+                                This field is required.
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                            </div>
+                            <input type="email" class="form-control" placeholder="Email*" id="email" required>
+                            <div class="invalid-feedback">
+                                This field is required.
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Phone" id="phone">
+                            <small class="col-lg-12 form-text text-muted">Used for security purposes. Please include country code using '+' symbol.</small>
+                        </div>
+
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            </div>
+                            <input type="password" class="form-control" placeholder="Password*" id="password" required>
+                            <div class="invalid-feedback">
+                                This field is required.
+                            </div>
+                            <div class="col-lg-12" id="strong-password">
+                                <small class="form-text text-muted red" id="char-limit">
+                                    Minimum 8 characters.
+                                    <span id="char-limit-icon">&#x2716;</span>
+                                </small>
+                                <small class="form-text text-muted red" id="uppercase">
+                                    Your password must contain at least one uppercase or a capital letter.
+                                    <span id="uppercase-icon">&#x2716;</span>
+                                </small>
+                                <small class="form-text text-muted red" id="lowercase">
+                                    Your password must contain at least one lowercase letter.
+                                    <span id="lowercase-icon">&#x2716;</span>
+                                </small>
+                                <small class="form-text text-muted red" id="number">
+                                    Your password must contain at least one number digit.
+                                    <span id="number-icon">&#x2716;</span>
+                                </small>
+                                <small class="form-text text-muted red" id="special">
+                                    Your password must contain at least one special character - For example: $, #, !, %, ^, &, *, (, )
+                                    <span id="special-icon">&#x2716;</span>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                            </div>
+                            <input type="password" class="form-control" placeholder="Confirm Password*" id="confirm-password" required>
+                            <div class="invalid-feedback">
+                                This field is required.
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <input type="button" class="btn btn-primary form-control" value="Submit" onclick="Register()">
+                        </div>
+                        <p class="message change">Already registered? <a href="@Url.Action("Login", "User")">Sign In</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="dialog"></div>
+    <a href="#" data-toggle="modal" data-target="#my-dialog" id="trigger-dialog" style="display:none;"></a>
+    <script src="~/Scripts/main1.js"></script>
+
+</body>
+</html>
