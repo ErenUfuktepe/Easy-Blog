@@ -302,10 +302,6 @@ function ChangeMargin() {
     }
 }
 
-function ChangePage() {
-    document.getElementById('title').innerHTML = event.target.innerHTML;
-}
-
 function SelectTemplate() {
     var element = event.target;
     var check = document.getElementsByClassName('active-image')[0];
@@ -358,18 +354,71 @@ function SaveAndDisableTemplateSection() {
     Array.from(templates).forEach(function (element) {
         element.onclick = '';
     });
+    document.getElementById('main-settings').style.display = 'block';
+    SetDefaultMainComponentsValues();
 }
 
-function SetMainComponents() {
-    document.getElementById('main-components');
-    var innerHTML = '';
-
-    document.getElementsByClassName('main-components-controller')[0].innerHTML = innerHTML;
+function SetDefaultMainComponentsValues() {
+    if (window.template == 'Folio') {
+        document.getElementById('web-page-title').setAttribute('placeholder', 'Folio');
+        $('#main-title-color-code').val('#292929');
+        $('#main-title-color').val('#292929');
+        $('#main-text-color-code').val('#999999');
+        $('#main-text-color').val('#999999');
+        $('#main-hover-color-code').val('#b8a07e');
+        $('#main-hover-color').val('#b8a07e');
+    }
 }
 
+function SaveAndDisableMainSection() {
+    window.mainHoverColor = $('#web-page-logo').val();
+    window.mainHoverColor = $('#web-page-title').val();
+    window.mainTitleColor = $('#main-title-color').val();
+    window.mainTextColor = $('#main-text-color').val();
+    window.mainHoverColor = $('#main-hover-color').val();
+    document.getElementById('main-button').disabled = true;
+    document.getElementById('web-page-logo').disabled = true;
+    document.getElementById('web-page-title').disabled = true;
+    document.getElementById('main-hover-color').disabled = true;
+    document.getElementById('main-text-color').disabled = true;
+    document.getElementById('main-title-color').disabled = true;
+    document.getElementById('main-hover-color-code').disabled = true;
+    document.getElementById('main-text-color-code').disabled = true;
+    document.getElementById('main-title-color-code').disabled = true;
+    document.getElementById('nav-settings').style.display = 'block';
+    SetDefaultNavigationValues();
+}
 
-function WorkWithFolio() {
+function SetDefaultNavigationValues() {
+    if (window.template == 'Folio') {
+        $('#nav-bar-color-code').val('#ffffff');
+        $('#nav-bar-color').val('#ffffff');
+    }
+}
 
+function SaveAndDisableNavigationSection() {
+    window.navColor = $('#nav-bar-color').val();
+    window.navLogo = $('#navigation-logo').val();
+    var list = GetSectionInformation();
+    console.log(list);
+
+    document.getElementById('nav-bar-color').disabled = true;
+    document.getElementById('nav-bar-color-code').disabled = true;
+
+    document.getElementById('nav-settings').style.display = 'block';
+    SetDefaultNavigationValues();
+}
+
+function GetSectionInformation() {
+    var tableBody = document.getElementsByClassName('table-body')[0].children;
+    let sectionInformationList = [];
+    Array.from(tableBody).forEach(function (row) {
+        let newSection = [];
+        newSection.push(row.children[0].innerHTML);
+        newSection.push(row.children[1].innerHTML);
+        sectionInformationList.push(newSection);
+    });
+    return sectionInformationList;
 }
 
 
@@ -576,4 +625,13 @@ function FileEventListenerRefresh() {
             $(this).next('.custom-file-label').html(fileName.replace(/C:\\fakepath\\/i, ''));
         });
     });
+}
+
+//TODO
+function Logout(){
+    window.location.href = "../Admin/Logout";
+}
+
+function UpdateInformation() {
+
 }

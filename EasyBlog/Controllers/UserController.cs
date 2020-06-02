@@ -262,7 +262,7 @@ namespace EasyBlog.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-            return RedirectToAction("Administer","Page", userInformation);
+            return RedirectToAction("Home","Admin", userInformation);
         }
 
     }

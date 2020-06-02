@@ -1,0 +1,59 @@
+﻿
+
+@model EasyBlog.Models.UserInformationModel
+
+@{
+    ViewBag.Title = "Admin";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Easy Blog</title>
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+
+</head>
+<body>
+    <div class="container active-page">
+        <div class="form-group">
+            <div class="mb-5">
+                <h2 class="text-center text-uppercase" id="title">Settings</h2>
+            </div>
+            <div class="setting-form">
+                <div class="text-center">
+                    <h3>Personal Infomration</h3>
+                </div>
+                <div class="row input-padding">
+                    <div class="col-lg-12" style="padding-bottom: 15px; text-align:left">
+                        <form>
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <b>First Name: </b> @Model.name
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Last Name: </b>@Model.surname
+                                </div>
+                            </div>
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <p style="position:absolute;"><b>Phone: </b>@Model.email<a style="padding-left:5px;" data-target="#update" class="close" href="javascript:void(0)" id="update-phone" onclick=""><span class="fa fa-edit"></span></a></p>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <p style="position:absolute;"><b>Phone: </b>@Model.phone<a style="padding-left:5px;" data-target="#update" class="close" href="javascript:void(0)" id="update-email" onclick=""><span class="fa fa-edit"></span></a></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="~/Scripts/main1.js"></script>
+</body>
+</html>
