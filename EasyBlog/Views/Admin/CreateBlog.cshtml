@@ -147,14 +147,14 @@
                                     <tbody class="table-body">
                                         <tr>
                                             <th scope="row">1</th>
-                                            <td class="text-center">Home</td>
+                                            <td class="text-center" id="home">Home</td>
                                             <td class="text-right">
                                                 <button class="table-icon edit-row close" href="javascript:void(0)" data-toggle="modal" data-target="#change-section-name"><span class="fa fa-edit"></span></button>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row">2</th>
-                                            <td class="text-center">About</td>
+                                            <td class="text-center" id="about">About</td>
                                             <td class="text-right">
                                                 <button class="table-icon delete-row close" href="javascript:void(0)"><span class="fa fa-trash"></span></button>
                                                 <button class="table-icon edit-row close" href="javascript:void(0)" data-toggle="modal" data-target="#change-section-name"><span class="fa fa-edit"></span></button>
@@ -162,7 +162,7 @@
                                         </tr>
                                         <tr>
                                             <th scope="row">3</th>
-                                            <td class="text-center">Portfolio</td>
+                                            <td class="text-center" id="portfolio">Portfolio</td>
                                             <td class="text-right">
                                                 <button class="close table-icon delete-row" href="javascript:void(0)"><span class="fa fa-trash"></span></button>
                                                 <button class="close table-icon edit-row" href="javascript:void(0)" data-toggle="modal" data-target="#change-section-name"><span class="fa fa-edit"></span></button>
@@ -170,7 +170,7 @@
                                         </tr>
                                         <tr>
                                             <th scope="row">4</th>
-                                            <td class="text-center">Blog</td>
+                                            <td class="text-center" id="blog">Blog</td>
                                             <td class="text-right">
                                                 <button class="close table-icon delete-row" href="javascript:void(0)"><span class="fa fa-trash"></span></button>
                                                 <button class="close table-icon edit-row" href="javascript:void(0)" data-toggle="modal" data-target="#change-section-name"><span class="fa fa-edit"></span></button>
@@ -178,7 +178,7 @@
                                         </tr>
                                         <tr>
                                             <th scope="row">5</th>
-                                            <td class="text-center">Contact</td>
+                                            <td class="text-center" id="contact">Contact</td>
                                             <td class="text-right">
                                                 <button class="close table-icon delete-row" href="javascript:void(0)"><span class="fa fa-trash"></span></button>
                                                 <button class="close table-icon edit-row" href="javascript:void(0)" data-toggle="modal" data-target="#change-section-name"><span class="fa fa-edit"></span></button>
@@ -191,12 +191,12 @@
                     </div>
                     <div class="col-lg-12" style="text-align:right">
                         <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndDisableNavigationSection()" class="btn btn-success">Save And Continue</button>
+                        <button style="margin:5px;" id="nav-button" type="button" onclick="SaveAndDisableNavigationSection()" class="btn btn-success">Save And Continue</button>
                     </div>
                 </div>
             </div>
             <!--Home-->
-            <div class="setting-form dependent-settings">
+            <div class="setting-form dependent-settings" id="home-settings">
                 <div class="text-center">
                     <a class="toggle" id="home-controller">Home Section</a>
                 </div>
@@ -233,7 +233,7 @@
                                 </div>
                                 <div class="col-lg-6 input-padding">
                                     <b>Sub Text:</b>
-                                    <a href="javascript:void(0);" onclick="AddSubTextToHome()" class="close" style="float:none; padding: 0px;" aria-label="Close">
+                                    <a href="javascript:void(0);" onclick="AddSubTextToHome()" id="home-add-sub-text" class="close" style="float:none; padding: 0px;" aria-label="Close">
                                         <span class="green" aria-hidden="true">&plus;</span>
                                     </a>
                                     <div class="custom-file">
@@ -246,12 +246,12 @@
                     </div>
                     <div class="col-lg-12" style="text-align:right">
                         <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndContinueTemplate()" class="btn btn-success">Save And Continue</button>
+                        <button style="margin:5px;" id="home-button" type="button" onclick="SaveAndDisableHomeSection()" class="btn btn-success">Save And Continue</button>
                     </div>
                 </div>
             </div>
             <!--About-->
-            <div class="setting-form dependent-settings">
+            <div class="setting-form dependent-settings" id="about-settings">
                 <div class="text-center">
                     <a class="toggle" id="about-controller">About Section</a>
                 </div>
@@ -306,12 +306,12 @@
                     </div>
                     <div class="col-lg-12" style="text-align:right">
                         <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndContinueTemplate()" class="btn btn-success">Save And Continue</button>
+                        <button style="margin:5px;" id="about-button" type="button" onclick="SaveAndDisableAboutSection()" class="btn btn-success">Save And Continue</button>
                     </div>
                 </div>
             </div>
             <!--Portfolio-->
-            <div class="setting-form dependent-settings">
+            <div class="setting-form dependent-settings" id="portfolio-settings">
                 <div class="text-center">
                     <a class="toggle" id="portfolio-controller">Portfolio Section</a>
                 </div>
@@ -346,16 +346,16 @@
                                 <div class="col-lg-6 input-padding">
                                     <b>Category:</b>
                                     <div class="custom-file">
-                                        <input type="text" class="form-control" placeholder="Branding">
+                                        <input type="text" class="form-control category-input" placeholder="Branding">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 input-padding">
                                     <b>Image:</b>
-                                    <a href="javascript:void(0);" onclick="AddImage()" class="close" style="float:none;" aria-label="Close">
+                                    <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="close" style="float:none;" aria-label="Close">
                                         <span class="green" aria-hidden="true">&plus;</span>
                                     </a>
                                     <div class="custom-file" style="width:90%;">
-                                        <input type="file" class="custom-file-input">
+                                        <input type="file" class="custom-file-input category-image">
                                         <label class="custom-file-label">Choose file</label>
                                     </div>
                                 </div>
@@ -364,12 +364,12 @@
                     </div>
                     <div class="col-lg-12" style="text-align:right">
                         <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndContinueTemplate()" class="btn btn-success">Save And Continue</button>
+                        <button style="margin:5px;" id="portfolio-button" type="button" onclick="SaveAndDisablePortfolioSection()" class="btn btn-success">Save And Continue</button>
                     </div>
                 </div>
             </div>
             <!--Blog-->
-            <div class="setting-form dependent-settings">
+            <div class="setting-form dependent-settings" id="blog-settings">
                 <div class="text-center">
                     <a class="toggle" id="blog-controller">Blog Section</a>
                 </div>
@@ -424,12 +424,12 @@
                     </div>
                     <div class="col-lg-12" style="text-align:right">
                         <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndContinueTemplate()" class="btn btn-success">Save And Continue</button>
+                        <button style="margin:5px;" id="blog-button" type="button" onclick="SaveAndDisableBlogSection()" class="btn btn-success">Save And Continue</button>
                     </div>
                 </div>
             </div>
             <!--Contact-->
-            <div class="setting-form dependent-settings">
+            <div class="setting-form dependent-settings" id="contact-settings">
                 <div class="text-center">
                     <a class="toggle" id="contact-controller">Contact Section</a>
                 </div>
@@ -498,7 +498,7 @@
                     </div>
                     <div class="col-lg-12" style="text-align:right">
                         <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndContinueTemplate()" class="btn btn-success">Save And Continue</button>
+                        <button style="margin:5px;" id="contact-button" type="button" onclick="SaveAndDisableContactSection()" class="btn btn-success">Save And Continue</button>
                     </div>
                 </div>
             </div>

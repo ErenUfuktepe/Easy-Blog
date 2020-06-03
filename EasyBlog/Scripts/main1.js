@@ -355,19 +355,39 @@ function SaveAndDisableTemplateSection() {
         element.onclick = '';
     });
     document.getElementById('main-settings').style.display = 'block';
-    SetDefaultMainComponentsValues();
+    SetDefaultValues();
 }
 
-function SetDefaultMainComponentsValues() {
+function SetDefaultValues() {
     if (window.template == 'Folio') {
-        document.getElementById('web-page-title').setAttribute('placeholder', 'Folio');
-        $('#main-title-color-code').val('#292929');
-        $('#main-title-color').val('#292929');
-        $('#main-text-color-code').val('#999999');
-        $('#main-text-color').val('#999999');
-        $('#main-hover-color-code').val('#b8a07e');
-        $('#main-hover-color').val('#b8a07e');
+        Folio();
     }
+}
+
+function Folio() {
+    document.getElementById('web-page-title').setAttribute('placeholder', 'Folio');
+    $('#main-title-color-code').val('#292929');
+    $('#main-title-color').val('#292929');
+    $('#main-text-color-code').val('#999999');
+    $('#main-text-color').val('#999999');
+    $('#main-hover-color-code').val('#b8a07e');
+    $('#main-hover-color').val('#b8a07e');
+
+    $('#nav-bar-color-code').val('#ffffff');
+    $('#nav-bar-color').val('#ffffff');
+
+    $('#home-text-color-code').val('#ffffff');
+    $('#home-text-color').val('#ffffff');
+
+    $('#about-background-color-code').val('#f7f7f7');
+    $('#about-background-color').val('#f7f7f7');
+    $('#about-frame-color-code').val('#b8a07e');
+    $('#about-frame-color').val('#b8a07e');
+
+    $('#portfolio-background-color-code').val('#ffffff');
+    $('#portfolio-background-color').val('#ffffff');
+
+
 }
 
 function SaveAndDisableMainSection() {
@@ -376,37 +396,83 @@ function SaveAndDisableMainSection() {
     window.mainTitleColor = $('#main-title-color').val();
     window.mainTextColor = $('#main-text-color').val();
     window.mainHoverColor = $('#main-hover-color').val();
-    document.getElementById('main-button').disabled = true;
-    document.getElementById('web-page-logo').disabled = true;
-    document.getElementById('web-page-title').disabled = true;
-    document.getElementById('main-hover-color').disabled = true;
-    document.getElementById('main-text-color').disabled = true;
-    document.getElementById('main-title-color').disabled = true;
-    document.getElementById('main-hover-color-code').disabled = true;
-    document.getElementById('main-text-color-code').disabled = true;
-    document.getElementById('main-title-color-code').disabled = true;
+    DisableInputs('main-settings');
     document.getElementById('nav-settings').style.display = 'block';
-    SetDefaultNavigationValues();
-}
-
-function SetDefaultNavigationValues() {
-    if (window.template == 'Folio') {
-        $('#nav-bar-color-code').val('#ffffff');
-        $('#nav-bar-color').val('#ffffff');
-    }
 }
 
 function SaveAndDisableNavigationSection() {
     window.navColor = $('#nav-bar-color').val();
     window.navLogo = $('#navigation-logo').val();
-    var list = GetSectionInformation();
-    console.log(list);
+    window.sectionList = GetSectionInformation();
+    window.sectionQueue = window.sectionList;
+    DisableInputs('nav-settings');
+    NextSection();
+}
 
-    document.getElementById('nav-bar-color').disabled = true;
-    document.getElementById('nav-bar-color-code').disabled = true;
+function SaveAndDisableHomeSection() {
+    window.homeTextColor = $('#home-text-color').val();
+    window.homebackground = $('#home-background').val();
+    window.homebackground = $('#home-main-text').val();
+    DisableInputs('home-settings');
 
-    document.getElementById('nav-settings').style.display = 'block';
-    SetDefaultNavigationValues();
+    var subTextList = [];
+    Array.from(document.getElementsByClassName('sub-text')).forEach(function (sub) {
+        subTextList.push(sub.value);
+    });
+    window.homeSubText = subTextList;
+    Array.from(document.getElementsByClassName('home-remove-sub-text')).forEach(function (sub) {
+        sub.setAttribute('onclick', '');
+    });
+
+    document.getElementById('home-add-sub-text').setAttribute('onclick', '');
+    NextSection();
+}
+
+function SaveAndDisableAboutSection() {
+    window.aboutBackgroundColor = $('#about-background-color').val();
+    window.aboutFrameColor = $('#about-frame-color').val();
+    window.aboutImage = $('#about-section-image').val();
+    window.aboutHeader = $('#about-header').val();
+    window.aboutBody = $('#about-body').val();
+    DisableInputs('about-settings');
+    NextSection();
+}
+
+function SaveAndDisablePortfolioSection() {
+    window.portfolioBackgroundColor = $('#portfolio-background-color-code').val();
+    window.portfolioHeader = $('#portfolio-header').val();
+
+    DisableInputs('portfolio-settings');
+    NextSection();
+}
+
+function SaveAndDisableBlogSection() {
+
+    DisableInputs('blog-settings');
+    NextSection();
+}
+
+function SaveAndDisableContactSection() {
+
+    DisableInputs('contact-settings');
+    NextSection();
+}
+
+function DisableInputs(id) {
+    var inputDisable = "#" + id + " :input";
+    Array.from($(inputDisable)).forEach(function (input) {
+        input.disabled = true;
+    });
+}
+
+function NextSection() {
+    if (window.sectionQueue.length != 0) {
+        var id = window.sectionQueue[0][2] + '-settings';
+        document.getElementById(id).style.display = 'block';
+        window.sectionQueue.shift();
+    } else {
+        console.log('finish');
+    }
 }
 
 function GetSectionInformation() {
@@ -416,11 +482,11 @@ function GetSectionInformation() {
         let newSection = [];
         newSection.push(row.children[0].innerHTML);
         newSection.push(row.children[1].innerHTML);
+        newSection.push(row.children[1].id);
         sectionInformationList.push(newSection);
     });
     return sectionInformationList;
 }
-
 
 Array.from(document.getElementsByClassName('toggle')).forEach(function (element) {
     element.addEventListener('click', function (event) {
@@ -511,16 +577,43 @@ Array.from(document.getElementsByClassName('edit-row')).forEach(function (elemen
 });
 
 function ChangeSectionName() {
-    let row = window.change;
-    row.children[1].innerHTML = $('#new-section-name').val();
-    window.change = null;
+    if ($('#new-section-name').val() == "" || $('#new-section-name').val().trim() == "") {
+        CreateDialog('error','Invalid Parameter',"You can't give empty name.",'','','');
+    } else {
+        let row = window.change;
+        row.children[1].innerHTML = FirstLetterUpperCase($('#new-section-name').val());
+        $('#new-section-name').val("");
+        window.change = null;
+    }
+}
+
+function FirstLetterUpperCase(string) {
+    let flag = false;
+    let newString = "";
+    for (var index = 0; index < string.length; index++) {
+        if (index == 0) {
+            newString = newString + string[index].toUpperCase();
+        }
+        else if (flag) {
+            flag = false;
+            newString = newString + string[index].toUpperCase();
+        }
+        else if (string[index] == " ") {
+            flag = true;
+            newString = newString + string[index];
+        }
+        else {
+            newString = newString + string[index].toLowerCase();
+        }
+    }
+    return newString;
 }
 
 function AddSubTextToHome() {
     var innerHTML = '<div class="col-lg-6 new-item" >\
                         <div class="custom-file">\
                             <input type="text" class="form-control sub-text" placeholder="developer">\
-                            <a href="javascript:void(0);" onclick="RemoveSubTextFromHome()" class="red close" aria-label="Close" style="display:flex;">\
+                            <a href="javascript:void(0);" onclick="RemoveSubTextFromHome()" class="red close home-remove-sub-text" aria-label="Close" style="display:flex;">\
                                 <span aria-hidden="true">&times;</span>\
                             </a>\
                         </div>\
