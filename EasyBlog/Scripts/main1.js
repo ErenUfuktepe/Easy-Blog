@@ -354,14 +354,65 @@ function SaveAndDisableTemplateSection() {
     Array.from(templates).forEach(function (element) {
         element.onclick = '';
     });
+
     document.getElementById('main-settings').style.display = 'block';
+    window.scrollTo(0, document.body.scrollHeight);
     SetDefaultValues();
 }
 
 function SetDefaultValues() {
+    NavigationDefaultSections(window.template)
     if (window.template == 'Folio') {
         Folio();
     }
+    else if (window.template == 'iPortfolio') {
+        IPortfolio();
+        Array.from(document.getElementsByClassName('extra')).forEach(function (element) {
+            element.style.display = 'grid';
+        });
+        document.getElementById('about-extra-info').style.display = 'flex';
+    }
+    else if (window.template == 'MyResume') {
+        MyResume();
+        Array.from(document.getElementsByClassName('extra')).forEach(function (element) {
+            element.style.display = 'grid';
+        });
+        document.getElementById('about-extra-info').style.display = 'flex';
+    }
+}
+
+function IPortfolio() {
+    document.getElementById('web-page-title').setAttribute('placeholder', 'iPortfolio');
+
+    $('#main-title-color-code').val('#173b6c');
+    $('#main-title-color').val('#173b6c');
+    $('#main-text-color-code').val('#272829');
+    $('#main-text-color').val('#272829');
+    $('#main-hover-color-code').val('#37b3ed');
+    $('#main-hover-color').val('#37b3ed');
+
+    $('#nav-bar-color-code').val('#ffffff');
+    $('#nav-bar-color').val('#ffffff');
+
+    $('#home-text-color-code').val('#ffffff');
+    $('#home-text-color').val('#ffffff');
+
+}
+
+function MyResume() {
+    document.getElementById('web-page-title').setAttribute('placeholder', 'MyResume');
+    $('#main-title-color-code').val('#45505b');
+    $('#main-title-color').val('#45505b');
+    $('#main-text-color-code').val('#272829');
+    $('#main-text-color').val('#272829');
+    $('#main-hover-color-code').val('#0563bb');
+    $('#main-hover-color').val('#0563bb');
+
+    $('#nav-bar-color-code').val('#f2f3f5');
+    $('#nav-bar-color').val('#f2f3f5');
+
+    $('#home-text-color-code').val('#45505b');
+    $('#home-text-color').val('#45505b');
 }
 
 function Folio() {
@@ -386,25 +437,24 @@ function Folio() {
 
     $('#portfolio-background-color-code').val('#ffffff');
     $('#portfolio-background-color').val('#ffffff');
-
-
 }
 
 function SaveAndDisableMainSection() {
-    window.mainHoverColor = $('#web-page-logo').val();
-    window.mainHoverColor = $('#web-page-title').val();
+    window.mainLogo = $('#web-page-logo').val();
+    window.mainTitle = $('#web-page-title').val();
     window.mainTitleColor = $('#main-title-color').val();
     window.mainTextColor = $('#main-text-color').val();
     window.mainHoverColor = $('#main-hover-color').val();
     DisableInputs('main-settings');
     document.getElementById('nav-settings').style.display = 'block';
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function SaveAndDisableNavigationSection() {
     window.navColor = $('#nav-bar-color').val();
     window.navLogo = $('#navigation-logo').val();
     window.sectionList = GetSectionInformation();
-    window.sectionQueue = window.sectionList;
+    window.sectionQueue = GetSectionInformation();
     DisableInputs('nav-settings');
     NextSection();
 }
@@ -412,7 +462,7 @@ function SaveAndDisableNavigationSection() {
 function SaveAndDisableHomeSection() {
     window.homeTextColor = $('#home-text-color').val();
     window.homebackground = $('#home-background').val();
-    window.homebackground = $('#home-main-text').val();
+    window.homeMainText = $('#home-main-text').val();
     DisableInputs('home-settings');
 
     var subTextList = [];
@@ -434,7 +484,100 @@ function SaveAndDisableAboutSection() {
     window.aboutImage = $('#about-section-image').val();
     window.aboutHeader = $('#about-header').val();
     window.aboutBody = $('#about-body').val();
+    window.aboutSubTitle = $('#about-sub-title').val();
+
+    var infoPairList = [];
+    var info = [];
+    var counter = 0;
+    Array.from($("#about-extra-info :input")).forEach(function (input) {
+        if (counter != 0 && counter % 2 == 0) {
+            infoPairList.push(info);
+            info = [];
+        }
+        info.push(input.value);
+        counter++;
+    });
+    infoPairList.push(info);
+    window.aboutExtraInfo = infoPairList;
+    Array.from(document.getElementsByClassName('about-info-remove')).forEach(function (element) {
+        element.setAttribute('onclick', '');
+    });
     DisableInputs('about-settings');
+    NextSection();
+}
+
+function SaveAndDisableResumeSection() {
+    var resume = [];
+    var subHeaderList = [];
+    var explanationList = [];
+
+    var resumeHeader = new Object();
+    var resumeSubHeader = new Object();
+
+    var headerFlag = false;
+    var subHeaderFlag = false;
+
+    var counter = 0;
+    var inputs = $("#resume-section :input");
+
+    Array.from(inputs).forEach(function (input) {
+        if (input.className.includes('resume-section-header')) {
+            if (headerFlag) {
+                if (!jQuery.isEmptyObject(resumeSubHeader)) {
+                    subHeaderList.push(resumeSubHeader);
+                    resumeHeader.subHeaders = subHeaderList
+                    resume.push(resumeHeader);
+                    resumeSubHeader = new Object();;
+                }
+                resumeHeader = new Object();;
+                subHeaderList = [];
+            }
+            resumeHeader.title = input.value;
+            headerFlag = true;
+        }
+        else if (input.className.includes('resume-sub-header')) {
+            if (subHeaderFlag) {
+                if (!jQuery.isEmptyObject(resumeSubHeader)) {
+                    subHeaderList.push(resumeSubHeader);
+                    resumeHeader.subHeaders = subHeaderList
+                    resumeSubHeader = new Object();;
+                }
+                resumeHeader.subHeaders = subHeaderList
+                explanationList = [];
+            }
+            resumeSubHeader.title = input.value;
+            subHeaderFlag = true;
+        }
+        else if (input.className.includes('resume-date')) {
+            resumeSubHeader.date = input.value;
+        }
+        else if (input.className.includes('resume-location')) {
+            resumeSubHeader.location = input.value;
+        }
+        else if (input.className.includes('resume-explanation')) {
+            resumeSubHeader.explanation = input.value;
+        }
+        else if (input.className.includes('resume-item')) {
+            explanationList.push(input.value);
+            resumeSubHeader.items = explanationList;
+        }
+        if (counter == inputs.length - 1) {
+            subHeaderList.push(resumeSubHeader);
+            resumeHeader.subHeaders = subHeaderList
+            resume.push(resumeHeader);
+        }
+        counter++;
+    });
+
+    window.resume = resume;
+    window.resumeBackground = $('#resume-background-color').val();
+    window.resumeHeader = $('#resume-header').val();
+
+    Array.from(document.getElementsByClassName('resume-list-item')).forEach(function (element) {
+        element.setAttribute('onclick', '');
+    });
+
+    DisableInputs('resume-settings');
     NextSection();
 }
 
@@ -442,18 +585,70 @@ function SaveAndDisablePortfolioSection() {
     window.portfolioBackgroundColor = $('#portfolio-background-color-code').val();
     window.portfolioHeader = $('#portfolio-header').val();
 
+    Array.from(document.getElementsByClassName('catagory-disable')).forEach(function (element) {
+        element.setAttribute('onclick', '');
+    });
+    var counter = 0;
+    var catagories = [];
+    var newCatagory = [];
+    var flag = false;
+    Array.from($("#portfolio-settings :input")).forEach(function (input) {
+        if (!(counter < 3)){
+            if (input.type == 'text' || input.type == 'button') {
+                if (flag) {
+                    catagories.push(newCatagory);
+                    newCatagory = [];
+                    flag = false;
+                }
+                newCatagory.push(input.value)
+            } else {
+                flag = true;
+                newCatagory.push(input.value);
+            }
+        }
+        counter++;
+    });
+    window.portfolioCatagories = catagories;
     DisableInputs('portfolio-settings');
     NextSection();
 }
 
 function SaveAndDisableBlogSection() {
+    window.blogHeader = $('#blog-header').val();
+    window.blogBackground = $('#blog-background-color').val();
+
+    Array.from(document.getElementsByClassName('disable-blog')).forEach(function (element) {
+        element.setAttribute('onclick', '');
+    });
+
+    var counter = 0;
+    var stories = [];
+    var newStory = [];
+    Array.from($("#blog-settings :input")).forEach(function (input) {
+        if (!(counter < 3)) {
+            if (counter != 3 && counter % 3 == 0) {
+                stories.push(newStory);
+                newStory = [];
+            }
+            newStory.push(input.value);
+        }
+        counter++;
+    });
+    window.blogStories = stories;
 
     DisableInputs('blog-settings');
     NextSection();
 }
 
 function SaveAndDisableContactSection() {
-
+    window.contactHeader = $('#contact-header').val();
+    window.contactBackground = $('#contact-background-color').val();
+    window.contactStreet = $('#street').val();
+    window.contactCity = $('#city').val();
+    window.contactState = $('#state').val();
+    window.contactCountry = $('#country').val();
+    window.contactPhone = $('#phone').val();
+    window.contactEmail = $('#email').val();
     DisableInputs('contact-settings');
     NextSection();
 }
@@ -471,8 +666,9 @@ function NextSection() {
         document.getElementById(id).style.display = 'block';
         window.sectionQueue.shift();
     } else {
-        console.log('finish');
+        document.getElementById('submit').style.display = 'block';
     }
+    window.scrollTo(0, document.body.scrollHeight);
 }
 
 function GetSectionInformation() {
@@ -529,22 +725,6 @@ Array.from(document.getElementsByClassName('custom-file-input')).forEach(functio
     });
 });
 
-Array.from(document.getElementsByClassName('delete-row')).forEach(function (element) {
-    element.addEventListener('click', function (event) {
-        event.preventDefault();
-        window.delete = this.parentElement.parentElement.parentElement;
-        if (window.delete.className != 'table-body') {
-            CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
-        }
-        else {
-            $("table").delegate("tr", "click", function () {
-                window.delete = this;
-            });
-        }
-        CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
-    });
-});
-
 function DeleteRow() {
     let deletedValue = window.delete.children[0].innerHTML;
     var tableElements = window.delete.parentElement;
@@ -560,21 +740,39 @@ function DeleteRow() {
     window.delete.remove();
 }
 
-Array.from(document.getElementsByClassName('edit-row')).forEach(function (element) {
-    element.addEventListener('click', function (event) {
-        event.preventDefault();
-        let row = this.parentElement.parentElement.parentElement;
-        if (row.className != 'table-body') {
-            $('#old-section-name').val(row.children[1].innerHTML);
-            window.change = row;
-        } else {
-            $("table").delegate("tr", "click", function () {
-                $('#old-section-name').val(this.children[1].innerHTML);
-                window.change = this;
-            });
-        }
+function TableEventListener() {
+    Array.from(document.getElementsByClassName('edit-row')).forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            event.preventDefault();
+            let row = this.parentElement.parentElement.parentElement;
+            if (row.className != 'table-body') {
+                $('#old-section-name').val(row.children[1].innerHTML);
+                window.change = row;
+            } else {
+                $("table").delegate("tr", "click", function () {
+                    $('#old-section-name').val(this.children[1].innerHTML);
+                    window.change = this;
+                });
+            }
+        });
     });
-});
+
+    Array.from(document.getElementsByClassName('delete-row')).forEach(function (element) {
+        element.addEventListener('click', function (event) {
+            event.preventDefault();
+            window.delete = this.parentElement.parentElement.parentElement;
+            if (window.delete.className != 'table-body') {
+                CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
+            }
+            else {
+                $("table").delegate("tr", "click", function () {
+                    window.delete = this;
+                });
+            }
+            CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
+        });
+    });
+}
 
 function ChangeSectionName() {
     if ($('#new-section-name').val() == "" || $('#new-section-name').val().trim() == "") {
@@ -632,7 +830,7 @@ function AddImageToPortfolio() {
                                 <input type="file" class="custom-file-input">\
                                 <label class="custom-file-label">Choose file</label>\
                             </div>\
-                            <a href="javascript:void(0);" onclick="RemoveImageFromPortfolio()" class="red close" aria-label="Close" style="display:flex;">\
+                            <a href="javascript:void(0);" onclick="RemoveImageFromPortfolio()" class="red close catagory-disable" aria-label="Close" style="display:flex;">\
                                 <span aria-hidden="true">&times;</span>\
                             </a>\
                         </div>\
@@ -647,7 +845,7 @@ function RemoveImageFromPortfolio() {
 
 function AddCatagory() {
     var innerHTML = '<div class="col-lg-12">\
-                        <a href="javascript:void(0);" onclick="RemoveCatagory()" class="btn btn-danger" style = "float:right; color:white;"> Remove Catagory</a>\
+                        <button type="button" onclick="RemoveCatagory()" class="btn btn-danger" style = "float:right;"> Remove Catagory</a>\
                     </div >\
                     <div class="col-lg-6 input-padding">\
                         <b>Category:</b>\
@@ -657,7 +855,7 @@ function AddCatagory() {
                     </div>\
                     <div class="col-lg-6 input-padding">\
                         <b>Image:</b>\
-                        <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="green close" style="float:none;" aria-label="Close">\
+                        <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="green close catagory-disable" style="float:none;" aria-label="Close">\
                             <span aria-hidden="true">&plus;</span>\
                         </a>\
                         <div class="custom-file" style="width:90%;">\
@@ -676,7 +874,7 @@ function RemoveCatagory() {
 function AddStory() {
     var innerHTML = '<div class="col-lg-12">\
                         <div class="col-lg-12" style="text-align:right; padding:0px;">\
-                            <a href="javascript:void(0);" onclick="RemoveStory()" class="btn btn-danger">Remove</a>\
+                            <a href="javascript:void(0);" onclick="RemoveStory()" class="btn btn-danger disable-blog">Remove</a>\
                         </div>\
                     </div>\
                     <div class="col-lg-6 input-padding">\
@@ -720,6 +918,38 @@ function FileEventListenerRefresh() {
     });
 }
 
+function NavigationDefaultSections(template) {
+    let table = document.getElementsByClassName('table')[0];
+    var tbody = document.createElement('tbody');
+    tbody.setAttribute('class', 'table-body');
+    var innerHTML = '';
+
+    if (template == 'Folio') {
+        var sectionList = ['Home','About','Portfolio','Blog','Contact'];
+    }
+    else if (template == 'MyResume' || template == 'iPortfolio') {
+        var sectionList = ['Home', 'About', 'Resume', 'Portfolio', 'Contact'];
+    }
+    var counter = 1;
+    const deleteButton = '<button class="table-icon delete-row close" href="javascript:void(0)" > <span class="fa fa-trash"></span></button>';
+    const editButton = '<button class="table-icon edit-row close" href="javascript:void(0)" data-toggle="modal" data-target="#change-section-name" > <span class="fa fa-edit"></span></button>';
+    let button = editButton;
+    sectionList.forEach(function (row) {
+        var tr = document.createElement('tr');
+        if (counter == 2) {
+            button = deleteButton + editButton;
+        }
+        innerHTML ='<th scope="row">' + counter + '</th>\
+                    <td class="text-center" id="'+ row.toLowerCase()+ '">' + row + '</td>\
+                    <td class="text-right">'+ button + '</td>';
+        tr.innerHTML = innerHTML;
+        tbody.appendChild(tr);
+        counter++;
+    });
+    table.appendChild(tbody);
+    TableEventListener();
+}
+
 //TODO
 function Logout(){
     window.location.href = "../Admin/Logout";
@@ -727,4 +957,188 @@ function Logout(){
 
 function UpdateInformation() {
 
+}
+
+function AddInformationToAboutSection() {
+    var innerHTML = '<div class="col-lg-6 input-padding">\
+                        <b> Information Title: </b>\
+                        <a href="javascript:void(0);" onclick="RemoveInformation()" class="red close about-info-remove" aria-label="Close" style="position: absolute">\
+                            <span aria-hidden="true">&times;</span>\
+                        </a>\
+                        <input type="text" class="form-control" placeholder="Age">\
+                     </div>\
+                     <div class="col-lg-6 input-padding">\
+                        <b>Information Value: </b>\
+                        <input type="text" class="form-control" placeholder="30">\
+                     </div>';
+    document.getElementById('about-extra-info').appendChild(StringToHTML(innerHTML,'add-info'));
+}
+
+function RemoveInformation() {
+    event.target.parentElement.parentElement.parentElement.remove();
+}
+
+function AddExplanation() {
+    var innerHTML = '<div class="col-lg-12">\
+                        <button type="button" class="btn btn-danger" style = "float:right; color: white; margin: 15px 0px 15px 15px;" onclick = "RemoveResumeItem()" > Resume Item</button>\
+                     </div>\
+                    <textarea class="form-control resume-item" rows="3"></textarea>';
+    event.target.parentElement.parentElement.appendChild(StringToHTML(innerHTML, ''))
+}
+
+function RemoveResumeItem() {
+    event.target.parentElement.parentElement.remove();
+}
+
+function AddResumeSection() {
+    var innerHTML = '<div class="col-lg-12" >\
+                        <button type="button" class="btn btn-danger catagory-disable" style="float:right; color: white" onclick="RemoveResumeSection()">Remove Resume Section</button>\
+                     </div >\
+                    <div class="col-lg-6 input-padding" >\
+                        <b> Resume Section Header:</b>\
+                        <div class="custom-file">\
+                            <input type="text" class="form-control resume-section-header" placeholder="Education">\
+                        </div>\
+                    </div>\
+                    <div class="col-lg-12">\
+                        <button type = "button" class="btn btn-success" style = "float:right; color: white" onclick = "AddResumeSubSection()" > Add Sub Section</button >\
+                    </div>\
+                    <div class="col-lg-12 input-padding">\
+                        <b>Sub Header:</b>\
+                        <div class="custom-file">\
+                            <input type="text" class="form-control resume-sub-header" placeholder="MASTER OF FINE ARTS & GRAPHIC DESIGN">\
+                        </div>\
+                    </div>\
+                    <div class="col-lg-3 input-padding">\
+                        <b>From:</b>\
+                        <div class="custom-file">\
+                            <input type="text" class="form-control resume-date" placeholder="2001">\
+                        </div>\
+                    </div>\
+                    <div class="col-lg-3 input-padding">\
+                        <b>To:</b>\
+                        <div class="custom-file">\
+                            <input type="text" class="form-control resume-date" placeholder="2005">\
+                        </div>\
+                    </div>\
+                    <div class="col-lg-6 input-padding">\
+                        <b>Place or Location:</b>\
+                        <div class="custom-file">\
+                            <input type="text" class="form-control resume-location" placeholder="Rochester Institute of Technology, Rochester, NY">\
+                         </div>\
+                    </div>\
+                    <div class="col-lg-12 input-padding">\
+                        <b>Explanation: </b>\
+                        <textarea class="form-control" rows="3"></textarea>\
+                    </div>\
+                    <div class="col-lg-12 input-padding">\
+                        <b>List of Explanations: </b>\
+                        <a href="javascript:void(0);" onclick="AddExplanation()" class="close resume-list-item" style="float:none;" aria-label="Close">\
+                            <span class="green" aria-hidden="true">&plus;</span>\
+                        </a>\
+                        <textarea class="form-control resume-item" rows="3"></textarea>\
+                    </div>';
+    document.getElementById('resume-section').appendChild(StringToHTML(innerHTML, 'form-row text-left'));
+}
+
+function RemoveResumeSection() {
+    event.target.parentElement.parentElement.remove();
+}
+
+function AddResumeSubSection() {
+    var innerHTML = '<div class="col-lg-12">\
+                        <button type = "button" class="btn btn-danger" style = "float:right; color: white" onclick = "RemoveSubSectionFromResume()" > Remove Sub Section</button >\
+                     </div>\
+                     <div class="col-lg-12 input-padding" >\
+                        <b> Sub Header:</b>\
+                        <div class="custom-file">\
+                            <input type="text" class="form-control resume-sub-header" placeholder="MASTER OF FINE ARTS & GRAPHIC DESIGN">\
+                        </div>\
+                     </div>\
+                     <div class="col-lg-3 input-padding">\
+                         <b>From:</b>\
+                         <div class="custom-file">\
+                             <input type="text" class="form-control resume-date" placeholder="2001">\
+                         </div>\
+                     </div>\
+                     <div class="col-lg-3 input-padding">\
+                         <b>To:</b>\
+                         <div class="custom-file">\
+                             <input type="text" class="form-control resume-date" placeholder="2005">\
+                         </div>\
+                     </div>\
+                     <div class="col-lg-6 input-padding">\
+                        <b>Place or Location:</b>\
+                        <div class="custom-file">\
+                            <input type="text" class="form-control resume-location" placeholder="Rochester Institute of Technology, Rochester, NY">\
+                        </div>\
+                     </div>\
+                    <div class="col-lg-12 input-padding">\
+                        <b>Explanation: </b>\
+                        <textarea class="form-control resume-explanation" rows="3"></textarea>\
+                    </div>\
+                    <div class="col-lg-12 input-padding">\
+                        <b>List of Explanations: </b>\
+                        <a href="javascript:void(0);" onclick="AddExplanation()" class="close resume-list-item" style="float:none;" aria-label="Close">\
+                            <span class="green" aria-hidden="true">&plus;</span>\
+                        </a>\
+                        <textarea class="form-control resume-item" rows="3"></textarea>\
+                    </div>';
+    event.target.parentElement.parentElement.appendChild(StringToHTML(innerHTML,'row'));
+}
+
+function RemoveSubSectionFromResume() {
+    event.target.parentElement.parentElement.remove();
+}
+
+function CreateBlog() {
+    var blog = {};
+    blog.template = window.template;
+
+    blog.mainLogo = window.mainLogo;
+    blog.mainTitle = window.mainTitle;
+    blog.mainTitleColor = window.mainTitleColor;
+    blog.mainTextColor = window.mainTextColor;
+    blog.mainHoverColor = window.mainHoverColor;
+
+    blog.navColor = window.navColor;
+    blog.navLogo = window.navLogo;
+    blog.sectionList = window.sectionList;
+
+    
+    blog.homeTextColor = window.homeTextColor;
+    blog.homebackground = window.homebackground;
+    blog.homeMainText = window.homeMainText;
+    blog.homeSubText = window.homeSubText;
+
+    blog.aboutBackgroundColor = window.aboutBackgroundColor;
+    blog.aboutFrameColor = window.aboutFrameColor;
+    blog.aboutImage = window.aboutImage;
+    blog.aboutHeader = window.aboutHeader;
+    blog.aboutBody = window.aboutBody;
+    blog.aboutSubTitle = window.aboutSubTitle;
+    blog.aboutExtraInfo = window.aboutExtraInfo;
+
+    blog.portfolioBackgroundColor = window.portfolioBackgroundColor;
+    blog.portfolioHeader = window.portfolioHeader;
+    blog.portfolioCatagories = window.portfolioCatagories;
+
+    blog.blogBackground = window.blogBackground;
+    blog.blogHeader = window.blogHeader;
+    blog.blogStories = window.blogStories;
+
+    blog.contactHeader = window.contactHeader;
+    blog.contactStreet = window.contactStreet;
+    blog.contactCity = window.contactCity;
+    blog.contactState = window.contactState;
+    blog.contactCountry = window.contactCountry;
+    blog.contactEmail = window.contactEmail;
+    blog.contactPhone = window.contactPhone;
+    blog.contactBackground = window.contactBackground
+
+    blog.resume = window.resume;
+    blog.resumeBackground = window.resumeBackground;
+    blog.resumeHeader = window.resumeHeader;
+
+    console.log(blog);
 }

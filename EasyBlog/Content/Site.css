@@ -268,3 +268,19 @@ button.close{
 .dependent-settings{
     display:none;
 }
+
+.extra {
+    display:none;
+}
+#about-extra-info{
+    display:none;
+}
+
+.add-info {
+    display: contents !important;
+}
+    .add-info .input-padding {
+        padding: 5px;
+        padding-top: 15px;
+    }
+
