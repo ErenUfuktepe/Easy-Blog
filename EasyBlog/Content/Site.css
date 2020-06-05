@@ -279,8 +279,11 @@ button.close{
 .add-info {
     display: contents !important;
 }
-    .add-info .input-padding {
-        padding: 5px;
-        padding-top: 15px;
-    }
+.add-info .input-padding {
+    padding: 5px;
+    padding-top: 15px;
+}
 
+#phone-update, #email-update {
+    display: none;
+}

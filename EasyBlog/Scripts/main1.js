@@ -955,10 +955,6 @@ function Logout(){
     window.location.href = "../Admin/Logout";
 }
 
-function UpdateInformation() {
-
-}
-
 function AddInformationToAboutSection() {
     var innerHTML = '<div class="col-lg-6 input-padding">\
                         <b> Information Title: </b>\
@@ -1141,4 +1137,88 @@ function CreateBlog() {
     blog.resumeHeader = window.resumeHeader;
 
     console.log(blog);
+}
+
+Array.from(document.getElementsByClassName('update-info')).forEach(function (button) {
+    button.addEventListener('click', function (event) {
+        if (this.id == 'update-phone') {
+            window.updatePhone = $('#update-phone-element').val();
+            window.updateEmail = $('#update-email-element').val();
+            document.getElementById('new-phone').style.display = 'block';
+            document.getElementById('phone-update').style.display = 'block';
+            document.getElementById('new-email').style.display = 'none';
+            document.getElementById('email-update').style.display = 'none';
+        } else {
+            window.updateEmail = $('#update-email-element').val();
+            document.getElementById('new-phone').style.display = 'none';
+            document.getElementById('phone-update').style.display = 'none';
+            document.getElementById('new-email').style.display = 'block';
+            document.getElementById('email-update').style.display = 'block';
+        }
+    })
+});
+
+function UpdatePhone() {
+
+    if (window.updatePhone != $('#update-phone-element').val()) {
+        var data = {};
+        data.oldPhone = window.updatePhone;
+        data.newPhone = $('#update-phone-element').val();
+        data.email = window.updateEmail;
+        console.log(data);
+        $.ajax({
+            type: "POST",
+            url: "/Admin/UpdatePhone",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (response) {
+                console.log(response);
+            }
+        });
+    }
+    window.update = null;
+}
+
+function UpdateEmail() {
+    if (window.updateEmail != $('#update-email-element').val()) {
+        var data = {};
+        data.oldEmail = window.updateEmail;
+        data.newEmail = $('#update-email-element').val();
+        var result = '';
+        $.ajax({
+            type: "POST",
+            url: "/Admin/UpdateEmail",
+            data: JSON.stringify(data),
+            contentType: "application/json",
+            dataType: "json",
+            async: false,
+            success: function (response) {
+                result = response;
+            },
+            error: function (response) {
+                result = response;
+            }
+        });
+
+        if (result != 'Success') {
+            CreateDialog('error', 'Error', result, '', '', '');
+        }
+        else {
+            CreateDialog('success', 'Success', "Email updated successfully.", '', '', '');
+        }
+    }
+    window.update = null;
+}
+
+function DisplayEmail(value){
+    $('#update-email-element').val(value);
+    console.log(value);
+}
+
+function DisplayPhone(value) {
+    $('#update-phone-element').val(value);
 }

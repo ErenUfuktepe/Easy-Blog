@@ -14,8 +14,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Easy Blog</title>
     <link href="~/Content/Site.css" rel="stylesheet" />
-    <script src="~/Scripts/jquery-3.4.1.js"></script>
-
 </head>
 <body>
     <div class="container active-page">
@@ -40,10 +38,10 @@
                             </div>
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
-                                    <p style="position:absolute;"><b>Phone: </b>@Model.email<a style="padding-left:5px;" data-target="#update" class="close" href="javascript:void(0)" id="update-phone" onclick=""><span class="fa fa-edit"></span></a></p>
+                                    <p style="position:absolute;"><b>Email: </b>@Model.email<a style="padding-left:5px;" data-target="#update-info" class="close update-info" id="update-email" onclick="DisplayEmail('@Model.email')" href="javascript:void(0)" data-toggle="modal"><span class="fa fa-edit"></span></a></p>
                                 </div>
                                 <div class="col-lg-6 input-padding">
-                                    <p style="position:absolute;"><b>Phone: </b>@Model.phone<a style="padding-left:5px;" data-target="#update" class="close" href="javascript:void(0)" id="update-email" onclick=""><span class="fa fa-edit"></span></a></p>
+                                    <p style="position:absolute;"><b>Phone: </b>@Model.phone<a style="padding-left:5px;" data-target="#update-info" class="close update-info" id="update-phone" onclick="DisplayPhone('@Model.phone')" href="javascript:void(0)" data-toggle="modal"><span class="fa fa-edit"></span></a></p>
                                 </div>
                             </div>
                         </form>
@@ -51,8 +49,39 @@
                 </div>
             </div>
         </div>
-
     </div>
+
+    <div class="modal fade" id="update-info" tabindex="-1" role="dialog" aria-labelledby="update-info" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Update Information</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="form-group phone" style="display:none" id="new-phone">
+                            <label for="new-section-name">Phone Number</label>
+                            <input type="text" class="form-control" value="@Model.phone" id="update-phone-element">
+                        </div>
+                        <div class="form-group email" style="display:none" id="new-email">
+                            <label for="new-section-name">Email Address</label>
+                            <input type="email" class="form-control" value="@Model.email" id="update-email-element">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="edit-close">Close</button>
+                    <input type="button" class="btn btn-primary update-info" id="phone-update" data-toggle="modal" onclick="UpdatePhone()" data-dismiss="modal" value="Save" />
+                    <input type="button" class="btn btn-primary update-info" id="email-update" data-toggle="modal" onclick="UpdateEmail()" data-dismiss="modal" value="Save" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dialog"></div>
+    <a href="#" data-toggle="modal" data-target="#my-dialog" id="trigger-dialog" style="display: none;"></a>
 
     <script src="~/Scripts/main1.js"></script>
 </body>
