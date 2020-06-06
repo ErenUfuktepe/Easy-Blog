@@ -53,7 +53,7 @@ namespace EasyBlog.Controllers
                     userInformationModel.createdDate = userInformation.createdDate;
                     userInformationModel.modifiedDate = userInformation.modifiedDate;
                     userInformationModel.lastLoginDate = userInformation.lastLoginDate;
-                    Session["UserInformation"] = userInformationModel.email;
+                    Session["UserInformation"] = userInformation.id;
                     TempData["UserInformation"] = userInformationModel;
                     response = "Success";
                 }

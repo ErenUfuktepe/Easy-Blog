@@ -7,43 +7,24 @@
     }
 
     form.classList.add('was-validated');
-
     let data = {};
     data.email = $('#login-email').val();
     data.password = $('#login-password').val();
 
     if (data.email.includes('@') && data.email.length > 1 && data.password.length > 0) {
-        var result = null;
-        $.ajax({
-            type: "POST",
-            url: "/User/Authorization",
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            dataType: "json",
-            async: false,
-            success: function (response) {
-                if (response == "Success") {
-                    result = response;
-                    let url = '';
-                    if (window.location.href.includes("Login") || window.location.href.includes("Authorization")) {
-                        url = window.location.href;
-                        url = url.replace('Authorization', 'Entry');
-                        url = url.replace('Login', 'Entry');
-                        window.location.href = url;
-                    } else {
-                        window.location.href = "User/Entry";
-                    }
-                } else {
-                    result = response;
-                }
-            },
-            error: function (response) {
-                result = response;
-            }
-        });
-        if (result != 'Success') {
-            document.getElementById('login-response').innerHTML = result;
+        var response = AjaxCall("/User/Authorization", data);
+        if (response != 'Success') {
+            document.getElementById('login-response').innerHTML = response;
             document.getElementsByClassName('alert-danger')[0].style.display = 'block';
+        } else {
+            if (window.location.href.includes("Login") || window.location.href.includes("Authorization")) {
+                let url = window.location.href;
+                url = url.replace('Authorization', 'Entry');
+                url = url.replace('Login', 'Entry');
+                window.location.href = url;
+            } else {
+                window.location.href = "User/Entry";
+            }
         }
     }
 }
@@ -51,26 +32,11 @@
 function ConfirmEmail() {
     let data = {};
     data.email = $('#email-confirm').val();
-    var result = null;
-    $.ajax({
-        type: "POST",
-        url: "/User/ConfirmEmail",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        dataType: "json",
-        async: false,
-        success: function (response) {
-            result = response;    
-        },
-        error: function (response) {
-            result = response;
-        }
-    });
-
-    var parsedResult = result.split(",");
+    var response = AjaxCall("/User/ConfirmEmail", data);
+    var parsedResult = response.split(",");
 
     if (parsedResult.length ==  1) {
-        document.getElementById('confirm-email-response').innerHTML = result;
+        document.getElementById('confirm-email-response').innerHTML = response;
         document.getElementsByClassName('alert-danger')[1].style.display = 'block';
     }
     else {
@@ -156,27 +122,13 @@ function Register() {
     }
     else if (!(data.name == '' || data.surname == '' || data.email == '' || data.password == '' || data.confirmPassword == '' ||
         data.name.trim() == '' || data.surname.trim() == '' || data.email.trim() == '' || data.password.trim() == '' || data.confirmPassword.trim() == '')) {
-        var result = null;
-        $.ajax({
-            type: "POST",
-            url: "/User/CreateUser",
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            dataType: "json",
-            async: false,
-            success: function (response) {
-                result = response;
-            },
-            error: function (response) {
-                result = response;
-            }
-        });
-        if (result == 'Success') {
+        var response = AjaxCall("/User/CreateUser",data);        
+        if (response == 'Success') {
             document.getElementsByClassName('alert-danger')[0].style.display = 'none';
             CreateDialog('success', 'Success', 'Your account has been created.', '', '','window.history.back()');
         }
         else {
-            document.getElementById('register-response').innerHTML = result;
+            document.getElementById('register-response').innerHTML = response;
             document.getElementsByClassName('alert-danger')[0].style.display = 'block';
         }
     } else {
@@ -186,8 +138,8 @@ function Register() {
 }
 
 window.addEventListener('load', (event) => {
-    if (window.location.href.includes("Register")) {
-        document.getElementById('password').addEventListener('click', function () {
+    if (window.location.href.includes("Register") || window.location.href.includes("Settings")) {
+        document.getElementById('password').addEventListener('input', function () {
             document.getElementById('strong-password').style.display = 'block';
             const password = document.querySelector('#password');
             password.addEventListener('input', function (event) {
@@ -1165,20 +1117,14 @@ function UpdatePhone() {
         data.oldPhone = window.updatePhone;
         data.newPhone = $('#update-phone-element').val();
         data.email = window.updateEmail;
-        console.log(data);
-        $.ajax({
-            type: "POST",
-            url: "/Admin/UpdatePhone",
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            dataType: "json",
-            success: function (response) {
-                console.log(response);
-            },
-            error: function (response) {
-                console.log(response);
-            }
-        });
+        var response = AjaxCall("/Admin/UpdatePhone", data);
+
+        if (response != 'Success') {
+            CreateDialog('error', 'Error', response, '', '', '');
+        }
+        else {
+            CreateDialog('success', 'Success', "Phone number updated successfully.", '', '', 'RefreshPage()');
+        }
     }
     window.update = null;
 }
@@ -1188,27 +1134,13 @@ function UpdateEmail() {
         var data = {};
         data.oldEmail = window.updateEmail;
         data.newEmail = $('#update-email-element').val();
-        var result = '';
-        $.ajax({
-            type: "POST",
-            url: "/Admin/UpdateEmail",
-            data: JSON.stringify(data),
-            contentType: "application/json",
-            dataType: "json",
-            async: false,
-            success: function (response) {
-                result = response;
-            },
-            error: function (response) {
-                result = response;
-            }
-        });
+        var response = AjaxCall("/Admin/UpdateEmail", data);
 
-        if (result != 'Success') {
-            CreateDialog('error', 'Error', result, '', '', '');
+        if (response != 'Success') {
+            CreateDialog('error', 'Error', response, '', '', '');
         }
         else {
-            CreateDialog('success', 'Success', "Email updated successfully.", '', '', '');
+            CreateDialog('success', 'Success', "Email updated successfully.", '', '', 'RefreshPage()');
         }
     }
     window.update = null;
@@ -1221,4 +1153,56 @@ function DisplayEmail(value){
 
 function DisplayPhone(value) {
     $('#update-phone-element').val(value);
+}
+
+function ResetPassword() {
+    let oldPassword = $('#old-password').val();
+    let newPassword = $('#password').val();
+    let confirmPassword = $('#confirm-password').val();
+    if (newPassword == confirmPassword) {
+        if (document.getElementById('strong-password').style.display == 'block') {
+            document.getElementById('reset-password-response').innerHTML = "Please pick valid password";
+            document.getElementsByClassName('alert-danger')[0].style.display = 'block';
+        }
+        else {
+            var data = {};
+            data.oldPassword = oldPassword;
+            data.newPassword = newPassword;
+            data.email = $('#update-email-element').val();
+            var response = AjaxCall("/Admin/ResetPassword",data);
+
+            if (response == 'Success') {
+                $('#old-password').val('');
+                $('#password').val('');
+                $('#confirm-password').val('');
+                document.getElementsByClassName('alert-danger')[0].style.display = 'none';
+                CreateDialog('success', 'Success', "Password changed successfully.", '', '', '');
+            } else {
+                document.getElementsByClassName('alert-danger')[0].style.display = 'block';
+                document.getElementById('reset-password-response').innerHTML = response;
+            }
+        }
+    } else {
+        document.getElementById('reset-password-response').innerHTML = "Confirm password is different!";
+        document.getElementsByClassName('alert-danger')[0].style.display = 'block';
+    }
+}
+
+function AjaxCall(url, data) {
+    var result = '';
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        dataType: "json",
+        async: false,
+        success: function (response) {
+            result = response;
+        },
+        error: function (response) {
+            result = response;
+        }
+    });
+    return result;
 }
