@@ -2,6 +2,8 @@
 using EasyBlog.Helpers;
 using EasyBlog.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
@@ -26,7 +28,11 @@ namespace EasyBlog.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-            return View(userInformationModel);
+            else
+            {
+                ViewData["SocialMedias"] = GetSocialMediaList();
+                return View(userInformationModel);
+            }
         }
         public ActionResult Settings(UserInformationModel userInformationModel)
         {
@@ -53,13 +59,11 @@ namespace EasyBlog.Controllers
             }
             return View(userInformationModel);
         }
-
         public ActionResult Logout()
         {
             Session["UserInformation"] = null;
             return RedirectToAction("Login", "User");
         }
-
         public JsonResult UpdateEmail(string oldEmail, string newEmail)
         {
             string response = "Success";
@@ -107,7 +111,6 @@ namespace EasyBlog.Controllers
                 return Json(response, JsonRequestBehavior.AllowGet);
             }
         }
-
         public JsonResult UpdatePhone(string oldPhone, string newPhone, string email)
         {
             string response = "Success";
@@ -154,7 +157,6 @@ namespace EasyBlog.Controllers
             }
             return Json(response, JsonRequestBehavior.AllowGet);
         }
-
         private UserInformationModel RefreshUserInformationModel(long id)
         {
             try {
@@ -178,7 +180,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         public JsonResult ResetPassword(string email, string oldPassword, string newPassword)
         {
             SecurityUtilize securityUtilize = new SecurityUtilize();
@@ -204,6 +205,22 @@ namespace EasyBlog.Controllers
             catch (Exception e){
                 Console.WriteLine(e);
                 return Json("System Error.", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public List<SocialMedia> GetSocialMediaList() {
+            using (EasyBlogEntities db = new EasyBlogEntities())
+            {
+                try
+                {
+                    List<SocialMedia> socialMedias = db.SocialMedias.ToList();
+                    return socialMedias;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return null;
+                }
             }
         }
     }

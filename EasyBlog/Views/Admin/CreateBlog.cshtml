@@ -14,6 +14,8 @@
     <script src="~/Scripts/jquery-3.4.1.js"></script>
 </head>
 <body>
+ 
+
     <div class="container active-page">
         <div class="form-group">
             <div class="mb-5">
@@ -49,7 +51,7 @@
                 </div>
                 <div class="row main-components-controller" style="display:none;">
                     <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form>
+                        <form id="add-social-media">
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
                                     <b>Web Page Logo:</b>
@@ -95,6 +97,30 @@
                                                 <input class="color-change" type="color" value="#ffffff" id="main-hover-color">
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-right">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-success" onclick="AddSocialMedia()">Add Social Media</button>
+                                </div>
+                            </div>
+                            <div class="form-row text-left social-media">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Social Media:</b>
+                                    <div class="input-group mb-3">
+                                        <select class="form-control" style="overflow:scroll;" id="select-social-media">
+                                            @foreach (EasyBlog.Models.SocialMedia socialMedia in ViewData["SocialMedias"] as List<EasyBlog.Models.SocialMedia>)
+                                            {
+                                                <option value="@socialMedia.code">@socialMedia.name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Link:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control">
                                     </div>
                                 </div>
                             </div>

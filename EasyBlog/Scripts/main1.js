@@ -397,6 +397,9 @@ function SaveAndDisableMainSection() {
     window.mainTitleColor = $('#main-title-color').val();
     window.mainTextColor = $('#main-text-color').val();
     window.mainHoverColor = $('#main-hover-color').val();
+    Array.from(document.getElementsByClassName('remove-social-media')).forEach(function (element) {
+        element.setAttribute('onclick', '');
+    });
     DisableInputs('main-settings');
     document.getElementById('nav-settings').style.display = 'block';
     window.scrollTo(0, document.body.scrollHeight);
@@ -1205,4 +1208,26 @@ function AjaxCall(url, data) {
         }
     });
     return result;
+}
+
+function AddSocialMedia() {
+    var newInputs = '<div class="col-lg-6 input-padding">\
+                         <b> Social Media:</b>\
+                            <div class="input-group mb-3">\
+                                <select class="form-control" style="overflow:scroll;">\
+                                    '+ document.getElementById('select-social-media').innerHTML +'\
+                                </select>\
+                            </div>\
+                        </div>\
+                        <div class="col-lg-6 input-padding">\
+                            <b>Link:</b>\
+                            <div class="input-group mb-3">\
+                                <input type="text" class="form-control">\
+                                <a href="javascript:void(0);" onclick="RemoveSocialMedia()" class="red close remove-social-media" aria-label="Close" style="display:flex; padding:5px;">\<span aria-hidden="true">&times;</span></a></div>\
+                        </div>';
+    document.getElementById('add-social-media').appendChild(StringToHTML(newInputs, 'form-row text-left social-media'));
+}
+
+function RemoveSocialMedia() {
+    event.target.parentElement.parentElement.parentElement.parentElement.remove();
 }

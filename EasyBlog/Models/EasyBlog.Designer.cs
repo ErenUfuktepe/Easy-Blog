@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\erenu\source\repos\EasyBlog\EasyBlog\Models\EasyBlog.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\repos\Easy-Blog\EasyBlog\Models\EasyBlog.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

@@ -5,9 +5,13 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="fa3987eeddc24900800fc82473e25bbd" Name="Diagram1">
-        <EntityTypeShape EntityType="EasyBlogModel.UserInformation" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.UserLogin" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.UserInformation" Width="1.5" PointX="3.25" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.UserLogin" Width="1.5" PointX="0.875" PointY="2.5" IsExpanded="true" />
         <AssociationConnector Association="EasyBlogModel.FK__UserLogin__passw__160F4887" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="EasyBlogModel.SocialMedia" Width="1.5" PointX="8.75" PointY="3" />
+        <EntityTypeShape EntityType="EasyBlogModel.SocialMediaLink" Width="1.5" PointX="6" PointY="2.75" />
+        <AssociationConnector Association="EasyBlogModel.FK__SocialMed__socia__40058253" />
+        <AssociationConnector Association="EasyBlogModel.FK__SocialMed__userI__3F115E1A" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

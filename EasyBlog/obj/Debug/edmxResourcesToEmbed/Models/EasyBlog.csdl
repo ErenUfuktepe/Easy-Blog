@@ -13,6 +13,7 @@
     <Property Name="modifiedDate" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="lastLoginDate" Type="DateTime" Nullable="false" Precision="0" />
     <NavigationProperty Name="UserLogin" Relationship="Self.FK__UserLogin__passw__160F4887" FromRole="UserInformation" ToRole="UserLogin" />
+    <NavigationProperty Name="SocialMediaLinks" Relationship="EasyBlogModel.FK__SocialMed__userI__3F115E1A" FromRole="UserInformation" ToRole="SocialMediaLink" />
   </EntityType>
   <EntityType Name="UserLogin">
     <Key>
@@ -42,5 +43,60 @@
       <End Role="UserInformation" EntitySet="UserInformations" />
       <End Role="UserLogin" EntitySet="UserLogins" />
     </AssociationSet>
+    <EntitySet Name="SocialMedias" EntityType="EasyBlogModel.SocialMedia" />
+    <EntitySet Name="SocialMediaLinks" EntityType="EasyBlogModel.SocialMediaLink" />
+    <AssociationSet Name="FK__SocialMed__socia__40058253" Association="EasyBlogModel.FK__SocialMed__socia__40058253">
+      <End Role="SocialMedia" EntitySet="SocialMedias" />
+      <End Role="SocialMediaLink" EntitySet="SocialMediaLinks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__SocialMed__userI__3F115E1A" Association="EasyBlogModel.FK__SocialMed__userI__3F115E1A">
+      <End Role="UserInformation" EntitySet="UserInformations" />
+      <End Role="SocialMediaLink" EntitySet="SocialMediaLinks" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="SocialMedia">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="color" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="SocialMediaLinks" Relationship="EasyBlogModel.FK__SocialMed__socia__40058253" FromRole="SocialMedia" ToRole="SocialMediaLink" />
+  </EntityType>
+  <EntityType Name="SocialMediaLink">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="userID" Type="Int64" />
+    <Property Name="socialMedia" Type="Int32" />
+    <Property Name="link" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="SocialMedia1" Relationship="EasyBlogModel.FK__SocialMed__socia__40058253" FromRole="SocialMediaLink" ToRole="SocialMedia" />
+    <NavigationProperty Name="UserInformation" Relationship="EasyBlogModel.FK__SocialMed__userI__3F115E1A" FromRole="SocialMediaLink" ToRole="UserInformation" />
+  </EntityType>
+  <Association Name="FK__SocialMed__socia__40058253">
+    <End Type="EasyBlogModel.SocialMedia" Role="SocialMedia" Multiplicity="0..1" />
+    <End Type="EasyBlogModel.SocialMediaLink" Role="SocialMediaLink" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SocialMedia">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="SocialMediaLink">
+        <PropertyRef Name="socialMedia" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__SocialMed__userI__3F115E1A">
+    <End Type="EasyBlogModel.UserInformation" Role="UserInformation" Multiplicity="0..1" />
+    <End Type="EasyBlogModel.SocialMediaLink" Role="SocialMediaLink" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserInformation">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="SocialMediaLink">
+        <PropertyRef Name="userID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

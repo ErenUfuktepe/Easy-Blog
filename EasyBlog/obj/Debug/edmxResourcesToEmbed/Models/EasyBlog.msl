@@ -24,5 +24,25 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="SocialMedias">
+      <EntityTypeMapping TypeName="EasyBlogModel.SocialMedia">
+        <MappingFragment StoreEntitySet="SocialMedia">
+          <ScalarProperty Name="color" ColumnName="color" />
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SocialMediaLinks">
+      <EntityTypeMapping TypeName="EasyBlogModel.SocialMediaLink">
+        <MappingFragment StoreEntitySet="SocialMediaLink">
+          <ScalarProperty Name="link" ColumnName="link" />
+          <ScalarProperty Name="socialMedia" ColumnName="socialMedia" />
+          <ScalarProperty Name="userID" ColumnName="userID" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

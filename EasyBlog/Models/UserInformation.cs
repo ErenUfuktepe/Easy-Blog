@@ -14,6 +14,12 @@ namespace EasyBlog.Models
     
     public partial class UserInformation
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public UserInformation()
+        {
+            this.SocialMediaLinks = new HashSet<SocialMediaLink>();
+        }
+    
         public long id { get; set; }
         public string name { get; set; }
         public string surname { get; set; }
@@ -24,5 +30,7 @@ namespace EasyBlog.Models
         public System.DateTime lastLoginDate { get; set; }
     
         public virtual UserLogin UserLogin { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<SocialMediaLink> SocialMediaLinks { get; set; }
     }
 }

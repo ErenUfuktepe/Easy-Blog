@@ -27,5 +27,7 @@ namespace EasyBlog.Models
     
         public virtual DbSet<UserInformation> UserInformations { get; set; }
         public virtual DbSet<UserLogin> UserLogins { get; set; }
+        public virtual DbSet<SocialMedia> SocialMedias { get; set; }
+        public virtual DbSet<SocialMediaLink> SocialMediaLinks { get; set; }
     }
 }

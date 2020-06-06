@@ -1,5 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="EasyBlogModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="SocialMedia">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="code" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="color" Type="varchar" MaxLength="8" Nullable="false" />
+  </EntityType>
+  <EntityType Name="SocialMediaLink">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="userID" Type="bigint" />
+    <Property Name="socialMedia" Type="int" />
+    <Property Name="link" Type="varchar" MaxLength="200" Nullable="false" />
+  </EntityType>
   <EntityType Name="UserInformation">
     <Key>
       <PropertyRef Name="id" />
@@ -21,6 +39,30 @@
     <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="password" Type="varchar(max)" Nullable="false" />
   </EntityType>
+  <Association Name="FK__SocialMed__socia__40058253">
+    <End Role="SocialMedia" Type="Self.SocialMedia" Multiplicity="0..1" />
+    <End Role="SocialMediaLink" Type="Self.SocialMediaLink" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SocialMedia">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="SocialMediaLink">
+        <PropertyRef Name="socialMedia" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__SocialMed__userI__3F115E1A">
+    <End Role="UserInformation" Type="Self.UserInformation" Multiplicity="0..1" />
+    <End Role="SocialMediaLink" Type="Self.SocialMediaLink" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserInformation">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="SocialMediaLink">
+        <PropertyRef Name="userID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__UserLogin__passw__160F4887">
     <End Role="UserInformation" Type="Self.UserInformation" Multiplicity="1" />
     <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="0..1" />
@@ -34,8 +76,18 @@
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="EasyBlogModelStoreContainer">
+    <EntitySet Name="SocialMedia" EntityType="Self.SocialMedia" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SocialMediaLink" EntityType="Self.SocialMediaLink" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserInformation" EntityType="Self.UserInformation" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLogin" EntityType="Self.UserLogin" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__SocialMed__socia__40058253" Association="Self.FK__SocialMed__socia__40058253">
+      <End Role="SocialMedia" EntitySet="SocialMedia" />
+      <End Role="SocialMediaLink" EntitySet="SocialMediaLink" />
+    </AssociationSet>
+    <AssociationSet Name="FK__SocialMed__userI__3F115E1A" Association="Self.FK__SocialMed__userI__3F115E1A">
+      <End Role="UserInformation" EntitySet="UserInformation" />
+      <End Role="SocialMediaLink" EntitySet="SocialMediaLink" />
+    </AssociationSet>
     <AssociationSet Name="FK__UserLogin__passw__160F4887" Association="Self.FK__UserLogin__passw__160F4887">
       <End Role="UserInformation" EntitySet="UserInformation" />
       <End Role="UserLogin" EntitySet="UserLogin" />
