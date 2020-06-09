@@ -12,20 +12,24 @@ namespace EasyBlog.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SocialMedia
+    public partial class About
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SocialMedia()
+        public About()
         {
-            this.SocialMediaLinks = new HashSet<SocialMediaLink>();
+            this.AboutInformations = new HashSet<AboutInformation>();
         }
     
         public long id { get; set; }
-        public string name { get; set; }
-        public string code { get; set; }
-        public string color { get; set; }
+        public string image { get; set; }
+        public string background { get; set; }
+        public string frameColor { get; set; }
+        public string header { get; set; }
+        public string subTitle { get; set; }
+        public string body { get; set; }
     
+        public virtual Blog Blog { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SocialMediaLink> SocialMediaLinks { get; set; }
+        public virtual ICollection<AboutInformation> AboutInformations { get; set; }
     }
 }

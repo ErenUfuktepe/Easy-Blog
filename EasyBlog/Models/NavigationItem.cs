@@ -12,14 +12,13 @@ namespace EasyBlog.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SocialMediaLink
+    public partial class NavigationItem
     {
         public long id { get; set; }
-        public Nullable<long> userID { get; set; }
-        public Nullable<long> socialMedia { get; set; }
-        public string link { get; set; }
+        public Nullable<long> navID { get; set; }
+        public string content { get; set; }
+        public string sectionName { get; set; }
     
-        public virtual SocialMedia SocialMedia1 { get; set; }
-        public virtual UserInformation UserInformation { get; set; }
+        public virtual Navigation Navigation { get; set; }
     }
 }

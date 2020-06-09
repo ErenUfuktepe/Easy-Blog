@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="4f2b1fd97e5b4934b99f28e73614b6d4" Name="Diagram1">
+        <EntityTypeShape EntityType="EasyBlogModel.About" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.AboutInformation" Width="1.5" PointX="7.5" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Blog" Width="1.5" PointX="3" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Contact" Width="1.5" PointX="5.25" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Home" Width="1.5" PointX="5.25" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.HomeSubText" Width="1.5" PointX="7.5" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Main" Width="1.5" PointX="5.25" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Navigation" Width="1.5" PointX="5.25" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.NavigationItem" Width="1.5" PointX="7.5" PointY="16.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Portfolio" Width="1.5" PointX="5.25" PointY="19.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.PortfolioCategory" Width="1.5" PointX="7.5" PointY="19.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.PortfolioCategoryImageRelationship" Width="1.5" PointX="9.75" PointY="19.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Resume" Width="1.5" PointX="5.25" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.ResumeSection" Width="1.5" PointX="7.5" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.ResumeSectionItem" Width="1.5" PointX="9.75" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.ResumeSectionItemExplanation" Width="1.5" PointX="12" PointY="22.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.SocialMedia" Width="1.5" PointX="0.75" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.SocialMediaLink" Width="1.5" PointX="3" PointY="17.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.UserInformation" Width="1.5" PointX="0.75" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.UserLogin" Width="1.5" PointX="3" PointY="28.5" IsExpanded="true" />
+        <AssociationConnector Association="EasyBlogModel.FK__About__id__3F9B6DFF" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__AboutInfo__about__4277DAAA" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Blog__id__2B947552" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Contact__id__2E70E1FD" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Home__id__39E294A9" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Main__id__314D4EA8" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Navigation__id__3429BB53" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Portfolio__id__50C5FA01" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Resume__id__45544755" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__HomeSubTe__homeI__3CBF0154" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Navigatio__navID__370627FE" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Portfolio__portf__53A266AC" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Portfolio__portf__567ED357" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__ResumeSec__resum__4830B400" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__ResumeSec__resum__4B0D20AB" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__ResumeSec__resum__4DE98D56" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__SocialMed__socia__489AC854" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__SocialMed__userI__47A6A41B" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__UserLogin__passw__160F4887" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

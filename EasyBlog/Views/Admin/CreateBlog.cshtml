@@ -14,136 +14,134 @@
     <script src="~/Scripts/jquery-3.4.1.js"></script>
 </head>
 <body>
- 
-
-    <div class="container active-page">
-        <div class="form-group">
-            <div class="mb-5">
-                <h2 class="text-center text-uppercase" id="title">Create Blog</h2>
-            </div>
-            <!--Template-->
-            <div class="setting-form">
-                <div class="text-center">
-                    <a class="toggle" id="template-controller">Templates</a>
+    <form id="create-blog">
+        <div class="container active-page">
+            <div class="form-group">
+                <div class="mb-5">
+                    <h2 class="text-center text-uppercase" id="title">Create Blog</h2>
                 </div>
-                <div class="row template-controller input-padding" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <a class="image-padding" href="javascript:void(0);" onclick="SelectTemplate()">
-                            <img id="https://bootstrapmade.com/demo/Folio/" src="https://bootstrapmade.com/wp-content/themefiles/Folio/800.png">
-                        </a>
-                        <a class="image-padding" href="javascript:void(0);" onclick="SelectTemplate()">
-                            <img id="https://bootstrapmade.com/demo/MyResume/" src="https://bootstrapmade.com/wp-content/themefiles/MyResume/800.png">
-                        </a>
-                        <a class="image-padding" href="javascript:void(0);" onclick="SelectTemplate()">
-                            <img id="https://bootstrapmade.com/demo/iPortfolio/" src="https://bootstrapmade.com/wp-content/themefiles/iPortfolio/800.png">
-                        </a>
+                <!--Template-->
+                <div class="setting-form">
+                    <div class="text-center">
+                        <a class="toggle" id="template-controller">Templates</a>
                     </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndContinueTemplate()" class="btn btn-success">Save And Continue</button>
+                    <div class="row template-controller input-padding" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <a class="image-padding" href="javascript:void(0);" onclick="SelectTemplate()">
+                                <img id="https://bootstrapmade.com/demo/Folio/" src="https://bootstrapmade.com/wp-content/themefiles/Folio/800.png">
+                            </a>
+                            <a class="image-padding" href="javascript:void(0);" onclick="SelectTemplate()">
+                                <img id="https://bootstrapmade.com/demo/MyResume/" src="https://bootstrapmade.com/wp-content/themefiles/MyResume/800.png">
+                            </a>
+                            <a class="image-padding" href="javascript:void(0);" onclick="SelectTemplate()">
+                                <img id="https://bootstrapmade.com/demo/iPortfolio/" src="https://bootstrapmade.com/wp-content/themefiles/iPortfolio/800.png">
+                            </a>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" type="button" onclick="PreviewTemplate()" class="btn btn-primary">Preview</button>
+                            <button style="margin:5px;" id="template-button" type="button" onclick="SaveAndContinueTemplate()" class="btn btn-success">Save And Continue</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Main-->
-            <div class="setting-form dependent-settings" id="main-settings">
-                <div class="text-center">
-                    <a class="toggle" id="main-components-controller">Main Components</a>
-                </div>
-                <div class="row main-components-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form id="add-social-media">
-                            <div class="form-row text-left">
-                                <div class="col-lg-6 input-padding">
-                                    <b>Web Page Logo:</b>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="web-page-logo" required>
-                                        <label class="custom-file-label" for="web-page-logo">Choose file</label>
+                <!--Main-->
+                <div class="setting-form dependent-settings" id="main-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="main-components-controller">Main Components</a>
+                    </div>
+                    <div class="row main-components-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div id="add-social-media">
+                                <div class="form-row text-left">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Web Page Logo:</b>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="web-page-logo" required>
+                                            <label class="custom-file-label" for="web-page-logo">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Web Page Title:</b>
+                                        <input type="text" class="form-control" id="web-page-title" placeholder="Easy Blog" required>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Web Page Title:</b>
-                                    <input type="text" class="form-control" id="web-page-title" placeholder="Easy Blog" required>
-                                </div>
-                            </div>
-                            <div class="form-row text-left">
-                                <div class="col-lg-4 input-padding">
-                                    <b>Title Color:</b>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="#ffffff" id="main-title-color-code">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <input class="color-change" type="color" value="#ffffff" id="main-title-color">
+                                <div class="form-row text-left">
+                                    <div class="col-lg-4 input-padding">
+                                        <b>Title Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="#ffffff" id="main-title-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="#ffffff" id="main-title-color">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 input-padding">
+                                        <b>Text Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="#ffffff" id="main-text-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="#ffffff" id="main-text-color">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 input-padding">
+                                        <b>Hover Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="#ffffff" id="main-hover-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="#ffffff" id="main-hover-color">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 input-padding">
-                                    <b>Text Color:</b>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="#ffffff" id="main-text-color-code">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <input class="color-change" type="color" value="#ffffff" id="main-text-color">
-                                            </div>
+                                <div class="form-row text-right">
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-success" onclick="AddSocialMedia()">Add Social Media</button>
+                                    </div>
+                                </div>
+                                <div class="form-row text-left social-media">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Social Media:</b>
+                                        <div class="input-group mb-3">
+                                            <select class="form-control" style="overflow:scroll;" id="select-social-media">
+                                                @foreach (EasyBlog.Models.SocialMedia socialMedia in ViewData["SocialMedias"] as List<EasyBlog.Models.SocialMedia>)
+                                                {
+                                                    <option value="@socialMedia.code">@socialMedia.name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Link:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 input-padding">
-                                    <b>Hover Color:</b>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="#ffffff" id="main-hover-color-code">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <input class="color-change" type="color" value="#ffffff" id="main-hover-color">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-                            <div class="form-row text-right">
-                                <div class="col-lg-12">
-                                    <button type="button" class="btn btn-success" onclick="AddSocialMedia()">Add Social Media</button>
-                                </div>
-                            </div>
-                            <div class="form-row text-left social-media">
-                                <div class="col-lg-6 input-padding">
-                                    <b>Social Media:</b>
-                                    <div class="input-group mb-3">
-                                        <select class="form-control" style="overflow:scroll;" id="select-social-media">
-                                            @foreach (EasyBlog.Models.SocialMedia socialMedia in ViewData["SocialMedias"] as List<EasyBlog.Models.SocialMedia>)
-                                            {
-                                                <option value="@socialMedia.code">@socialMedia.name</option>
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Link:</b>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" id="main-button" type="button" onclick="SaveAndDisableMainSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="main-button" type="button" onclick="SaveAndDisableMainSection()" class="btn btn-success">Save And Continuee</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Nav-->
-            <div class="setting-form dependent-settings" id="nav-settings">
-                <div class="text-center">
-                    <a class="toggle" id="navigation-controller">Navigation</a>
-                </div>
-                <div class="row navigation-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form>
+                <!--Nav-->
+                <div class="setting-form dependent-settings" id="nav-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="navigation-controller">Navigation</a>
+                    </div>
+                    <div class="row navigation-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
                                     <b>Logo:</b>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="navigation-logo">
+                                        <input type="file" name="file" class="custom-file-input" id="navigation-logo">
                                         <label class="custom-file-label" for="navigation-logo">Choose file</label>
                                     </div>
                                 </div>
@@ -171,21 +169,19 @@
                                     </thead>
                                 </table>
                             </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" id="nav-button" type="button" onclick="SaveAndDisableNavigationSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="nav-button" type="button" onclick="SaveAndDisableNavigationSection()" class="btn btn-success">Save And Continuee</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Home-->
-            <div class="setting-form dependent-settings" id="home-settings">
-                <div class="text-center">
-                    <a class="toggle" id="home-controller">Home Section</a>
-                </div>
-                <div class="row home-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form>
+                <!--Home-->
+                <div class="setting-form dependent-settings" id="home-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="home-controller">Home Section</a>
+                    </div>
+                    <div class="row home-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
                                     <b>Background Image:</b>
@@ -206,7 +202,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-row text-left" id="home-sub-text">
                                 <div class="col-lg-6 input-padding">
                                     <b>Main Text:</b>
@@ -225,21 +220,19 @@
                                 </div>
 
                             </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" id="home-button" type="button" onclick="SaveAndDisableHomeSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="home-button" type="button" onclick="SaveAndDisableHomeSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--About-->
-            <div class="setting-form dependent-settings" id="about-settings">
-                <div class="text-center">
-                    <a class="toggle" id="about-controller">About Section</a>
-                </div>
-                <div class="row about-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form>
+                <!--About-->
+                <div class="setting-form dependent-settings" id="about-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="about-controller">About Section</a>
+                    </div>
+                    <div class="row about-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
                             <div class="form-row text-left">
                                 <div class="col-lg-4 input-padding">
                                     <b>Background Color:</b>
@@ -271,7 +264,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-row text-left">
                                 <div class="col-lg-12 input-padding">
                                     <b>Header:</b>
@@ -290,13 +282,11 @@
                                     <textarea class="form-control" id="about-body" rows="3"></textarea>
                                 </div>
                             </div>
-
                             <div class="form-row text-left extra">
                                 <div class="col-lg-12">
                                     <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddInformationToAboutSection()" id="add-info-button">Add Information</button>
                                 </div>
                             </div>
-
                             <div class="form-row text-left extra" id="about-extra-info">
                                 <div class="col-lg-6 input-padding">
                                     <b>Information Title: </b>
@@ -307,110 +297,105 @@
                                     <input type="text" class="form-control" placeholder="30">
                                 </div>
                             </div>
-
-
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" id="about-button" type="button" onclick="SaveAndDisableAboutSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="about-button" type="button" onclick="SaveAndDisableAboutSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Resume-->
-            <div class="setting-form dependent-settings" id="resume-settings">
-                <div class="text-center">
-                    <a class="toggle" id="resume-controller">Resume Section</a>
-                </div>
-                <div class="row resume-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form id="resume-section">
-                            <div class="form-row text-left">
-                                <div class="col-lg-6 input-padding">
-                                    <b>Resume Header:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control" placeholder="Resume" id="resume-header">
+                <!--Resume-->
+                <div class="setting-form dependent-settings" id="resume-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="resume-controller">Resume Section</a>
+                    </div>
+                    <div class="row resume-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div id="resume-section">
+                                <div class="form-row text-left">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Resume Header:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control" placeholder="Resume" id="resume-header">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Background Color:</b>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="#ffffff" id="resume-background-color-code">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <input class="color-change" type="color" value="#ffffff" id="resume-background-color">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Background Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="#ffffff" id="resume-background-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="#ffffff" id="resume-background-color">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="form-row text-left">
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSection()">Add Resume Section</button>
+                                    </div>
+                                </div>
 
-                            <div class="form-row text-left">
-                                <div class="col-lg-12">
-                                    <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSection()">Add Resume Section</button>
+                                <div class="form-row text-left">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Resume Section Header:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-section-header" placeholder="Education">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSubSection()">Add Sub Section</button>
+                                    </div>
+                                    <div class="col-lg-12 input-padding">
+                                        <b>Sub Header:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-sub-header" placeholder="MASTER OF FINE ARTS & GRAPHIC DESIGN">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 input-padding">
+                                        <b>From:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-date" placeholder="2001">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 input-padding">
+                                        <b>To:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-date" placeholder="2005">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Place or Location:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-location" placeholder="Rochester Institute of Technology, Rochester, NY">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 input-padding">
+                                        <b>Explanation: </b>
+                                        <textarea class="form-control resume-explanation" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-lg-12 input-padding">
+                                        <b>List of Explanations: </b>
+                                        <a href="javascript:void(0);" onclick="AddExplanation()" class="close resume-list-item" style="float:none;" aria-label="Close">
+                                            <span class="green" aria-hidden="true">&plus;</span>
+                                        </a>
+                                        <textarea class="form-control resume-item" rows="3"></textarea>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="form-row text-left">
-                                <div class="col-lg-6 input-padding">
-                                    <b>Resume Section Header:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control resume-section-header" placeholder="Education">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12">
-                                    <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSubSection()">Add Sub Section</button>
-                                </div>
-                                <div class="col-lg-12 input-padding">
-                                    <b>Sub Header:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control resume-sub-header" placeholder="MASTER OF FINE ARTS & GRAPHIC DESIGN">
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 input-padding">
-                                    <b>From:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control resume-date" placeholder="2001">
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 input-padding">
-                                    <b>To:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control resume-date" placeholder="2005">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Place or Location:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control resume-location" placeholder="Rochester Institute of Technology, Rochester, NY">
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 input-padding">
-                                    <b>Explanation: </b>
-                                    <textarea class="form-control resume-explanation" rows="3"></textarea>
-                                </div>
-                                <div class="col-lg-12 input-padding">
-                                    <b>List of Explanations: </b>
-                                    <a href="javascript:void(0);" onclick="AddExplanation()" class="close resume-list-item" style="float:none;" aria-label="Close">
-                                        <span class="green" aria-hidden="true">&plus;</span>
-                                    </a>
-                                    <textarea class="form-control resume-item" rows="3"></textarea>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" type="button" onclick="SaveAndDisableResumeSection()" id="resume-save" class="btn btn-success">Save And Continue</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" type="button" onclick="SaveAndDisableResumeSection()" id="resume-save" class="btn btn-success">Save And Continue</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Portfolio-->
-            <div class="setting-form dependent-settings" id="portfolio-settings">
-                <div class="text-center">
-                    <a class="toggle" id="portfolio-controller">Portfolio Section</a>
-                </div>
-                <div class="row portfolio-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form>
+                <!--Portfolio-->
+                <div class="setting-form dependent-settings" id="portfolio-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="portfolio-controller">Portfolio Section</a>
+                    </div>
+                    <div class="row portfolio-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
                                     <b>Section Header:</b>
@@ -453,21 +438,19 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" id="portfolio-button" type="button" onclick="SaveAndDisablePortfolioSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="portfolio-button" type="button" onclick="SaveAndDisablePortfolioSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Blog-->
-            <div class="setting-form dependent-settings" id="blog-settings">
-                <div class="text-center">
-                    <a class="toggle" id="blog-controller">Blog Section</a>
-                </div>
-                <div class="row blog-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form>
+                <!--Blog-->
+                <div class="setting-form dependent-settings" id="blog-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="blog-controller">Blog Section</a>
+                    </div>
+                    <div class="row blog-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
                                     <b>Section Header:</b>
@@ -487,7 +470,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-row text-left">
                                 <div class="col-lg-12">
                                     <div class="col-lg-12" style="text-align:right; padding:0px;">
@@ -512,21 +494,19 @@
                                     <textarea class="form-control" rows="3"></textarea>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" id="blog-button" type="button" onclick="SaveAndDisableBlogSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="blog-button" type="button" onclick="SaveAndDisableBlogSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!--Contact-->
-            <div class="setting-form dependent-settings" id="contact-settings">
-                <div class="text-center">
-                    <a class="toggle" id="contact-controller">Contact Section</a>
-                </div>
-                <div class="row contact-controller" style="display:none;">
-                    <div class="col-lg-12" style="padding-bottom: 15px;">
-                        <form>
+                <!--Contact-->
+                <div class="setting-form dependent-settings" id="contact-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="contact-controller">Contact Section</a>
+                    </div>
+                    <div class="row contact-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
                                     <b>Section Header:</b>
@@ -546,7 +526,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="form-row text-left">
                                 <div class="col-lg-6 input-padding">
                                     <b>Address:</b>
@@ -585,25 +564,25 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" id="contact-button" type="button" onclick="SaveAndDisableContactSection()" class="btn btn-success">Save And Continue</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="setting-form dependent-settings" id="submit">
-                <div class="row">
-                    <div class="col-lg-12" style="text-align:right">
-                        <button style="margin:5px;" type="button" onclick="Preview()" class="btn btn-primary">Preview</button>
-                        <button style="margin:5px;" id="template-button" type="button" onclick="CreateBlog()" class="btn btn-success">Submit</button>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="contact-button" type="button" onclick="SaveAndDisableContactSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+                
+                <div class="setting-form dependent-settings" id="submit">
+                    <div class="row">
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" type="button" onclick="Preview()" class="btn btn-primary">Preview</button>
+                            <input style="margin:5px;" class="btn btn-success" type="submit" value="Submit" />
+                        </div>
+                    </div>
+                </div>
 
-        </div>
-    </div>
+            </div>
+        </div>        
+    </form>
 
     <div id="dialog"></div>
     <a href="#" data-toggle="modal" data-target="#my-dialog" id="trigger-dialog" style="display: none;"></a>
@@ -637,5 +616,6 @@
     </div>
 
     <script src="~/Scripts/main1.js"></script>
+
 </body>
 </html>

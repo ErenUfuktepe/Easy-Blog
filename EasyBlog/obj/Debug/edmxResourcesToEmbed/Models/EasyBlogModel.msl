@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EasyBlogModelStoreContainer" CdmEntityContainer="EasyBlogEntities">
+    <EntitySetMapping Name="Abouts">
+      <EntityTypeMapping TypeName="EasyBlogModel.About">
+        <MappingFragment StoreEntitySet="About">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="image" ColumnName="image" />
+          <ScalarProperty Name="background" ColumnName="background" />
+          <ScalarProperty Name="frameColor" ColumnName="frameColor" />
+          <ScalarProperty Name="header" ColumnName="header" />
+          <ScalarProperty Name="subTitle" ColumnName="subTitle" />
+          <ScalarProperty Name="body" ColumnName="body" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="AboutInformations">
+      <EntityTypeMapping TypeName="EasyBlogModel.AboutInformation">
+        <MappingFragment StoreEntitySet="AboutInformation">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="aboutID" ColumnName="aboutID" />
+          <ScalarProperty Name="informationTitle" ColumnName="informationTitle" />
+          <ScalarProperty Name="informationValue" ColumnName="informationValue" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Blogs">
+      <EntityTypeMapping TypeName="EasyBlogModel.Blog">
+        <MappingFragment StoreEntitySet="Blog">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="template" ColumnName="template" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Contacts">
+      <EntityTypeMapping TypeName="EasyBlogModel.Contact">
+        <MappingFragment StoreEntitySet="Contact">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="header" ColumnName="header" />
+          <ScalarProperty Name="backgroundColor" ColumnName="backgroundColor" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="state" ColumnName="state" />
+          <ScalarProperty Name="country" ColumnName="country" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
+          <ScalarProperty Name="email" ColumnName="email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Homes">
+      <EntityTypeMapping TypeName="EasyBlogModel.Home">
+        <MappingFragment StoreEntitySet="Home">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="background" ColumnName="background" />
+          <ScalarProperty Name="textColor" ColumnName="textColor" />
+          <ScalarProperty Name="mainText" ColumnName="mainText" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HomeSubTexts">
+      <EntityTypeMapping TypeName="EasyBlogModel.HomeSubText">
+        <MappingFragment StoreEntitySet="HomeSubText">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="homeID" ColumnName="homeID" />
+          <ScalarProperty Name="subText" ColumnName="subText" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Mains">
+      <EntityTypeMapping TypeName="EasyBlogModel.Main">
+        <MappingFragment StoreEntitySet="Main">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="logo" ColumnName="logo" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="titleColor" ColumnName="titleColor" />
+          <ScalarProperty Name="textColor" ColumnName="textColor" />
+          <ScalarProperty Name="hoverColor" ColumnName="hoverColor" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Navigations">
+      <EntityTypeMapping TypeName="EasyBlogModel.Navigation">
+        <MappingFragment StoreEntitySet="Navigation">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="logo" ColumnName="logo" />
+          <ScalarProperty Name="barColor" ColumnName="barColor" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="NavigationItems">
+      <EntityTypeMapping TypeName="EasyBlogModel.NavigationItem">
+        <MappingFragment StoreEntitySet="NavigationItem">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="navID" ColumnName="navID" />
+          <ScalarProperty Name="content" ColumnName="content" />
+          <ScalarProperty Name="sectionName" ColumnName="sectionName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Portfolios">
+      <EntityTypeMapping TypeName="EasyBlogModel.Portfolio">
+        <MappingFragment StoreEntitySet="Portfolio">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="hearder" ColumnName="hearder" />
+          <ScalarProperty Name="background" ColumnName="background" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PortfolioCategories">
+      <EntityTypeMapping TypeName="EasyBlogModel.PortfolioCategory">
+        <MappingFragment StoreEntitySet="PortfolioCategory">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="portfolioID" ColumnName="portfolioID" />
+          <ScalarProperty Name="category" ColumnName="category" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PortfolioCategoryImageRelationships">
+      <EntityTypeMapping TypeName="EasyBlogModel.PortfolioCategoryImageRelationship">
+        <MappingFragment StoreEntitySet="PortfolioCategoryImageRelationship">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="portfolioCategoryID" ColumnName="portfolioCategoryID" />
+          <ScalarProperty Name="image" ColumnName="image" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Resumes">
+      <EntityTypeMapping TypeName="EasyBlogModel.Resume">
+        <MappingFragment StoreEntitySet="Resume">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="header" ColumnName="header" />
+          <ScalarProperty Name="background" ColumnName="background" />
+          <ScalarProperty Name="resumeSectionHeaderId" ColumnName="resumeSectionHeaderId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ResumeSections">
+      <EntityTypeMapping TypeName="EasyBlogModel.ResumeSection">
+        <MappingFragment StoreEntitySet="ResumeSection">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="resumeID" ColumnName="resumeID" />
+          <ScalarProperty Name="header" ColumnName="header" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ResumeSectionItems">
+      <EntityTypeMapping TypeName="EasyBlogModel.ResumeSectionItem">
+        <MappingFragment StoreEntitySet="ResumeSectionItem">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="resumeSectionID" ColumnName="resumeSectionID" />
+          <ScalarProperty Name="header" ColumnName="header" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="location" ColumnName="location" />
+          <ScalarProperty Name="explanation" ColumnName="explanation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ResumeSectionItemExplanations">
+      <EntityTypeMapping TypeName="EasyBlogModel.ResumeSectionItemExplanation">
+        <MappingFragment StoreEntitySet="ResumeSectionItemExplanations">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="resumeSectionItemID" ColumnName="resumeSectionItemID" />
+          <ScalarProperty Name="explanation" ColumnName="explanation" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SocialMedias">
+      <EntityTypeMapping TypeName="EasyBlogModel.SocialMedia">
+        <MappingFragment StoreEntitySet="SocialMedia">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="code" ColumnName="code" />
+          <ScalarProperty Name="color" ColumnName="color" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SocialMediaLinks">
+      <EntityTypeMapping TypeName="EasyBlogModel.SocialMediaLink">
+        <MappingFragment StoreEntitySet="SocialMediaLink">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="userID" ColumnName="userID" />
+          <ScalarProperty Name="socialMedia" ColumnName="socialMedia" />
+          <ScalarProperty Name="link" ColumnName="link" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserInformations">
+      <EntityTypeMapping TypeName="EasyBlogModel.UserInformation">
+        <MappingFragment StoreEntitySet="UserInformation">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="surname" ColumnName="surname" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
+          <ScalarProperty Name="createdDate" ColumnName="createdDate" />
+          <ScalarProperty Name="modifiedDate" ColumnName="modifiedDate" />
+          <ScalarProperty Name="lastLoginDate" ColumnName="lastLoginDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserLogins">
+      <EntityTypeMapping TypeName="EasyBlogModel.UserLogin">
+        <MappingFragment StoreEntitySet="UserLogin">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="password" ColumnName="password" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

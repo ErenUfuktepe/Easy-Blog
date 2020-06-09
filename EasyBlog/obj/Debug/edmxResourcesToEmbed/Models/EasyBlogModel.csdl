@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EasyBlogModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="About">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="background" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="frameColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="header" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="subTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__About__id__3F9B6DFF" FromRole="About" ToRole="Blog" />
+    <NavigationProperty Name="AboutInformations" Relationship="Self.FK__AboutInfo__about__4277DAAA" FromRole="About" ToRole="AboutInformation" />
+  </EntityType>
+  <EntityType Name="AboutInformation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="aboutID" Type="Int64" />
+    <Property Name="informationTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="informationValue" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="About" Relationship="Self.FK__AboutInfo__about__4277DAAA" FromRole="AboutInformation" ToRole="About" />
+  </EntityType>
+  <EntityType Name="Blog">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="template" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="About" Relationship="Self.FK__About__id__3F9B6DFF" FromRole="Blog" ToRole="About" />
+    <NavigationProperty Name="UserInformation" Relationship="Self.FK__Blog__id__2B947552" FromRole="Blog" ToRole="UserInformation" />
+    <NavigationProperty Name="Contact" Relationship="Self.FK__Contact__id__2E70E1FD" FromRole="Blog" ToRole="Contact" />
+    <NavigationProperty Name="Home" Relationship="Self.FK__Home__id__39E294A9" FromRole="Blog" ToRole="Home" />
+    <NavigationProperty Name="Main" Relationship="Self.FK__Main__id__314D4EA8" FromRole="Blog" ToRole="Main" />
+    <NavigationProperty Name="Navigation" Relationship="Self.FK__Navigation__id__3429BB53" FromRole="Blog" ToRole="Navigation" />
+    <NavigationProperty Name="Portfolio" Relationship="Self.FK__Portfolio__id__50C5FA01" FromRole="Blog" ToRole="Portfolio" />
+    <NavigationProperty Name="Resume" Relationship="Self.FK__Resume__id__45544755" FromRole="Blog" ToRole="Resume" />
+  </EntityType>
+  <EntityType Name="Contact">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="header" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="backgroundColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="address" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="city" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="state" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="country" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__Contact__id__2E70E1FD" FromRole="Contact" ToRole="Blog" />
+  </EntityType>
+  <EntityType Name="Home">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="background" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="textColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="mainText" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__Home__id__39E294A9" FromRole="Home" ToRole="Blog" />
+    <NavigationProperty Name="HomeSubTexts" Relationship="Self.FK__HomeSubTe__homeI__3CBF0154" FromRole="Home" ToRole="HomeSubText" />
+  </EntityType>
+  <EntityType Name="HomeSubText">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="homeID" Type="Int64" />
+    <Property Name="subText" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Home" Relationship="Self.FK__HomeSubTe__homeI__3CBF0154" FromRole="HomeSubText" ToRole="Home" />
+  </EntityType>
+  <EntityType Name="Main">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="logo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="title" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="titleColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="textColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="hoverColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__Main__id__314D4EA8" FromRole="Main" ToRole="Blog" />
+  </EntityType>
+  <EntityType Name="Navigation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="logo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="barColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__Navigation__id__3429BB53" FromRole="Navigation" ToRole="Blog" />
+    <NavigationProperty Name="NavigationItems" Relationship="Self.FK__Navigatio__navID__370627FE" FromRole="Navigation" ToRole="NavigationItem" />
+  </EntityType>
+  <EntityType Name="NavigationItem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="navID" Type="Int64" />
+    <Property Name="content" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="sectionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Navigation" Relationship="Self.FK__Navigatio__navID__370627FE" FromRole="NavigationItem" ToRole="Navigation" />
+  </EntityType>
+  <EntityType Name="Portfolio">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="hearder" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="background" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__Portfolio__id__50C5FA01" FromRole="Portfolio" ToRole="Blog" />
+    <NavigationProperty Name="PortfolioCategories" Relationship="Self.FK__Portfolio__portf__53A266AC" FromRole="Portfolio" ToRole="PortfolioCategory" />
+  </EntityType>
+  <EntityType Name="PortfolioCategory">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="portfolioID" Type="Int64" />
+    <Property Name="category" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Portfolio" Relationship="Self.FK__Portfolio__portf__53A266AC" FromRole="PortfolioCategory" ToRole="Portfolio" />
+    <NavigationProperty Name="PortfolioCategoryImageRelationships" Relationship="Self.FK__Portfolio__portf__567ED357" FromRole="PortfolioCategory" ToRole="PortfolioCategoryImageRelationship" />
+  </EntityType>
+  <EntityType Name="PortfolioCategoryImageRelationship">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="portfolioCategoryID" Type="Int64" />
+    <Property Name="image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="PortfolioCategory" Relationship="Self.FK__Portfolio__portf__567ED357" FromRole="PortfolioCategoryImageRelationship" ToRole="PortfolioCategory" />
+  </EntityType>
+  <EntityType Name="Resume">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="header" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="background" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="resumeSectionHeaderId" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__Resume__id__45544755" FromRole="Resume" ToRole="Blog" />
+    <NavigationProperty Name="ResumeSections" Relationship="Self.FK__ResumeSec__resum__4830B400" FromRole="Resume" ToRole="ResumeSection" />
+  </EntityType>
+  <EntityType Name="ResumeSection">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="resumeID" Type="Int64" />
+    <Property Name="header" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Resume" Relationship="Self.FK__ResumeSec__resum__4830B400" FromRole="ResumeSection" ToRole="Resume" />
+    <NavigationProperty Name="ResumeSectionItems" Relationship="Self.FK__ResumeSec__resum__4B0D20AB" FromRole="ResumeSection" ToRole="ResumeSectionItem" />
+  </EntityType>
+  <EntityType Name="ResumeSectionItem">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="resumeSectionID" Type="Int64" />
+    <Property Name="header" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="date" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="explanation" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ResumeSection" Relationship="Self.FK__ResumeSec__resum__4B0D20AB" FromRole="ResumeSectionItem" ToRole="ResumeSection" />
+    <NavigationProperty Name="ResumeSectionItemExplanations" Relationship="Self.FK__ResumeSec__resum__4DE98D56" FromRole="ResumeSectionItem" ToRole="ResumeSectionItemExplanations" />
+  </EntityType>
+  <EntityType Name="ResumeSectionItemExplanation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="resumeSectionItemID" Type="Int64" />
+    <Property Name="explanation" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ResumeSectionItem" Relationship="Self.FK__ResumeSec__resum__4DE98D56" FromRole="ResumeSectionItemExplanations" ToRole="ResumeSectionItem" />
+  </EntityType>
+  <EntityType Name="SocialMedia">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="color" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="SocialMediaLinks" Relationship="Self.FK__SocialMed__socia__489AC854" FromRole="SocialMedia" ToRole="SocialMediaLink" />
+  </EntityType>
+  <EntityType Name="SocialMediaLink">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="userID" Type="Int64" />
+    <Property Name="socialMedia" Type="Int64" />
+    <Property Name="link" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="SocialMedia1" Relationship="Self.FK__SocialMed__socia__489AC854" FromRole="SocialMediaLink" ToRole="SocialMedia" />
+    <NavigationProperty Name="UserInformation" Relationship="Self.FK__SocialMed__userI__47A6A41B" FromRole="SocialMediaLink" ToRole="UserInformation" />
+  </EntityType>
+  <EntityType Name="UserInformation">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="surname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="phone" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="createdDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="modifiedDate" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="lastLoginDate" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__Blog__id__2B947552" FromRole="UserInformation" ToRole="Blog" />
+    <NavigationProperty Name="SocialMediaLinks" Relationship="Self.FK__SocialMed__userI__47A6A41B" FromRole="UserInformation" ToRole="SocialMediaLink" />
+    <NavigationProperty Name="UserLogin" Relationship="Self.FK__UserLogin__passw__160F4887" FromRole="UserInformation" ToRole="UserLogin" />
+  </EntityType>
+  <EntityType Name="UserLogin">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int64" Nullable="false" />
+    <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="UserInformation" Relationship="Self.FK__UserLogin__passw__160F4887" FromRole="UserLogin" ToRole="UserInformation" />
+  </EntityType>
+  <Association Name="FK__About__id__3F9B6DFF">
+    <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
+    <End Role="About" Type="Self.About" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Blog">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="About">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__AboutInfo__about__4277DAAA">
+    <End Role="About" Type="Self.About" Multiplicity="0..1" />
+    <End Role="AboutInformation" Type="Self.AboutInformation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="About">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="AboutInformation">
+        <PropertyRef Name="aboutID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Blog__id__2B947552">
+    <End Role="UserInformation" Type="Self.UserInformation" Multiplicity="1" />
+    <End Role="Blog" Type="Self.Blog" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="UserInformation">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Blog">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Contact__id__2E70E1FD">
+    <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
+    <End Role="Contact" Type="Self.Contact" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Blog">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Contact">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Home__id__39E294A9">
+    <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
+    <End Role="Home" Type="Self.Home" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Blog">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Home">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Main__id__314D4EA8">
+    <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
+    <End Role="Main" Type="Self.Main" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Blog">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Main">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Navigation__id__3429BB53">
+    <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
+    <End Role="Navigation" Type="Self.Navigation" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Blog">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Navigation">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Portfolio__id__50C5FA01">
+    <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
+    <End Role="Portfolio" Type="Self.Portfolio" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Blog">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Portfolio">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Resume__id__45544755">
+    <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
+    <End Role="Resume" Type="Self.Resume" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Blog">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Resume">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__HomeSubTe__homeI__3CBF0154">
+    <End Role="Home" Type="Self.Home" Multiplicity="0..1" />
+    <End Role="HomeSubText" Type="Self.HomeSubText" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Home">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="HomeSubText">
+        <PropertyRef Name="homeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Navigatio__navID__370627FE">
+    <End Role="Navigation" Type="Self.Navigation" Multiplicity="0..1" />
+    <End Role="NavigationItem" Type="Self.NavigationItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Navigation">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="NavigationItem">
+        <PropertyRef Name="navID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Portfolio__portf__53A266AC">
+    <End Role="Portfolio" Type="Self.Portfolio" Multiplicity="0..1" />
+    <End Role="PortfolioCategory" Type="Self.PortfolioCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Portfolio">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="PortfolioCategory">
+        <PropertyRef Name="portfolioID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Portfolio__portf__567ED357">
+    <End Role="PortfolioCategory" Type="Self.PortfolioCategory" Multiplicity="0..1" />
+    <End Role="PortfolioCategoryImageRelationship" Type="Self.PortfolioCategoryImageRelationship" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PortfolioCategory">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="PortfolioCategoryImageRelationship">
+        <PropertyRef Name="portfolioCategoryID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ResumeSec__resum__4830B400">
+    <End Role="Resume" Type="Self.Resume" Multiplicity="0..1" />
+    <End Role="ResumeSection" Type="Self.ResumeSection" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Resume">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ResumeSection">
+        <PropertyRef Name="resumeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ResumeSec__resum__4B0D20AB">
+    <End Role="ResumeSection" Type="Self.ResumeSection" Multiplicity="0..1" />
+    <End Role="ResumeSectionItem" Type="Self.ResumeSectionItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ResumeSection">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ResumeSectionItem">
+        <PropertyRef Name="resumeSectionID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ResumeSec__resum__4DE98D56">
+    <End Role="ResumeSectionItem" Type="Self.ResumeSectionItem" Multiplicity="0..1" />
+    <End Role="ResumeSectionItemExplanations" Type="Self.ResumeSectionItemExplanation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ResumeSectionItem">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ResumeSectionItemExplanations">
+        <PropertyRef Name="resumeSectionItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__SocialMed__socia__489AC854">
+    <End Role="SocialMedia" Type="Self.SocialMedia" Multiplicity="0..1" />
+    <End Role="SocialMediaLink" Type="Self.SocialMediaLink" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SocialMedia">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="SocialMediaLink">
+        <PropertyRef Name="socialMedia" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__SocialMed__userI__47A6A41B">
+    <End Role="UserInformation" Type="Self.UserInformation" Multiplicity="0..1" />
+    <End Role="SocialMediaLink" Type="Self.SocialMediaLink" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserInformation">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="SocialMediaLink">
+        <PropertyRef Name="userID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__UserLogin__passw__160F4887">
+    <End Role="UserInformation" Type="Self.UserInformation" Multiplicity="1" />
+    <End Role="UserLogin" Type="Self.UserLogin" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="UserInformation">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="UserLogin">
+        <PropertyRef Name="id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EasyBlogEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Abouts" EntityType="Self.About" />
+    <EntitySet Name="AboutInformations" EntityType="Self.AboutInformation" />
+    <EntitySet Name="Blogs" EntityType="Self.Blog" />
+    <EntitySet Name="Contacts" EntityType="Self.Contact" />
+    <EntitySet Name="Homes" EntityType="Self.Home" />
+    <EntitySet Name="HomeSubTexts" EntityType="Self.HomeSubText" />
+    <EntitySet Name="Mains" EntityType="Self.Main" />
+    <EntitySet Name="Navigations" EntityType="Self.Navigation" />
+    <EntitySet Name="NavigationItems" EntityType="Self.NavigationItem" />
+    <EntitySet Name="Portfolios" EntityType="Self.Portfolio" />
+    <EntitySet Name="PortfolioCategories" EntityType="Self.PortfolioCategory" />
+    <EntitySet Name="PortfolioCategoryImageRelationships" EntityType="Self.PortfolioCategoryImageRelationship" />
+    <EntitySet Name="Resumes" EntityType="Self.Resume" />
+    <EntitySet Name="ResumeSections" EntityType="Self.ResumeSection" />
+    <EntitySet Name="ResumeSectionItems" EntityType="Self.ResumeSectionItem" />
+    <EntitySet Name="ResumeSectionItemExplanations" EntityType="Self.ResumeSectionItemExplanation" />
+    <EntitySet Name="SocialMedias" EntityType="Self.SocialMedia" />
+    <EntitySet Name="SocialMediaLinks" EntityType="Self.SocialMediaLink" />
+    <EntitySet Name="UserInformations" EntityType="Self.UserInformation" />
+    <EntitySet Name="UserLogins" EntityType="Self.UserLogin" />
+    <AssociationSet Name="FK__About__id__3F9B6DFF" Association="Self.FK__About__id__3F9B6DFF">
+      <End Role="Blog" EntitySet="Blogs" />
+      <End Role="About" EntitySet="Abouts" />
+    </AssociationSet>
+    <AssociationSet Name="FK__AboutInfo__about__4277DAAA" Association="Self.FK__AboutInfo__about__4277DAAA">
+      <End Role="About" EntitySet="Abouts" />
+      <End Role="AboutInformation" EntitySet="AboutInformations" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Blog__id__2B947552" Association="Self.FK__Blog__id__2B947552">
+      <End Role="UserInformation" EntitySet="UserInformations" />
+      <End Role="Blog" EntitySet="Blogs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Contact__id__2E70E1FD" Association="Self.FK__Contact__id__2E70E1FD">
+      <End Role="Blog" EntitySet="Blogs" />
+      <End Role="Contact" EntitySet="Contacts" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Home__id__39E294A9" Association="Self.FK__Home__id__39E294A9">
+      <End Role="Blog" EntitySet="Blogs" />
+      <End Role="Home" EntitySet="Homes" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Main__id__314D4EA8" Association="Self.FK__Main__id__314D4EA8">
+      <End Role="Blog" EntitySet="Blogs" />
+      <End Role="Main" EntitySet="Mains" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Navigation__id__3429BB53" Association="Self.FK__Navigation__id__3429BB53">
+      <End Role="Blog" EntitySet="Blogs" />
+      <End Role="Navigation" EntitySet="Navigations" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Portfolio__id__50C5FA01" Association="Self.FK__Portfolio__id__50C5FA01">
+      <End Role="Blog" EntitySet="Blogs" />
+      <End Role="Portfolio" EntitySet="Portfolios" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Resume__id__45544755" Association="Self.FK__Resume__id__45544755">
+      <End Role="Blog" EntitySet="Blogs" />
+      <End Role="Resume" EntitySet="Resumes" />
+    </AssociationSet>
+    <AssociationSet Name="FK__HomeSubTe__homeI__3CBF0154" Association="Self.FK__HomeSubTe__homeI__3CBF0154">
+      <End Role="Home" EntitySet="Homes" />
+      <End Role="HomeSubText" EntitySet="HomeSubTexts" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Navigatio__navID__370627FE" Association="Self.FK__Navigatio__navID__370627FE">
+      <End Role="Navigation" EntitySet="Navigations" />
+      <End Role="NavigationItem" EntitySet="NavigationItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Portfolio__portf__53A266AC" Association="Self.FK__Portfolio__portf__53A266AC">
+      <End Role="Portfolio" EntitySet="Portfolios" />
+      <End Role="PortfolioCategory" EntitySet="PortfolioCategories" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Portfolio__portf__567ED357" Association="Self.FK__Portfolio__portf__567ED357">
+      <End Role="PortfolioCategory" EntitySet="PortfolioCategories" />
+      <End Role="PortfolioCategoryImageRelationship" EntitySet="PortfolioCategoryImageRelationships" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ResumeSec__resum__4830B400" Association="Self.FK__ResumeSec__resum__4830B400">
+      <End Role="Resume" EntitySet="Resumes" />
+      <End Role="ResumeSection" EntitySet="ResumeSections" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ResumeSec__resum__4B0D20AB" Association="Self.FK__ResumeSec__resum__4B0D20AB">
+      <End Role="ResumeSection" EntitySet="ResumeSections" />
+      <End Role="ResumeSectionItem" EntitySet="ResumeSectionItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ResumeSec__resum__4DE98D56" Association="Self.FK__ResumeSec__resum__4DE98D56">
+      <End Role="ResumeSectionItem" EntitySet="ResumeSectionItems" />
+      <End Role="ResumeSectionItemExplanations" EntitySet="ResumeSectionItemExplanations" />
+    </AssociationSet>
+    <AssociationSet Name="FK__SocialMed__socia__489AC854" Association="Self.FK__SocialMed__socia__489AC854">
+      <End Role="SocialMedia" EntitySet="SocialMedias" />
+      <End Role="SocialMediaLink" EntitySet="SocialMediaLinks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__SocialMed__userI__47A6A41B" Association="Self.FK__SocialMed__userI__47A6A41B">
+      <End Role="UserInformation" EntitySet="UserInformations" />
+      <End Role="SocialMediaLink" EntitySet="SocialMediaLinks" />
+    </AssociationSet>
+    <AssociationSet Name="FK__UserLogin__passw__160F4887" Association="Self.FK__UserLogin__passw__160F4887">
+      <End Role="UserInformation" EntitySet="UserInformations" />
+      <End Role="UserLogin" EntitySet="UserLogins" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

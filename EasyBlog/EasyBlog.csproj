@@ -135,35 +135,83 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\SecurityUtilize.cs" />
-    <Compile Include="Models\EasyBlog.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EasyBlog.Context.tt</DependentUpon>
+    <Compile Include="Models\About.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EasyBlog.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EasyBlog.tt</DependentUpon>
+    <Compile Include="Models\AboutInformation.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\EasyBlog.Designer.cs">
+    <Compile Include="Models\Blog.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Contact.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EasyBlogModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>EasyBlog.edmx</DependentUpon>
+      <DependentUpon>EasyBlogModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EasyBlogModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\EasyBlogModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EasyBlogModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Home.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HomeSubText.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Main.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Navigation.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\NavigationItem.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Portfolio.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PortfolioCategory.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PortfolioCategoryImageRelationship.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RequestModels\UserCreateModel.cs" />
     <Compile Include="Models\RequestModels\UserLoginModel.cs" />
+    <Compile Include="Models\Resume.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ResumeSection.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ResumeSectionItem.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ResumeSectionItemExplanation.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SocialMedia.cs">
-      <DependentUpon>EasyBlog.tt</DependentUpon>
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SocialMediaLink.cs">
-      <DependentUpon>EasyBlog.tt</DependentUpon>
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserInformation.cs">
-      <DependentUpon>EasyBlog.tt</DependentUpon>
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserInformationModel.cs" />
     <Compile Include="Models\UserLogin.cs">
-      <DependentUpon>EasyBlog.tt</DependentUpon>
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -174,22 +222,15 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Models\EasyBlog.Context.tt">
+    <Content Include="Models\EasyBlogModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EasyBlog.edmx</DependentUpon>
-      <LastGenOutput>EasyBlog.Context.cs</LastGenOutput>
+      <DependentUpon>EasyBlogModel.edmx</DependentUpon>
+      <LastGenOutput>EasyBlogModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\EasyBlog.tt">
+    <Content Include="Models\EasyBlogModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>EasyBlog.edmx</DependentUpon>
-      <LastGenOutput>EasyBlog.cs</LastGenOutput>
-    </Content>
-    <EntityDeploy Include="Models\EasyBlog.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EasyBlog.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\EasyBlog.edmx.diagram">
-      <DependentUpon>EasyBlog.edmx</DependentUpon>
+      <DependentUpon>EasyBlogModel.edmx</DependentUpon>
+      <LastGenOutput>EasyBlogModel.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
@@ -214,6 +255,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -221,6 +263,13 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap.min.css.map" />
+    <EntityDeploy Include="Models\EasyBlogModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EasyBlogModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\EasyBlogModel.edmx.diagram">
+      <DependentUpon>EasyBlogModel.edmx</DependentUpon>
+    </Content>
     <None Include="packages.config" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Admin\CreateBlog.cshtml" />

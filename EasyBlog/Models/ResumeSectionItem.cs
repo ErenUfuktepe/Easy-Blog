@@ -12,20 +12,23 @@ namespace EasyBlog.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class SocialMedia
+    public partial class ResumeSectionItem
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SocialMedia()
+        public ResumeSectionItem()
         {
-            this.SocialMediaLinks = new HashSet<SocialMediaLink>();
+            this.ResumeSectionItemExplanations = new HashSet<ResumeSectionItemExplanation>();
         }
     
         public long id { get; set; }
-        public string name { get; set; }
-        public string code { get; set; }
-        public string color { get; set; }
+        public Nullable<long> resumeSectionID { get; set; }
+        public string header { get; set; }
+        public string date { get; set; }
+        public string location { get; set; }
+        public string explanation { get; set; }
     
+        public virtual ResumeSection ResumeSection { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SocialMediaLink> SocialMediaLinks { get; set; }
+        public virtual ICollection<ResumeSectionItemExplanation> ResumeSectionItemExplanations { get; set; }
     }
 }

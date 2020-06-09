@@ -4,9 +4,11 @@ using EasyBlog.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
+using System.Web;
 using System.Web.Mvc;
 
 namespace EasyBlog.Controllers
@@ -30,6 +32,7 @@ namespace EasyBlog.Controllers
             }
             else
             {
+                CreateImagePathForUser(Session["UserInformation"].ToString());
                 ViewData["SocialMedias"] = GetSocialMediaList();
                 return View(userInformationModel);
             }
@@ -207,7 +210,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error.", JsonRequestBehavior.AllowGet);
             }
         }
-
         public List<SocialMedia> GetSocialMediaList() {
             using (EasyBlogEntities db = new EasyBlogEntities())
             {
@@ -223,5 +225,59 @@ namespace EasyBlog.Controllers
                 }
             }
         }
+
+        public JsonResult Upload()
+        {
+            List<HttpPostedFileBase> files = new List<HttpPostedFileBase>();
+            for (int i = 0; i < Request.Files.Count; i++)
+            {
+                HttpPostedFileBase file = Request.Files[i];
+                if (CheckMimeType(file))
+                {
+                    files.Add(file);
+                }
+                else
+                {
+                    return Json("You can only upload jpeg, jpg and png type files!");
+                }
+            }
+            UploadImages(files);
+            return Json("Uploaded " + Request.Files.Count + " files");
+        }
+
+        private void UploadImages(List<HttpPostedFileBase> files)
+        {
+            foreach (HttpPostedFileBase file in files)
+            {
+                System.IO.Stream fileContent = file.InputStream;
+                string path = Path.Combine(Server.MapPath("~/Images/" + Session["UserInformation"].ToString()),
+                                                   Path.GetFileName(file.FileName));
+                file.SaveAs(path);
+            }
+        }
+
+        private bool CheckMimeType(HttpPostedFileBase file)
+        {
+            if (file.ContentType.Contains("jpeg") || file.ContentType.Contains("png") || file.ContentType.Contains("jpg"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool CreateImagePathForUser(string userID)
+        {
+            string path = Path.Combine(Server.MapPath("~/Images"), userID);
+            if (!(Directory.Exists(path)))
+            {
+                Directory.CreateDirectory(path);
+                return true;
+            }
+            return false;
+        }
+
     }
 }
