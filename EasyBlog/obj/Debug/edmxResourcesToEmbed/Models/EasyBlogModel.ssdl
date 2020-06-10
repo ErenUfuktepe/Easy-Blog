@@ -7,9 +7,9 @@
     <Property Name="id" Type="bigint" Nullable="false" />
     <Property Name="image" Type="varchar(max)" Nullable="false" />
     <Property Name="background" Type="varchar" MaxLength="7" Nullable="false" />
-    <Property Name="frameColor" Type="varchar" MaxLength="7" Nullable="false" />
+    <Property Name="frameColor" Type="varchar" MaxLength="7" />
     <Property Name="header" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="subTitle" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="subTitle" Type="varchar" MaxLength="50" />
     <Property Name="body" Type="varchar(max)" Nullable="false" />
   </EntityType>
   <EntityType Name="AboutInformation">
@@ -186,7 +186,7 @@
     <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="password" Type="varchar(max)" Nullable="false" />
   </EntityType>
-  <Association Name="FK__About__id__3F9B6DFF">
+  <Association Name="FK__About__id__595B4002">
     <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
     <End Role="About" Type="Self.About" Multiplicity="0..1" />
     <ReferentialConstraint>
@@ -198,7 +198,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__AboutInfo__about__4277DAAA">
+  <Association Name="FK__AboutInfo__about__5C37ACAD">
     <End Role="About" Type="Self.About" Multiplicity="0..1" />
     <End Role="AboutInformation" Type="Self.AboutInformation" Multiplicity="*" />
     <ReferentialConstraint>
@@ -435,11 +435,11 @@
     <EntitySet Name="SocialMediaLink" EntityType="Self.SocialMediaLink" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserInformation" EntityType="Self.UserInformation" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="UserLogin" EntityType="Self.UserLogin" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__About__id__3F9B6DFF" Association="Self.FK__About__id__3F9B6DFF">
+    <AssociationSet Name="FK__About__id__595B4002" Association="Self.FK__About__id__595B4002">
       <End Role="Blog" EntitySet="Blog" />
       <End Role="About" EntitySet="About" />
     </AssociationSet>
-    <AssociationSet Name="FK__AboutInfo__about__4277DAAA" Association="Self.FK__AboutInfo__about__4277DAAA">
+    <AssociationSet Name="FK__AboutInfo__about__5C37ACAD" Association="Self.FK__AboutInfo__about__5C37ACAD">
       <End Role="About" EntitySet="About" />
       <End Role="AboutInformation" EntitySet="AboutInformation" />
     </AssociationSet>

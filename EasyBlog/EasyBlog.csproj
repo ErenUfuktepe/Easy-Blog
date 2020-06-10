@@ -141,6 +141,7 @@
     <Compile Include="Models\AboutInformation.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AboutModel.cs" />
     <Compile Include="Models\Blog.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
@@ -165,6 +166,7 @@
     <Compile Include="Models\Home.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HomeModel.cs" />
     <Compile Include="Models\HomeSubText.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
@@ -177,6 +179,9 @@
     <Compile Include="Models\NavigationItem.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\NavigationItemModel.cs" />
+    <Compile Include="Models\NavigationModel.cs" />
+    <Compile Include="Models\MainComponentsModel.cs" />
     <Compile Include="Models\Portfolio.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
@@ -206,6 +211,7 @@
     <Compile Include="Models\SocialMediaLink.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SocialMediaModel.cs" />
     <Compile Include="Models\UserInformation.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
@@ -234,7 +240,7 @@
     </Content>
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
-    <Content Include="Scripts\main1.js" />
+    <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

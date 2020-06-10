@@ -169,6 +169,27 @@ window.addEventListener('load', (event) => {
             });
         })
     }
+    if (window.location.href.includes("CreateBlog")) {
+        document.getElementById('create-blog').onsubmit = function () {
+            var formdata = new FormData();
+            var fileInput = document.getElementById('fileInput');
+            Array.from(document.getElementsByClassName('custom-file-input')).forEach(function (fileInput) {
+                for (i = 0; i < fileInput.files.length; i++) {
+                    formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                }
+            });
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Admin/Upload');
+            xhr.send(formdata);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    //alert(xhr.responseText);
+                } else {
+                    //alert(xhr.responseText + "else");
+                }
+            }
+        }    
+    }
 });
 
 function ChangePasswordCondition(array) {
@@ -295,21 +316,28 @@ function SaveAndContinueTemplate() {
 }
 
 function SaveAndDisableTemplateSection() {
-    document.getElementById('template-button').disabled = true;
-
     var templates = document.getElementsByClassName('image-padding');
     var selected = document.getElementsByClassName('active-image')[0];
-
     let url = selected.id;
     var array = url.split("/");
     window.template = array[array.length - 2];
-    Array.from(templates).forEach(function (element) {
-        element.onclick = '';
-    });
 
-    document.getElementById('main-settings').style.display = 'block';
-    window.scrollTo(0, document.body.scrollHeight);
-    SetDefaultValues();
+    var data = {}
+    data.template = window.template;
+    var response = AjaxCall("/Admin/SaveTemplate", data);
+    if (response.includes('saved') || response.includes('updated')) {
+        document.getElementById('template-button').disabled = true;
+        Array.from(templates).forEach(function (element) {
+            element.onclick = '';
+        });
+        document.getElementById('main-settings').style.display = 'block';
+        window.scrollTo(0, document.body.scrollHeight);
+        SetDefaultValues();
+        CreateDialog('success', 'Success', response, '', '', '');
+    } else {
+        CreateDialog('error', 'Error', response, '', '', '');
+    }
+
 }
 
 function SetDefaultValues() {
@@ -393,17 +421,26 @@ function Folio() {
 
 function SaveAndDisableMainSection() {
     if ($('#web-page-logo').val() != '' && $('#web-page-title').val() != '') {
-        window.mainLogo = $('#web-page-logo').val();
-        window.mainTitle = $('#web-page-title').val();
-        window.mainTitleColor = $('#main-title-color').val();
-        window.mainTextColor = $('#main-text-color').val();
-        window.mainHoverColor = $('#main-hover-color').val();
-        Array.from(document.getElementsByClassName('remove-social-media')).forEach(function (element) {
-            element.setAttribute('onclick', '');
-        });
-        DisableInputs('main-settings');
-        document.getElementById('nav-settings').style.display = 'block';
-        window.scrollTo(0, document.body.scrollHeight);
+        var data = {};
+        var logo = $('#web-page-logo').val().split("\\");
+        data.logo = logo[2];
+        data.title = $('#web-page-title').val();
+        data.titleColor = $('#main-title-color').val();
+        data.textColor = $('#main-text-color').val();
+        data.hoverColor = $('#main-hover-color').val();
+        data.socialMediaList = SocialMediaList();
+        var response = AjaxCall("/Admin/SaveMainComponents", data);
+        if (response.includes('saved')) {
+            CreateDialog('success', 'Success', response, '', '', '');
+            Array.from(document.getElementsByClassName('remove-social-media')).forEach(function (element) {
+                element.setAttribute('onclick', '');
+            });
+            DisableInputs('main-settings');
+            document.getElementById('nav-settings').style.display = 'block';
+            window.scrollTo(0, document.body.scrollHeight);
+        } else {
+            CreateDialog('error', 'Error', response, '', '', '');
+        }
     } else {
         if ($('#web-page-logo').val() == '') {
             CreateDialog('error', 'Required parameter!', 'Web Page Logo is required!', '', '', '');
@@ -415,12 +452,29 @@ function SaveAndDisableMainSection() {
 
 function SaveAndDisableNavigationSection() {
     if ($('#navigation-logo').val() != '') {
-        window.navColor = $('#nav-bar-color').val();
-        window.navLogo = $('#navigation-logo').val();
-        window.sectionList = GetSectionInformation();
-        window.sectionQueue = GetSectionInformation();
-        DisableInputs('nav-settings');
-        NextSection();
+        var data = {}
+        data.barColor = $('#nav-bar-color').val();
+        var logo = $('#navigation-logo').val().split("\\");
+        data.logo = logo[2];
+        var navigationItems = [];
+        GetSectionInformation().forEach(function (element) {
+            var item = {};
+            item.priority = element[0];
+            item.sectionName = element[1];
+            item.content = element[2];
+            navigationItems.push(item);
+        });
+        data.navigationItems = navigationItems;
+        var response = AjaxCall("/Admin/SaveNavigation", data);
+        if (response.includes('saved')) {
+            CreateDialog('success', 'Success', response, '', '', '');
+            window.sectionQueue = GetSectionInformation();
+            DisableInputs('nav-settings');
+            NextSection();
+        } else {
+            CreateDialog('error', 'Error', response, '', '', '');
+        }
+
     } else {
         CreateDialog('error', 'Required parameter!', 'Logo is required!', '', '', '');
     }
@@ -439,17 +493,25 @@ function SaveAndDisableHomeSection() {
         });
         if (flag) {
             CreateDialog('error','Invalid Input','Fill all empty fields!','','','');
-        }else {
-            window.homeTextColor = $('#home-text-color').val();
-            window.homebackground = $('#home-background').val();
-            window.homeMainText = $('#home-main-text').val();
-            window.homeSubText = subTextList;
-            Array.from(document.getElementsByClassName('home-remove-sub-text')).forEach(function (sub) {
-                sub.setAttribute('onclick', '');
-            });
-            document.getElementById('home-add-sub-text').setAttribute('onclick', '');
-            DisableInputs('home-settings');
-            NextSection();
+        } else {
+            var data = {};
+            var logo = $('#home-background').val().split("\\");
+            data.background = logo[2];
+            data.textColor = $('#home-text-color').val();
+            data.mainText = $('#home-main-text').val();
+            data.subTextList = subTextList;
+            var response = AjaxCall("/Admin/SaveHome", data);
+            if (response.includes('saved.')) {
+                CreateDialog('success', 'Success', response, '', '', '');
+                Array.from(document.getElementsByClassName('home-remove-sub-text')).forEach(function (sub) {
+                    sub.setAttribute('onclick', '');
+                });
+                document.getElementById('home-add-sub-text').setAttribute('onclick', '');
+                DisableInputs('home-settings');
+                NextSection();
+            } else {
+                CreateDialog('error', 'Error', response, '', '', '');
+            }
         }
     } else {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
@@ -461,40 +523,31 @@ function SaveAndDisableAboutSection() {
         || $('#about-body').val() == '') {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
-        window.aboutBackgroundColor = $('#about-background-color').val();
-        window.aboutFrameColor = $('#about-frame-color').val();
-        window.aboutImage = $('#about-section-image').val();
-        window.aboutHeader = $('#about-header').val();
-        window.aboutBody = $('#about-body').val();
-        window.aboutSubTitle = $('#about-sub-title').val();
-        var infoPairList = [];
-        var info = [];
-        var counter = 0;
-        var flag = false;
-        if (window.template != 'Folio') {
-            Array.from($("#about-extra-info :input")).forEach(function (input) {
-                if (counter != 0 && counter % 2 == 0) {
-                    infoPairList.push(info);
-                    info = [];
-                }
-                if (input.value == '' && counter > 1) {
-                    flag = true;
-                }
-                info.push(input.value);
-                counter++;
-            });
-        }
+        var data = {};
+        var image = $('#about-section-image').val().split("\\");
+        data.image = image[2];
+        data.background = $('#about-background-color').val();
+        data.frame = $('#about-frame-color').val();
+        data.header = $('#about-header').val();
+        data.body = $('#about-body').val();
+        data.subTitle = $('#about-sub-title').val();
+        data.informationList = GetAboutInfo()[1];
+        var flag = GetAboutInfo()[0];
         if (flag) {
             CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
         }
         else {
-            infoPairList.push(info);
-            window.aboutExtraInfo = infoPairList;
-            Array.from(document.getElementsByClassName('about-info-remove')).forEach(function (element) {
-                element.setAttribute('onclick', '');
-            });
-            DisableInputs('about-settings');
-            NextSection();
+            var response = AjaxCall("/Admin/SaveAbout", data);
+            if (response.includes('saved.')) {
+                CreateDialog('success', 'Success', response, '', '', '');
+                Array.from(document.getElementsByClassName('about-info-remove')).forEach(function (element) {
+                    element.setAttribute('onclick', '');
+                });
+                DisableInputs('about-settings');
+                NextSection();
+            } else {
+                CreateDialog('error', 'Error', response, '', '', '');
+            }
         }   
     }
 }
@@ -1301,22 +1354,39 @@ function RemoveSocialMedia() {
     event.target.parentElement.parentElement.parentElement.parentElement.remove();
 }
 
-document.getElementById('create-blog').onsubmit = function () {
-    var formdata = new FormData();
-    var fileInput = document.getElementById('fileInput');
-    Array.from(document.getElementsByClassName('custom-file-input')).forEach(function (fileInput) {
-        for (i = 0; i < fileInput.files.length; i++) {
-            formdata.append(fileInput.files[i].name, fileInput.files[i]);
-        }
+function SocialMediaList() {
+    var socialMediaList = [];
+    Array.from(document.getElementsByClassName('social-media')).forEach(function (socialMedia) {
+        var socialMediaItem = {};
+        Array.from(socialMedia.getElementsByTagName('select')).forEach(function (option) {
+            socialMediaItem.socialMedia = option.value;
+        });
+        Array.from(socialMedia.getElementsByTagName('input')).forEach(function (input) {
+            socialMediaItem.link = input.value;
+        });
+        socialMediaList.push(socialMediaItem);
     });
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/Admin/Upload');
-    xhr.send(formdata);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            //alert(xhr.responseText);
-        } else {
-            //alert(xhr.responseText + "else");
+    return socialMediaList;
+}
+
+function GetAboutInfo() {
+    var infoPairList = [];
+    var info = [];
+    var counter = 0;
+    var flag = false;
+    Array.from($("#about-extra-info :input")).forEach(function (input) {
+        if (counter != 0 && counter % 2 == 0) {
+            infoPairList.push(info);
+            info = [];
         }
+        if (input.value == '' && counter > 1) {
+            flag = true;
+        }
+        info.push(input.value);
+        counter++;
+    });
+    if (flag) {
+        infoPairList.push(info);
     }
+    return [flag,infoPairList];
 }

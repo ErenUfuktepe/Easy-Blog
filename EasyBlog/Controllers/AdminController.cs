@@ -1,6 +1,7 @@
 ﻿using Antlr.Runtime.Misc;
 using EasyBlog.Helpers;
 using EasyBlog.Models;
+using EasyBlog.Models.RequestModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace EasyBlog.Controllers
@@ -279,5 +281,322 @@ namespace EasyBlog.Controllers
             return false;
         }
 
+        public JsonResult SaveTemplate(string template)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    Blog checkExisting = db.Blogs.Where(x => x.id == id).SingleOrDefault();
+                    if (checkExisting == null)
+                    {
+                        Blog blog = new Blog();
+                        blog.template = template;
+                        blog.id = id;
+                        db.Blogs.Add(blog);
+                        db.SaveChanges();
+                        return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
+                    }
+                    else if (checkExisting.template != template)
+                    {
+                        checkExisting.template = template;
+                        db.SaveChanges();
+                        return Json("Template updated successfully!", JsonRequestBehavior.AllowGet);
+                    }
+                    return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult SaveMainComponents(MainComponentsModel mainComponentsModel)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    Main checkMain = db.Mains.Where(x => x.id == id).SingleOrDefault();
+                    if (checkMain == null)
+                    {
+                        Main main = new Main();
+                        main.id = id;
+                        main.logo = mainComponentsModel.logo;
+                        main.title = mainComponentsModel.title;
+                        main.textColor = mainComponentsModel.textColor;
+                        main.hoverColor = mainComponentsModel.hoverColor;
+                        main.titleColor = mainComponentsModel.titleColor;
+                        db.Mains.Add(main);
+                        db.SaveChanges();
+                    }
+                    else{
+                        checkMain.logo = mainComponentsModel.logo;
+                        checkMain.title = mainComponentsModel.title;
+                        checkMain.textColor = mainComponentsModel.textColor;
+                        checkMain.hoverColor = mainComponentsModel.hoverColor;
+                        checkMain.titleColor = mainComponentsModel.titleColor;
+                        db.SaveChanges();
+                    }
+                    string response = AddSocialMediaLink(mainComponentsModel.socialMediaList);
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+        private string AddSocialMediaLink(List<SocialMediaModel> socialMediaModels)
+        {
+            try
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    List<SocialMediaLink> socialMedias = db.SocialMediaLinks.Where(x => x.userID == id).ToList();
+                    if (socialMedias.Count == 0)
+                    {
+                        foreach (SocialMediaModel socialMediaModel in socialMediaModels)
+                        { 
+                            SocialMediaLink socialMediaLink = new SocialMediaLink();
+                            socialMediaLink.link = socialMediaModel.link;
+                            socialMediaLink.socialMedia = db.SocialMedias.Where(x => x.code == socialMediaModel.socialMedia).SingleOrDefault().id;
+                            db.SocialMediaLinks.Add(socialMediaLink);
+                            db.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        bool flag = false;
+                        foreach (SocialMediaModel socialMediaModel in socialMediaModels)
+                        {
+                            long socialMediaID = db.SocialMedias.Where(x => x.code == socialMediaModel.socialMedia).SingleOrDefault().id;
+                            flag = false;
+                            foreach (SocialMediaLink link in socialMedias)
+                            {
+                                if (link.id == socialMediaID)
+                                {
+                                    link.link = socialMediaModel.link;
+                                    db.SaveChanges();
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if (!flag)
+                            {
+                                SocialMediaLink socialMediaLink = new SocialMediaLink();
+                                socialMediaLink.userID = id;
+                                socialMediaLink.link = socialMediaModel.link;
+                                socialMediaLink.socialMedia = socialMediaID;
+                                db.SocialMediaLinks.Add(socialMediaLink);
+                                db.SaveChanges();
+                            }
+                        }
+                    }
+                    return "Main components saved successfully";
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return "System Error!";
+            }
+        }
+        
+        public JsonResult SaveNavigation(NavigationModel navigationModel)
+        {
+            try
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    Navigation check = db.Navigations.Where(x => x.id == id).SingleOrDefault();
+                    if (check == null)
+                    {
+                        Navigation navigation = new Navigation();
+                        navigation.barColor = navigationModel.barColor;
+                        navigation.logo = navigationModel.logo;
+                        navigation.id = id;
+                        db.Navigations.Add(navigation);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        check.barColor = navigationModel.barColor;
+                        check.logo = navigationModel.logo;
+                        db.SaveChanges();
+                    }
+                    string response = SaveNavigationItems(navigationModel.navigationItems);
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private string SaveNavigationItems(List<NavigationItemModel> navigationItemModels)
+        {
+            try
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    List<NavigationItem> check = db.NavigationItems.Where(x => x.navID == id).ToList();
+                    if(check.Count == 0)
+                    {
+                        foreach (NavigationItemModel navigationItemModel in navigationItemModels)
+                        {
+                            NavigationItem navigationItem = new NavigationItem();
+                            navigationItem.navID = db.Navigations.Where(x =>  x.id == id).SingleOrDefault().id;
+                            navigationItem.content = navigationItemModel.content;
+                            navigationItem.sectionName = navigationItemModel.sectionName;
+                            db.NavigationItems.Add(navigationItem);
+                            db.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        bool flag = false;
+                        foreach (NavigationItemModel navigationItemModel in navigationItemModels)
+                        {
+                            flag = false;
+                            foreach (NavigationItem navigationItem in check)
+                            {
+                                if (navigationItemModel.content == navigationItem.content)
+                                {
+                                    navigationItem.sectionName = navigationItemModel.sectionName;
+                                    flag = true;
+                                    db.SaveChanges();
+                                    break;
+                                }
+                            }
+                            if (!flag)
+                            {
+                                NavigationItem navigationItem = new NavigationItem();
+                                navigationItem.navID = id;
+                                navigationItem.content = navigationItemModel.content;
+                                navigationItem.sectionName = navigationItemModel.sectionName;
+                                db.NavigationItems.Add(navigationItem);
+                                db.SaveChanges();
+                            }
+                        }
+                    }
+                    return "Navigation Items saved.";
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return "System Error.";
+            }
+        }
+
+        public JsonResult SaveHome(HomeModel homeModel)
+        {
+            try
+            {
+                using(EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    Home check = db.Homes.Where(x => x.id == id).SingleOrDefault();
+                    if (check == null)
+                    {
+                        Home home = new Home();
+                        home.mainText = homeModel.mainText;
+                        home.id = id;
+                        home.textColor = homeModel.textColor;
+                        home.background = homeModel.background;
+                        db.Homes.Add(home);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        check.mainText = homeModel.mainText;
+                        check.textColor = homeModel.textColor;
+                        check.background = homeModel.background;
+                        db.SaveChanges();
+                    }
+                    return Json(SaveHomeSubTexts(homeModel.subTextList), JsonRequestBehavior.AllowGet);                    
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private string SaveHomeSubTexts(List<string> subTexts)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    foreach (string text in subTexts)
+                    {
+                        HomeSubText homeSubText = new HomeSubText();
+                        homeSubText.homeID = id;
+                        homeSubText.subText = text;
+                        db.HomeSubTexts.Add(homeSubText);
+                        db.SaveChanges();
+                    }
+                    return "Home section saved.";
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return "System Error!";
+            }
+        }
+
+        public JsonResult SaveAbout(AboutModel aboutModel)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+
+                    About about = new About();
+                    about.background = aboutModel.background;
+                    about.image = aboutModel.image;
+                    about.header = aboutModel.header;
+                    about.subTitle = aboutModel.subTitle;
+                    about.body = aboutModel.body;
+                    about.frameColor = aboutModel.frame;
+                    about.id = id;
+                    db.Abouts.Add(about);
+                    db.SaveChanges();
+                    if (aboutModel.informationList != null )
+                    {
+                        foreach (List<string> information in aboutModel.informationList)
+                        {
+                            AboutInformation aboutInformation = new AboutInformation();
+                            aboutInformation.aboutID = id;
+                            aboutInformation.informationTitle = information[0];
+                            aboutInformation.informationValue = information[1];
+                            db.AboutInformations.Add(aboutInformation);
+                            db.SaveChanges();
+                        }
+                    }
+                    return Json("About section saved.", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

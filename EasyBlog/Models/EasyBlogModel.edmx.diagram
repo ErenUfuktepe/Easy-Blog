@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4f2b1fd97e5b4934b99f28e73614b6d4" Name="Diagram1">
+      <Diagram DiagramId="adc77ac59ef84ccb9f397c222afceb48" Name="Diagram1">
         <EntityTypeShape EntityType="EasyBlogModel.About" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.AboutInformation" Width="1.5" PointX="7.5" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.Blog" Width="1.5" PointX="3" PointY="12.75" IsExpanded="true" />
@@ -25,8 +25,8 @@
         <EntityTypeShape EntityType="EasyBlogModel.SocialMediaLink" Width="1.5" PointX="3" PointY="17.375" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.UserInformation" Width="1.5" PointX="0.75" PointY="14" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.UserLogin" Width="1.5" PointX="3" PointY="28.5" IsExpanded="true" />
-        <AssociationConnector Association="EasyBlogModel.FK__About__id__3F9B6DFF" ManuallyRouted="false" />
-        <AssociationConnector Association="EasyBlogModel.FK__AboutInfo__about__4277DAAA" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__About__id__595B4002" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__AboutInfo__about__5C37ACAD" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Blog__id__2B947552" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Contact__id__2E70E1FD" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Home__id__39E294A9" ManuallyRouted="false" />

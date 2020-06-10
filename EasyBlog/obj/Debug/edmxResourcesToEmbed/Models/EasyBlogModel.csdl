@@ -7,12 +7,12 @@
     <Property Name="id" Type="Int64" Nullable="false" />
     <Property Name="image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="background" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="frameColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="frameColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
     <Property Name="header" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <Property Name="subTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="subTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
-    <NavigationProperty Name="Blog" Relationship="Self.FK__About__id__3F9B6DFF" FromRole="About" ToRole="Blog" />
-    <NavigationProperty Name="AboutInformations" Relationship="Self.FK__AboutInfo__about__4277DAAA" FromRole="About" ToRole="AboutInformation" />
+    <NavigationProperty Name="Blog" Relationship="Self.FK__About__id__595B4002" FromRole="About" ToRole="Blog" />
+    <NavigationProperty Name="AboutInformations" Relationship="Self.FK__AboutInfo__about__5C37ACAD" FromRole="About" ToRole="AboutInformation" />
   </EntityType>
   <EntityType Name="AboutInformation">
     <Key>
@@ -22,7 +22,7 @@
     <Property Name="aboutID" Type="Int64" />
     <Property Name="informationTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="informationValue" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <NavigationProperty Name="About" Relationship="Self.FK__AboutInfo__about__4277DAAA" FromRole="AboutInformation" ToRole="About" />
+    <NavigationProperty Name="About" Relationship="Self.FK__AboutInfo__about__5C37ACAD" FromRole="AboutInformation" ToRole="About" />
   </EntityType>
   <EntityType Name="Blog">
     <Key>
@@ -30,7 +30,7 @@
     </Key>
     <Property Name="id" Type="Int64" Nullable="false" />
     <Property Name="template" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-    <NavigationProperty Name="About" Relationship="Self.FK__About__id__3F9B6DFF" FromRole="Blog" ToRole="About" />
+    <NavigationProperty Name="About" Relationship="Self.FK__About__id__595B4002" FromRole="Blog" ToRole="About" />
     <NavigationProperty Name="UserInformation" Relationship="Self.FK__Blog__id__2B947552" FromRole="Blog" ToRole="UserInformation" />
     <NavigationProperty Name="Contact" Relationship="Self.FK__Contact__id__2E70E1FD" FromRole="Blog" ToRole="Contact" />
     <NavigationProperty Name="Home" Relationship="Self.FK__Home__id__39E294A9" FromRole="Blog" ToRole="Home" />
@@ -224,7 +224,7 @@
     <Property Name="password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
     <NavigationProperty Name="UserInformation" Relationship="Self.FK__UserLogin__passw__160F4887" FromRole="UserLogin" ToRole="UserInformation" />
   </EntityType>
-  <Association Name="FK__About__id__3F9B6DFF">
+  <Association Name="FK__About__id__595B4002">
     <End Role="Blog" Type="Self.Blog" Multiplicity="1" />
     <End Role="About" Type="Self.About" Multiplicity="0..1" />
     <ReferentialConstraint>
@@ -236,7 +236,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__AboutInfo__about__4277DAAA">
+  <Association Name="FK__AboutInfo__about__5C37ACAD">
     <End Role="About" Type="Self.About" Multiplicity="0..1" />
     <End Role="AboutInformation" Type="Self.AboutInformation" Multiplicity="*" />
     <ReferentialConstraint>
@@ -473,11 +473,11 @@
     <EntitySet Name="SocialMediaLinks" EntityType="Self.SocialMediaLink" />
     <EntitySet Name="UserInformations" EntityType="Self.UserInformation" />
     <EntitySet Name="UserLogins" EntityType="Self.UserLogin" />
-    <AssociationSet Name="FK__About__id__3F9B6DFF" Association="Self.FK__About__id__3F9B6DFF">
+    <AssociationSet Name="FK__About__id__595B4002" Association="Self.FK__About__id__595B4002">
       <End Role="Blog" EntitySet="Blogs" />
       <End Role="About" EntitySet="Abouts" />
     </AssociationSet>
-    <AssociationSet Name="FK__AboutInfo__about__4277DAAA" Association="Self.FK__AboutInfo__about__4277DAAA">
+    <AssociationSet Name="FK__AboutInfo__about__5C37ACAD" Association="Self.FK__AboutInfo__about__5C37ACAD">
       <End Role="About" EntitySet="Abouts" />
       <End Role="AboutInformation" EntitySet="AboutInformations" />
     </AssociationSet>
