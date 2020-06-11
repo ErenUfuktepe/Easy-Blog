@@ -21,7 +21,7 @@ namespace EasyBlog.Models
         }
     
         public long id { get; set; }
-        public string hearder { get; set; }
+        public string header { get; set; }
         public string background { get; set; }
     
         public virtual Template Template { get; set; }

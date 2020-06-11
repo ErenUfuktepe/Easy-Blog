@@ -611,7 +611,7 @@ namespace EasyBlog.Controllers
                     Portfolio portfolio = new Portfolio();
                     portfolio.id = id;
                     portfolio.background = portfolioModel.background;
-                    portfolio.hearder = portfolioModel.header;
+                    portfolio.header = portfolioModel.header;
                     db.Portfolios.Add(portfolio);
                     db.SaveChanges();
                     foreach (PortfolioCategoryModel categoryModel in portfolioModel.portfolioCategories)
@@ -670,7 +670,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-
         public JsonResult SaveBlog(BlogModel blogModel)
         {
             try
@@ -696,6 +695,63 @@ namespace EasyBlog.Controllers
                         db.SaveChanges();
                     }
                     return Json("Blog section saved.", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult SaveResume(ResumeModel resumeModel)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+
+                    Resume resume = new Resume();
+                    resume.header = resumeModel.header;
+                    resume.background = resumeModel.background;
+                    resume.id = id;
+                    db.Resumes.Add(resume);
+                    db.SaveChanges();
+                    foreach (ResumeSectionModel section in resumeModel.resumeSections)
+                    {
+                        ResumeSection resumeSection = new ResumeSection();
+                        resumeSection.header = section.header;
+                        resumeSection.resumeID = id;
+                        db.ResumeSections.Add(resumeSection);
+                        db.SaveChanges();
+                        long sectionID = db.ResumeSections.Where(x => x.header == section.header && x.id == id).SingleOrDefault().id;
+                        foreach (ResumeSubSectionModel subSection in section.resumeSubSections)
+                        {
+                            ResumeSectionItem resumeSectionItem = new ResumeSectionItem();
+                            resumeSectionItem.resumeSectionID = sectionID;
+                            resumeSectionItem.header = subSection.header;
+                            resumeSectionItem.date = subSection.date;
+                            resumeSectionItem.location = subSection.location;
+                            resumeSectionItem.explanation = subSection.explanation;
+                            db.ResumeSectionItems.Add(resumeSectionItem);
+                            db.SaveChanges();
+                            long subSectionID = db.ResumeSectionItems.Where(x => x.header == subSection.header && x.id == sectionID).SingleOrDefault().id;
+                            if (subSection.explanationItems.Count != 0 || subSection.explanationItems != null)
+                            {
+                                foreach (string explanationItem in subSection.explanationItems)
+                                {
+                                    ResumeSectionItemExplanation resumeSectionItemExplanation = new ResumeSectionItemExplanation();
+                                    resumeSectionItemExplanation.resumeSectionItemID = subSectionID;
+                                    resumeSectionItemExplanation.explanation = explanationItem;
+                                    db.ResumeSectionItemExplanations.Add(resumeSectionItemExplanation);
+                                    db.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                  
+                    return Json("Resume section saved.", JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)

@@ -200,6 +200,7 @@
     <Compile Include="Models\Resume.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResumeModel.cs" />
     <Compile Include="Models\ResumeSection.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
@@ -209,6 +210,8 @@
     <Compile Include="Models\ResumeSectionItemExplanation.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ResumeSectionModel.cs" />
+    <Compile Include="Models\ResumeSubSectionModel.cs" />
     <Compile Include="Models\SocialMedia.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>

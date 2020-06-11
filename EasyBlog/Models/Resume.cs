@@ -23,7 +23,6 @@ namespace EasyBlog.Models
         public long id { get; set; }
         public string header { get; set; }
         public string background { get; set; }
-        public string resumeSectionHeaderId { get; set; }
     
         public virtual Template Template { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

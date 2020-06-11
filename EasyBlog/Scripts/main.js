@@ -549,78 +549,24 @@ function SaveAndDisableAboutSection() {
 }
 
 function SaveAndDisableResumeSection() {
-    var resume = [];
-    var subHeaderList = [];
-    var explanationList = [];
+    var data = {};
+    data.resumeSections = GetResumeItems();
+    data.background = $('#resume-background-color').val();
+    data.header = $('#resume-header').val();
 
-    var resumeHeader = new Object();
-    var resumeSubHeader = new Object();
+    var response = AjaxCall("/Admin/SaveResume", data);
+    if (response.includes('saved.')) {
+        CreateDialog('success', 'Success', response, '', '', '');
 
-    var headerFlag = false;
-    var subHeaderFlag = false;
+        Array.from(document.getElementsByClassName('resume-list-item')).forEach(function (element) {
+            element.setAttribute('onclick', '');
+        });
 
-    var counter = 0;
-    var inputs = $("#resume-section :input");
-
-    Array.from(inputs).forEach(function (input) {
-        if (input.className.includes('resume-section-header')) {
-            if (headerFlag) {
-                if (!jQuery.isEmptyObject(resumeSubHeader)) {
-                    subHeaderList.push(resumeSubHeader);
-                    resumeHeader.subHeaders = subHeaderList
-                    resume.push(resumeHeader);
-                    resumeSubHeader = new Object();;
-                }
-                resumeHeader = new Object();;
-                subHeaderList = [];
-            }
-            resumeHeader.title = input.value;
-            headerFlag = true;
-        }
-        else if (input.className.includes('resume-sub-header')) {
-            if (subHeaderFlag) {
-                if (!jQuery.isEmptyObject(resumeSubHeader)) {
-                    subHeaderList.push(resumeSubHeader);
-                    resumeHeader.subHeaders = subHeaderList
-                    resumeSubHeader = new Object();;
-                }
-                resumeHeader.subHeaders = subHeaderList
-                explanationList = [];
-            }
-            resumeSubHeader.title = input.value;
-            subHeaderFlag = true;
-        }
-        else if (input.className.includes('resume-date')) {
-            resumeSubHeader.date = input.value;
-        }
-        else if (input.className.includes('resume-location')) {
-            resumeSubHeader.location = input.value;
-        }
-        else if (input.className.includes('resume-explanation')) {
-            resumeSubHeader.explanation = input.value;
-        }
-        else if (input.className.includes('resume-item')) {
-            explanationList.push(input.value);
-            resumeSubHeader.items = explanationList;
-        }
-        if (counter == inputs.length - 1) {
-            subHeaderList.push(resumeSubHeader);
-            resumeHeader.subHeaders = subHeaderList
-            resume.push(resumeHeader);
-        }
-        counter++;
-    });
-
-    window.resume = resume;
-    window.resumeBackground = $('#resume-background-color').val();
-    window.resumeHeader = $('#resume-header').val();
-
-    Array.from(document.getElementsByClassName('resume-list-item')).forEach(function (element) {
-        element.setAttribute('onclick', '');
-    });
-
-    DisableInputs('resume-settings');
-    NextSection();
+        DisableInputs('resume-settings');
+        NextSection();
+    } else {
+        CreateDialog('error', 'Error', response, '', '', '');
+    }
 }
 
 function SaveAndDisablePortfolioSection() {
@@ -1391,4 +1337,69 @@ function GetBlogStories() {
         counter++;
     });
     return [flag, stories]
+}
+
+function GetResumeItems() {
+    var resume = [];
+    var subHeaderList = [];
+    var explanationList = [];
+
+    var resumeHeader = new Object();
+    var resumeSubHeader = new Object();
+
+    var headerFlag = false;
+    var subHeaderFlag = false;
+
+    var counter = 0;
+    var inputs = $("#resume-section :input");
+
+    Array.from(inputs).forEach(function (input) {
+        if (input.className.includes('resume-section-header')) {
+            if (headerFlag) {
+                if (!jQuery.isEmptyObject(resumeSubHeader)) {
+                    subHeaderList.push(resumeSubHeader);
+                    resumeHeader.resumeSubSections = subHeaderList
+                    resume.push(resumeHeader);
+                    resumeSubHeader = new Object();;
+                }
+                resumeHeader = new Object();;
+                subHeaderList = [];
+            }
+            resumeHeader.header = input.value;
+            headerFlag = true;
+        }
+        else if (input.className.includes('resume-sub-header')) {
+            if (subHeaderFlag) {
+                if (!jQuery.isEmptyObject(resumeSubHeader)) {
+                    subHeaderList.push(resumeSubHeader);
+                    resumeHeader.resumeSubSections = subHeaderList
+                    resumeSubHeader = new Object();;
+                }
+                resumeHeader.resumeSubSections = subHeaderList
+                explanationList = [];
+            }
+            resumeSubHeader.header = input.value;
+            subHeaderFlag = true;
+        }
+        else if (input.className.includes('resume-date')) {
+            resumeSubHeader.date = input.value;
+        }
+        else if (input.className.includes('resume-location')) {
+            resumeSubHeader.location = input.value;
+        }
+        else if (input.className.includes('resume-explanation')) {
+            resumeSubHeader.explanation = input.value;
+        }
+        else if (input.className.includes('resume-item')) {
+            explanationList.push(input.value);
+            resumeSubHeader.explanationItems = explanationList;
+        }
+        if (counter == inputs.length - 1) {
+            subHeaderList.push(resumeSubHeader);
+            resumeHeader.resumeSubSections = subHeaderList
+            resume.push(resumeHeader);
+        }
+        counter++;
+    });
+    return resume;
 }
