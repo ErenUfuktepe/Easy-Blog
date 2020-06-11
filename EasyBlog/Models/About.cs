@@ -28,7 +28,7 @@ namespace EasyBlog.Models
         public string subTitle { get; set; }
         public string body { get; set; }
     
-        public virtual Blog Blog { get; set; }
+        public virtual Template Template { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AboutInformation> AboutInformations { get; set; }
     }

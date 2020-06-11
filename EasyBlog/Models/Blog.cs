@@ -14,16 +14,18 @@ namespace EasyBlog.Models
     
     public partial class Blog
     {
-        public long id { get; set; }
-        public string template { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Blog()
+        {
+            this.Stories = new HashSet<Story>();
+        }
     
-        public virtual About About { get; set; }
-        public virtual UserInformation UserInformation { get; set; }
-        public virtual Contact Contact { get; set; }
-        public virtual Home Home { get; set; }
-        public virtual Main Main { get; set; }
-        public virtual Navigation Navigation { get; set; }
-        public virtual Portfolio Portfolio { get; set; }
-        public virtual Resume Resume { get; set; }
+        public long id { get; set; }
+        public string header { get; set; }
+        public string backgroundColor { get; set; }
+    
+        public virtual Template Template { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Story> Stories { get; set; }
     }
 }

@@ -12,18 +12,14 @@ namespace EasyBlog.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Contact
+    public partial class Story
     {
         public long id { get; set; }
-        public string header { get; set; }
-        public string backgroundColor { get; set; }
-        public string address { get; set; }
-        public string city { get; set; }
-        public string state { get; set; }
-        public string country { get; set; }
-        public string phone { get; set; }
-        public string email { get; set; }
+        public Nullable<long> blogID { get; set; }
+        public string title { get; set; }
+        public string body { get; set; }
+        public string image { get; set; }
     
-        public virtual Template Template { get; set; }
+        public virtual Blog Blog { get; set; }
     }
 }

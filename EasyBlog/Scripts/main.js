@@ -422,8 +422,7 @@ function Folio() {
 function SaveAndDisableMainSection() {
     if ($('#web-page-logo').val() != '' && $('#web-page-title').val() != '') {
         var data = {};
-        var logo = $('#web-page-logo').val().split("\\");
-        data.logo = logo[2];
+        data.logo = GetFileName('#web-page-logo');
         data.title = $('#web-page-title').val();
         data.titleColor = $('#main-title-color').val();
         data.textColor = $('#main-text-color').val();
@@ -454,8 +453,7 @@ function SaveAndDisableNavigationSection() {
     if ($('#navigation-logo').val() != '') {
         var data = {}
         data.barColor = $('#nav-bar-color').val();
-        var logo = $('#navigation-logo').val().split("\\");
-        data.logo = logo[2];
+        data.logo = GetFileName('#navigation-logo');
         var navigationItems = [];
         GetSectionInformation().forEach(function (element) {
             var item = {};
@@ -495,8 +493,7 @@ function SaveAndDisableHomeSection() {
             CreateDialog('error','Invalid Input','Fill all empty fields!','','','');
         } else {
             var data = {};
-            var logo = $('#home-background').val().split("\\");
-            data.background = logo[2];
+            data.background = GetFileName('#home-background');
             data.textColor = $('#home-text-color').val();
             data.mainText = $('#home-main-text').val();
             data.subTextList = subTextList;
@@ -524,8 +521,7 @@ function SaveAndDisableAboutSection() {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
         var data = {};
-        var image = $('#about-section-image').val().split("\\");
-        data.image = image[2];
+        data.image = GetFileName('#about-section-image');
         data.background = $('#about-background-color').val();
         data.frame = $('#about-frame-color').val();
         data.header = $('#about-header').val();
@@ -631,44 +627,25 @@ function SaveAndDisablePortfolioSection() {
     if ($('#portfolio-header').val() == '') {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
-        var counter = 0;
-        var catagories = [];
-        var newCatagory = [];
-        var flag = false;
-        var emptyInputFlag = false;
-        Array.from($("#portfolio-settings :input")).forEach(function (input) {
-            if (!(counter < 4)) {
-                if (input.type == 'text' || input.type == 'button') {
-                    if (flag) {
-                        catagories.push(newCatagory);
-                        newCatagory = [];
-                        flag = false;
-                    }
-                    if (input.value == '' && input.type != 'button') {
-                        emptyInputFlag = true;
-                    }
-                    newCatagory.push(input.value)
-                } else {
-                    if (input.value == '') {
-                        emptyInputFlag = true;
-                    }
-                    flag = true;
-                    newCatagory.push(input.value);
-                }
-            }
-            counter++;
-        });
-        if (emptyInputFlag) {
+        var categories = GetPortfolioCategories();
+        if (categories[0]) {
             CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
         } else {
-            Array.from(document.getElementsByClassName('catagory-disable')).forEach(function (element) {
-                element.setAttribute('onclick', '');
-            });
-            window.portfolioBackgroundColor = $('#portfolio-background-color-code').val();
-            window.portfolioHeader = $('#portfolio-header').val();
-            window.portfolioCatagories = catagories;
-            DisableInputs('portfolio-settings');
-            NextSection();
+            var data = {};
+            data.background = $('#portfolio-background-color-code').val();
+            data.header = $('#portfolio-header').val();
+            data.portfolioCategories = categories[1];
+            var response = AjaxCall("/Admin/SavePortfolio", data);
+            if (response.includes('saved.')) {
+                CreateDialog('success', 'Success', response, '', '', '');
+                Array.from(document.getElementsByClassName('catagory-disable')).forEach(function (element) {
+                    element.setAttribute('onclick', '');
+                });
+                DisableInputs('portfolio-settings');
+                NextSection();
+            } else {
+                CreateDialog('error', 'Error', response, '', '', '');
+            }
         }
     }
 }
@@ -677,49 +654,52 @@ function SaveAndDisableBlogSection() {
     if ($('#blog-header').val() == '') {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
-        var counter = 0;
-        var stories = [];
-        var newStory = [];
-        var flag = false;
-        Array.from($("#blog-settings :input")).forEach(function (input) {
-            if (!(counter < 3)) {
-                if (counter != 3 && counter % 3 == 0) {
-                    stories.push(newStory);
-                    newStory = [];
-                }
-                if (input.value == '' && input.type != 'button') {
-                    flag = true;
-                }
-                newStory.push(input.value);
-            }
-            counter++;
-        });
-        if (flag) {
+        var stories = GetBlogStories();
+        if (stories[0]) {
             CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
         } else {
-            window.blogHeader = $('#blog-header').val();
-            window.blogBackground = $('#blog-background-color').val();
-            window.blogStories = stories;
-            Array.from(document.getElementsByClassName('disable-blog')).forEach(function (element) {
-                element.setAttribute('onclick', '');
-            });
-            DisableInputs('blog-settings');
-            NextSection();
+            var data = {};
+            data.header = $('#blog-header').val();
+            data.background = $('#blog-background-color').val();
+            data.stories = stories[1];
+            var response = AjaxCall("/Admin/SaveBlog", data);
+            if (response.includes('saved.')) {
+                CreateDialog('success', 'Success', response, '', '', '');
+                Array.from(document.getElementsByClassName('disable-blog')).forEach(function (element) {
+                    element.setAttribute('onclick', '');
+                });
+                DisableInputs('blog-settings');
+                NextSection();
+            } else {
+                CreateDialog('error', 'Error', response, '', '', '');
+            }
         }
     }
 }
 
 function SaveAndDisableContactSection() {
-    window.contactHeader = $('#contact-header').val();
-    window.contactBackground = $('#contact-background-color').val();
-    window.contactStreet = $('#street').val();
-    window.contactCity = $('#city').val();
-    window.contactState = $('#state').val();
-    window.contactCountry = $('#country').val();
-    window.contactPhone = $('#phone').val();
-    window.contactEmail = $('#email').val();
-    DisableInputs('contact-settings');
-    NextSection();
+    if ($('#contact-header').val() != '') {
+        var data = {};
+        data.header = $('#contact-header').val();
+        data.background = $('#contact-background-color').val();
+        data.address = $('#street').val();
+        data.city = $('#city').val();
+        data.state = $('#state').val();
+        data.country = $('#country').val();
+        data.phone = $('#phone').val();
+        data.email = $('#email').val();
+        var response = AjaxCall("/Admin/SaveContact", data);
+        if (response.includes('saved.')) {
+            CreateDialog('success', 'Success', response, '', '', '');
+            DisableInputs('contact-settings');
+            NextSection();
+        } else {
+            CreateDialog('error', 'Error', response, '', '', '');
+        }
+    } else {
+        CreateDialog('error', 'Error', 'Section header required!', '', '', '');
+    }
+
 }
 
 function DisableInputs(id) {
@@ -1164,58 +1144,6 @@ function RemoveSubSectionFromResume() {
     event.target.parentElement.parentElement.remove();
 }
 
-function CreateBlog() {
-    var blog = {};
-    blog.template = window.template;
-
-    blog.mainLogo = window.mainLogo;
-    blog.mainTitle = window.mainTitle;
-    blog.mainTitleColor = window.mainTitleColor;
-    blog.mainTextColor = window.mainTextColor;
-    blog.mainHoverColor = window.mainHoverColor;
-
-    blog.navColor = window.navColor;
-    blog.navLogo = window.navLogo;
-    blog.sectionList = window.sectionList;
-
-    
-    blog.homeTextColor = window.homeTextColor;
-    blog.homebackground = window.homebackground;
-    blog.homeMainText = window.homeMainText;
-    blog.homeSubText = window.homeSubText;
-
-    blog.aboutBackgroundColor = window.aboutBackgroundColor;
-    blog.aboutFrameColor = window.aboutFrameColor;
-    blog.aboutImage = window.aboutImage;
-    blog.aboutHeader = window.aboutHeader;
-    blog.aboutBody = window.aboutBody;
-    blog.aboutSubTitle = window.aboutSubTitle;
-    blog.aboutExtraInfo = window.aboutExtraInfo;
-
-    blog.portfolioBackgroundColor = window.portfolioBackgroundColor;
-    blog.portfolioHeader = window.portfolioHeader;
-    blog.portfolioCatagories = window.portfolioCatagories;
-
-    blog.blogBackground = window.blogBackground;
-    blog.blogHeader = window.blogHeader;
-    blog.blogStories = window.blogStories;
-
-    blog.contactHeader = window.contactHeader;
-    blog.contactStreet = window.contactStreet;
-    blog.contactCity = window.contactCity;
-    blog.contactState = window.contactState;
-    blog.contactCountry = window.contactCountry;
-    blog.contactEmail = window.contactEmail;
-    blog.contactPhone = window.contactPhone;
-    blog.contactBackground = window.contactBackground
-
-    blog.resume = window.resume;
-    blog.resumeBackground = window.resumeBackground;
-    blog.resumeHeader = window.resumeHeader;
-
-    console.log(blog);
-}
-
 Array.from(document.getElementsByClassName('update-info')).forEach(function (button) {
     button.addEventListener('click', function (event) {
         if (this.id == 'update-phone') {
@@ -1273,7 +1201,6 @@ function UpdateEmail() {
 
 function DisplayEmail(value){
     $('#update-email-element').val(value);
-    console.log(value);
 }
 
 function DisplayPhone(value) {
@@ -1389,4 +1316,79 @@ function GetAboutInfo() {
         infoPairList.push(info);
     }
     return [flag,infoPairList];
+}
+
+function GetPortfolioCategories() {
+    var counter = 0;
+    var catagories = [];
+    var newCatagory = {};
+    var flag = false;
+    var emptyInputFlag = false;
+    var imageList = [];
+    Array.from($("#portfolio-settings :input")).forEach(function (input) {
+        if (!(counter < 4)) {
+            if (input.type == 'text' || input.type == 'button') {
+                if (flag) {
+                    catagories.push(newCatagory);
+                    newCatagory = new Object;
+                    flag = false;
+                }
+                if (input.value == '' && input.type != 'button') {
+                    emptyInputFlag = true;
+                }
+                if (input.type != 'button') {
+                    imageList = [];
+                    newCatagory.category = input.value;
+                }
+            } else {
+                if (input.value == '') {
+                    emptyInputFlag = true;
+                }
+                flag = true;
+                imageList.push(GetFileNameWithValue(input.value));
+                newCatagory.images = imageList;
+            }
+        }
+        counter++;
+    });
+    return [emptyInputFlag, catagories]
+}
+
+function GetFileName(id) {
+    var file = $(id).val().split("\\");
+    return file[2];
+}
+
+function GetFileNameWithValue(value) {
+    var file = value.split("\\");
+    return file[2];
+}
+
+function GetBlogStories() {
+    var counter = 0;
+    var stories = [];
+    var newStory = {};
+    var flag = false;
+    Array.from($("#blog-settings :input")).forEach(function (input) {
+        if (!(counter < 3)) {
+            if (counter != 3 && counter % 3 == 0) {
+                stories.push(newStory);
+                newStory = new Object;
+            }
+            if (input.value == '' && input.type != 'button') {
+                flag = true;
+            }
+            if (input.type == 'text') {
+                newStory.title = input.value;
+            }
+            if (input.type == 'file') {
+                newStory.image = GetFileNameWithValue(input.value);
+            }
+            if (input.type == 'textarea') {
+                newStory.body = input.value;
+            }
+        }
+        counter++;
+    });
+    return [flag, stories]
 }

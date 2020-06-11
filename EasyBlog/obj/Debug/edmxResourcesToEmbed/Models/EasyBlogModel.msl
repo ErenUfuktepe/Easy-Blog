@@ -28,7 +28,8 @@
       <EntityTypeMapping TypeName="EasyBlogModel.Blog">
         <MappingFragment StoreEntitySet="Blog">
           <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="template" ColumnName="template" />
+          <ScalarProperty Name="header" ColumnName="header" />
+          <ScalarProperty Name="backgroundColor" ColumnName="backgroundColor" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -181,6 +182,25 @@
           <ScalarProperty Name="userID" ColumnName="userID" />
           <ScalarProperty Name="socialMedia" ColumnName="socialMedia" />
           <ScalarProperty Name="link" ColumnName="link" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Stories">
+      <EntityTypeMapping TypeName="EasyBlogModel.Story">
+        <MappingFragment StoreEntitySet="Story">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="blogID" ColumnName="blogID" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="body" ColumnName="body" />
+          <ScalarProperty Name="image" ColumnName="image" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Templates">
+      <EntityTypeMapping TypeName="EasyBlogModel.Template">
+        <MappingFragment StoreEntitySet="Template">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="templateName" ColumnName="templateName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

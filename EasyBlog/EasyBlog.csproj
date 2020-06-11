@@ -145,9 +145,11 @@
     <Compile Include="Models\Blog.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\BlogModel.cs" />
     <Compile Include="Models\Contact.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ContactModel.cs" />
     <Compile Include="Models\EasyBlogModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -191,6 +193,8 @@
     <Compile Include="Models\PortfolioCategoryImageRelationship.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PortfolioCategoryModel.cs" />
+    <Compile Include="Models\PortfolioModel.cs" />
     <Compile Include="Models\RequestModels\UserCreateModel.cs" />
     <Compile Include="Models\RequestModels\UserLoginModel.cs" />
     <Compile Include="Models\Resume.cs">
@@ -212,6 +216,13 @@
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SocialMediaModel.cs" />
+    <Compile Include="Models\Story.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StoryModel.cs" />
+    <Compile Include="Models\Template.cs">
+      <DependentUpon>EasyBlogModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UserInformation.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>

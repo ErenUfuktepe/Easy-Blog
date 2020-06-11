@@ -29,9 +29,9 @@ namespace EasyBlog.Models
         public System.DateTime modifiedDate { get; set; }
         public System.DateTime lastLoginDate { get; set; }
     
-        public virtual Blog Blog { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<SocialMediaLink> SocialMediaLinks { get; set; }
+        public virtual Template Template { get; set; }
         public virtual UserLogin UserLogin { get; set; }
     }
 }

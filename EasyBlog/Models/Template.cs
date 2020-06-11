@@ -12,18 +12,19 @@ namespace EasyBlog.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Contact
+    public partial class Template
     {
         public long id { get; set; }
-        public string header { get; set; }
-        public string backgroundColor { get; set; }
-        public string address { get; set; }
-        public string city { get; set; }
-        public string state { get; set; }
-        public string country { get; set; }
-        public string phone { get; set; }
-        public string email { get; set; }
+        public string templateName { get; set; }
     
-        public virtual Template Template { get; set; }
+        public virtual About About { get; set; }
+        public virtual Blog Blog { get; set; }
+        public virtual Contact Contact { get; set; }
+        public virtual Home Home { get; set; }
+        public virtual Main Main { get; set; }
+        public virtual Navigation Navigation { get; set; }
+        public virtual Portfolio Portfolio { get; set; }
+        public virtual Resume Resume { get; set; }
+        public virtual UserInformation UserInformation { get; set; }
     }
 }

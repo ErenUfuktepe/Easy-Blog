@@ -21,6 +21,6 @@ namespace EasyBlog.Models
         public string textColor { get; set; }
         public string hoverColor { get; set; }
     
-        public virtual Blog Blog { get; set; }
+        public virtual Template Template { get; set; }
     }
 }

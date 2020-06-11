@@ -12,6 +12,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace EasyBlog.Controllers
 {
@@ -288,19 +289,19 @@ namespace EasyBlog.Controllers
                 using (EasyBlogEntities db = new EasyBlogEntities())
                 {
                     long id = long.Parse(Session["UserInformation"].ToString());
-                    Blog checkExisting = db.Blogs.Where(x => x.id == id).SingleOrDefault();
+                    Template checkExisting = db.Templates.Where(x => x.id == id).SingleOrDefault();
                     if (checkExisting == null)
                     {
-                        Blog blog = new Blog();
-                        blog.template = template;
-                        blog.id = id;
-                        db.Blogs.Add(blog);
+                        Template mainTemplate = new Template();
+                        mainTemplate.templateName = template;
+                        mainTemplate.id = id;
+                        db.Templates.Add(mainTemplate);
                         db.SaveChanges();
                         return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
                     }
-                    else if (checkExisting.template != template)
+                    else if (checkExisting.templateName != template)
                     {
-                        checkExisting.template = template;
+                        checkExisting.templateName = template;
                         db.SaveChanges();
                         return Json("Template updated successfully!", JsonRequestBehavior.AllowGet);
                     }
@@ -598,5 +599,111 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
+
+        public JsonResult SavePortfolio(PortfolioModel portfolioModel)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+
+                    Portfolio portfolio = new Portfolio();
+                    portfolio.id = id;
+                    portfolio.background = portfolioModel.background;
+                    portfolio.hearder = portfolioModel.header;
+                    db.Portfolios.Add(portfolio);
+                    db.SaveChanges();
+                    foreach (PortfolioCategoryModel categoryModel in portfolioModel.portfolioCategories)
+                    {
+                        PortfolioCategory portfolioCategory = new PortfolioCategory();
+                        portfolioCategory.portfolioID = id;
+                        portfolioCategory.category = categoryModel.category;
+                        db.PortfolioCategories.Add(portfolioCategory);
+                        db.SaveChanges();
+                        long categoryID = db.PortfolioCategories.Where(x => x.category == categoryModel.category && x.portfolioID == id).SingleOrDefault().id;
+                        foreach (string image in categoryModel.images)
+                        {
+                            PortfolioCategoryImageRelationship portfolioCategoryImageRelationship = new PortfolioCategoryImageRelationship();
+                            portfolioCategoryImageRelationship.portfolioCategoryID = categoryID;
+                            portfolioCategoryImageRelationship.image = image;
+                            db.PortfolioCategoryImageRelationships.Add(portfolioCategoryImageRelationship);
+                            db.SaveChanges();
+                        }
+                    }
+                    return Json("Portfolio section saved.", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult SaveContact(ContactModel contactModel)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+
+                    Contact contact = new Contact();
+                    contact.id = id;
+                    contact.header = contactModel.header;
+                    contact.backgroundColor = contactModel.background;
+                    contact.phone = contactModel.phone;
+                    contact.email = contactModel.email;
+                    contact.address = contactModel.address;
+                    contact.city = contactModel.city;
+                    contact.country = contactModel.country;
+                    contact.state = contactModel.state;
+                    db.Contacts.Add(contact);
+                    db.SaveChanges();
+                    return Json("Contact section saved.", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult SaveBlog(BlogModel blogModel)
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+
+                    Blog blog = new Blog();
+                    blog.id = id;
+                    blog.backgroundColor = blogModel.background;
+                    blog.header = blogModel.header;
+                    db.Blogs.Add(blog);
+                    db.SaveChanges();
+                    foreach (StoryModel storyModel in blogModel.stories)
+                    {
+                        Story story = new Story();
+                        story.blogID = id;
+                        story.body = storyModel.body;
+                        story.title = storyModel.title;
+                        story.image = storyModel.image;
+                        db.Stories.Add(story);
+                        db.SaveChanges();
+                    }
+                    return Json("Blog section saved.", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
