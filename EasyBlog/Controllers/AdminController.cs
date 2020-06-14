@@ -10,6 +10,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Web.DynamicData;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Services.Description;
@@ -18,7 +19,6 @@ namespace EasyBlog.Controllers
 {
     public class AdminController : Controller
     {
-        // GET: Page
         public ActionResult Home(UserInformationModel userInformationModel)
         {
             if(userInformationModel.email == null || Session["UserInformation"] == null)
@@ -228,8 +228,7 @@ namespace EasyBlog.Controllers
                 }
             }
         }
-
-        public JsonResult Upload()
+        public JsonResult UploadImages()
         {
             List<HttpPostedFileBase> files = new List<HttpPostedFileBase>();
             for (int i = 0; i < Request.Files.Count; i++)
@@ -245,9 +244,8 @@ namespace EasyBlog.Controllers
                 }
             }
             UploadImages(files);
-            return Json("Uploaded " + Request.Files.Count + " files");
+            return Json("Success");
         }
-
         private void UploadImages(List<HttpPostedFileBase> files)
         {
             foreach (HttpPostedFileBase file in files)
@@ -258,7 +256,6 @@ namespace EasyBlog.Controllers
                 file.SaveAs(path);
             }
         }
-
         private bool CheckMimeType(HttpPostedFileBase file)
         {
             if (file.ContentType.Contains("jpeg") || file.ContentType.Contains("png") || file.ContentType.Contains("jpg"))
@@ -270,7 +267,6 @@ namespace EasyBlog.Controllers
                 return false;
             }
         }
-
         private bool CreateImagePathForUser(string userID)
         {
             string path = Path.Combine(Server.MapPath("~/Images"), userID);
@@ -281,7 +277,6 @@ namespace EasyBlog.Controllers
             }
             return false;
         }
-
         public JsonResult SaveTemplate(string template)
         {
             try
@@ -365,6 +360,7 @@ namespace EasyBlog.Controllers
                         foreach (SocialMediaModel socialMediaModel in socialMediaModels)
                         { 
                             SocialMediaLink socialMediaLink = new SocialMediaLink();
+                            socialMediaLink.userID = id;
                             socialMediaLink.link = socialMediaModel.link;
                             socialMediaLink.socialMedia = db.SocialMedias.Where(x => x.code == socialMediaModel.socialMedia).SingleOrDefault().id;
                             db.SocialMediaLinks.Add(socialMediaLink);
@@ -408,7 +404,6 @@ namespace EasyBlog.Controllers
                 return "System Error!";
             }
         }
-        
         public JsonResult SaveNavigation(NavigationModel navigationModel)
         {
             try
@@ -442,7 +437,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-
         private string SaveNavigationItems(List<NavigationItemModel> navigationItemModels)
         {
             try
@@ -499,7 +493,6 @@ namespace EasyBlog.Controllers
                 return "System Error.";
             }
         }
-
         public JsonResult SaveHome(HomeModel homeModel)
         {
             try
@@ -534,7 +527,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-
         private string SaveHomeSubTexts(List<string> subTexts)
         {
             try
@@ -559,7 +551,6 @@ namespace EasyBlog.Controllers
                 return "System Error!";
             }
         }
-
         public JsonResult SaveAbout(AboutModel aboutModel)
         {
             try
@@ -599,7 +590,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-
         public JsonResult SavePortfolio(PortfolioModel portfolioModel)
         {
             try
@@ -640,7 +630,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-
         public JsonResult SaveContact(ContactModel contactModel)
         {
             try
@@ -703,7 +692,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-
         public JsonResult SaveResume(ResumeModel resumeModel)
         {
             try
@@ -758,6 +746,272 @@ namespace EasyBlog.Controllers
             {
                 Console.WriteLine(e);
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult HasBlog()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
+                    if (template == null)
+                    {
+                        return Json("true", JsonRequestBehavior.AllowGet);
+                    }
+                    return Json("false", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("false", JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult DeletePage()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    DeleteMain();
+                    DeleteNavigation();
+                    DeleteHome();
+                    DeleteAbout();
+                    DeleteSocialMedia();
+                    DeletePortfolio();
+                    DeleteContact();
+                    DeleteResume();
+                    DeleteBlog();
+                    DeleteTemplate();
+                    return Json("false", JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("false", JsonRequestBehavior.AllowGet);
+            }
+        }
+        private bool DeleteTemplate()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
+                    db.Templates.Remove(template);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteMain()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    Main main = db.Mains.Where(x => x.id == id).SingleOrDefault();
+                    db.Mains.Remove(main);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteNavigation()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    List<NavigationItem> navigationItems = db.NavigationItems.Where(x => x.navID == id).ToList();
+                    db.NavigationItems.RemoveRange(navigationItems);
+                    db.SaveChanges();
+                    Navigation navigation = db.Navigations.Where(x => x.id == id).SingleOrDefault();
+                    db.Navigations.Remove(navigation);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteHome()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    List<HomeSubText> homeSubTexts = db.HomeSubTexts.Where(x => x.homeID == id).ToList();
+                    db.HomeSubTexts.RemoveRange(homeSubTexts);
+                    db.SaveChanges();
+                    Home home = db.Homes.Where(x => x.id == id).SingleOrDefault();
+                    db.Homes.Remove(home);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteAbout()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    List<AboutInformation> aboutInformation = db.AboutInformations.Where(x => x.aboutID == id).ToList();
+                    db.AboutInformations.RemoveRange(aboutInformation);
+                    db.SaveChanges();
+                    About about = db.Abouts.Where(x => x.id == id).SingleOrDefault();
+                    db.Abouts.Remove(about);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteBlog()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    List<Story> stories = db.Stories.Where(x => x.blogID == id).ToList();
+                    db.Stories.RemoveRange(stories);
+                    db.SaveChanges();
+                    Blog blog = db.Blogs.Where(x => x.id == id).SingleOrDefault();
+                    db.Blogs.Remove(blog);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteSocialMedia()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    List<SocialMediaLink> socialMediaLinks = db.SocialMediaLinks.Where(x => x.userID == id).ToList();
+                    db.SocialMediaLinks.RemoveRange(socialMediaLinks);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeletePortfolio()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    List<PortfolioCategory> portfolioCategories = db.PortfolioCategories.Where(x => x.portfolioID == id).ToList();
+                    foreach(PortfolioCategory portfolioCategory in portfolioCategories)
+                    {
+                        List<PortfolioCategoryImageRelationship> portfolioCategoryImageRelationships = db.PortfolioCategoryImageRelationships.Where(x => x.portfolioCategoryID == portfolioCategory.id).ToList();
+                        db.PortfolioCategoryImageRelationships.RemoveRange(portfolioCategoryImageRelationships);
+                        db.SaveChanges();
+                        db.PortfolioCategories.Remove(portfolioCategory);
+                        db.SaveChanges();
+                    }
+                    Portfolio portfolio = db.Portfolios.Where(x => x.id == id).SingleOrDefault();
+                    db.Portfolios.Remove(portfolio);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteResume()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    List<ResumeSectionItemExplanation> resumeSectionItemExplanations = db.ResumeSectionItemExplanations.Where(x => x.resumeSectionItemID == id).ToList();
+                    db.ResumeSectionItemExplanations.RemoveRange(resumeSectionItemExplanations);
+                    db.SaveChanges();
+                    List<ResumeSectionItem> resumeSectionItems = db.ResumeSectionItems.Where(x => x.resumeSectionID == id).ToList();
+                    db.ResumeSectionItems.RemoveRange(resumeSectionItems);
+                    db.SaveChanges();
+                    List<ResumeSection> resumeSections = db.ResumeSections.Where(x => x.resumeID == id).ToList();
+                    db.ResumeSections.RemoveRange(resumeSections);
+                    db.SaveChanges();
+                    Resume resume = db.Resumes.Where(x => x.id == id).SingleOrDefault();
+                    db.Resumes.Remove(resume);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
+        private bool DeleteContact()
+        {
+            try
+            {
+                using (EasyBlogEntities db = new EasyBlogEntities())
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    Contact contact = db.Contacts.Where(x => x.id == id).SingleOrDefault();
+                    db.Contacts.Remove(contact);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
             }
         }
 

@@ -102,7 +102,7 @@
       <EntityTypeMapping TypeName="EasyBlogModel.Portfolio">
         <MappingFragment StoreEntitySet="Portfolio">
           <ScalarProperty Name="id" ColumnName="id" />
-          <ScalarProperty Name="hearder" ColumnName="hearder" />
+          <ScalarProperty Name="header" ColumnName="header" />
           <ScalarProperty Name="background" ColumnName="background" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -131,7 +131,6 @@
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="header" ColumnName="header" />
           <ScalarProperty Name="background" ColumnName="background" />
-          <ScalarProperty Name="resumeSectionHeaderId" ColumnName="resumeSectionHeaderId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

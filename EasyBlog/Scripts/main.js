@@ -12,7 +12,7 @@
     data.password = $('#login-password').val();
 
     if (data.email.includes('@') && data.email.length > 1 && data.password.length > 0) {
-        var response = AjaxCall("/User/Authorization", data);
+        var response = AjaxCall("User","Authorization", data);
         if (response != 'Success') {
             document.getElementById('login-response').innerHTML = response;
             document.getElementsByClassName('alert-danger')[0].style.display = 'block';
@@ -32,7 +32,7 @@
 function ConfirmEmail() {
     let data = {};
     data.email = $('#email-confirm').val();
-    var response = AjaxCall("/User/ConfirmEmail", data);
+    var response = AjaxCall("User", "ConfirmEmail", data);
     var parsedResult = response.split(",");
 
     if (parsedResult.length ==  1) {
@@ -122,7 +122,7 @@ function Register() {
     }
     else if (!(data.name == '' || data.surname == '' || data.email == '' || data.password == '' || data.confirmPassword == '' ||
         data.name.trim() == '' || data.surname.trim() == '' || data.email.trim() == '' || data.password.trim() == '' || data.confirmPassword.trim() == '')) {
-        var response = AjaxCall("/User/CreateUser",data);        
+        var response = AjaxCall("User", "CreateUser",data);        
         if (response == 'Success') {
             document.getElementsByClassName('alert-danger')[0].style.display = 'none';
             CreateDialog('success', 'Success', 'Your account has been created.', '', '','window.history.back()');
@@ -170,6 +170,10 @@ window.addEventListener('load', (event) => {
         })
     }
     if (window.location.href.includes("CreateBlog")) {
+        var response = AjaxCall("Admin", "HasBlog", {});
+        if (response == 'false') {
+            CreateDialog('warning', 'Warning', 'You already have a blog! If you continue, your old blog will be deleted.', 'Continue', 'DeletePage()', '');
+        }
         document.getElementById('create-blog').onsubmit = function () {
             var formdata = new FormData();
             var fileInput = document.getElementById('fileInput');
@@ -179,13 +183,13 @@ window.addEventListener('load', (event) => {
                 }
             });
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/Admin/Upload');
+            xhr.open('POST', '/Admin/UploadImages');
             xhr.send(formdata);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    //alert(xhr.responseText);
-                } else {
-                    //alert(xhr.responseText + "else");
+                    CreateDialog('success', 'Success', 'Your page is ready!', '', '', 'ReturnHome()');
+                } else if (xhr.status == 500) {
+                    CreateDialog('error', 'Error', 'System upload file error!', '', '', '');
                 }
             }
         }    
@@ -324,7 +328,7 @@ function SaveAndDisableTemplateSection() {
 
     var data = {}
     data.template = window.template;
-    var response = AjaxCall("/Admin/SaveTemplate", data);
+    var response = AjaxCall("Admin", "SaveTemplate", data);
     if (response.includes('saved') || response.includes('updated')) {
         document.getElementById('template-button').disabled = true;
         Array.from(templates).forEach(function (element) {
@@ -428,7 +432,7 @@ function SaveAndDisableMainSection() {
         data.textColor = $('#main-text-color').val();
         data.hoverColor = $('#main-hover-color').val();
         data.socialMediaList = SocialMediaList();
-        var response = AjaxCall("/Admin/SaveMainComponents", data);
+        var response = AjaxCall("Admin", "SaveMainComponents", data);
         if (response.includes('saved')) {
             CreateDialog('success', 'Success', response, '', '', '');
             Array.from(document.getElementsByClassName('remove-social-media')).forEach(function (element) {
@@ -463,7 +467,7 @@ function SaveAndDisableNavigationSection() {
             navigationItems.push(item);
         });
         data.navigationItems = navigationItems;
-        var response = AjaxCall("/Admin/SaveNavigation", data);
+        var response = AjaxCall("Admin", "SaveNavigation", data);
         if (response.includes('saved')) {
             CreateDialog('success', 'Success', response, '', '', '');
             window.sectionQueue = GetSectionInformation();
@@ -497,7 +501,7 @@ function SaveAndDisableHomeSection() {
             data.textColor = $('#home-text-color').val();
             data.mainText = $('#home-main-text').val();
             data.subTextList = subTextList;
-            var response = AjaxCall("/Admin/SaveHome", data);
+            var response = AjaxCall("Admin", "SaveHome", data);
             if (response.includes('saved.')) {
                 CreateDialog('success', 'Success', response, '', '', '');
                 Array.from(document.getElementsByClassName('home-remove-sub-text')).forEach(function (sub) {
@@ -533,7 +537,7 @@ function SaveAndDisableAboutSection() {
             CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
         }
         else {
-            var response = AjaxCall("/Admin/SaveAbout", data);
+            var response = AjaxCall("Admin", "SaveAbout", data);
             if (response.includes('saved.')) {
                 CreateDialog('success', 'Success', response, '', '', '');
                 Array.from(document.getElementsByClassName('about-info-remove')).forEach(function (element) {
@@ -554,7 +558,7 @@ function SaveAndDisableResumeSection() {
     data.background = $('#resume-background-color').val();
     data.header = $('#resume-header').val();
 
-    var response = AjaxCall("/Admin/SaveResume", data);
+    var response = AjaxCall("Admin", "SaveResume", data);
     if (response.includes('saved.')) {
         CreateDialog('success', 'Success', response, '', '', '');
 
@@ -581,7 +585,7 @@ function SaveAndDisablePortfolioSection() {
             data.background = $('#portfolio-background-color-code').val();
             data.header = $('#portfolio-header').val();
             data.portfolioCategories = categories[1];
-            var response = AjaxCall("/Admin/SavePortfolio", data);
+            var response = AjaxCall("Admin", "SavePortfolio", data);
             if (response.includes('saved.')) {
                 CreateDialog('success', 'Success', response, '', '', '');
                 Array.from(document.getElementsByClassName('catagory-disable')).forEach(function (element) {
@@ -608,7 +612,7 @@ function SaveAndDisableBlogSection() {
             data.header = $('#blog-header').val();
             data.background = $('#blog-background-color').val();
             data.stories = stories[1];
-            var response = AjaxCall("/Admin/SaveBlog", data);
+            var response = AjaxCall("Admin", "SaveBlog", data);
             if (response.includes('saved.')) {
                 CreateDialog('success', 'Success', response, '', '', '');
                 Array.from(document.getElementsByClassName('disable-blog')).forEach(function (element) {
@@ -634,7 +638,7 @@ function SaveAndDisableContactSection() {
         data.country = $('#country').val();
         data.phone = $('#phone').val();
         data.email = $('#email').val();
-        var response = AjaxCall("/Admin/SaveContact", data);
+        var response = AjaxCall("Admin","SaveContact", data);
         if (response.includes('saved.')) {
             CreateDialog('success', 'Success', response, '', '', '');
             DisableInputs('contact-settings');
@@ -1116,7 +1120,7 @@ function UpdatePhone() {
         data.oldPhone = window.updatePhone;
         data.newPhone = $('#update-phone-element').val();
         data.email = window.updateEmail;
-        var response = AjaxCall("/Admin/UpdatePhone", data);
+        var response = AjaxCall("Admin", "UpdatePhone", data);
 
         if (response != 'Success') {
             CreateDialog('error', 'Error', response, '', '', '');
@@ -1133,7 +1137,7 @@ function UpdateEmail() {
         var data = {};
         data.oldEmail = window.updateEmail;
         data.newEmail = $('#update-email-element').val();
-        var response = AjaxCall("/Admin/UpdateEmail", data);
+        var response = AjaxCall("Admin", "UpdateEmail", data);
 
         if (response != 'Success') {
             CreateDialog('error', 'Error', response, '', '', '');
@@ -1167,7 +1171,7 @@ function ResetPassword() {
             data.oldPassword = oldPassword;
             data.newPassword = newPassword;
             data.email = $('#update-email-element').val();
-            var response = AjaxCall("/Admin/ResetPassword",data);
+            var response = AjaxCall("Admin", "ResetPassword",data);
 
             if (response == 'Success') {
                 $('#old-password').val('');
@@ -1186,11 +1190,11 @@ function ResetPassword() {
     }
 }
 
-function AjaxCall(url, data) {
+function AjaxCall(controller, method, data) {
     var result = '';
     $.ajax({
         type: "POST",
-        url: url,
+        url: "/" + controller + "/" + method,
         data: JSON.stringify(data),
         contentType: "application/json",
         dataType: "json",
@@ -1402,4 +1406,12 @@ function GetResumeItems() {
         counter++;
     });
     return resume;
+}
+
+function ReturnHome() {
+    window.location.href = "../Admin/Home";
+}
+
+function DeletePage() {
+    AjaxCall("Admin", "DeletePage", {});
 }
