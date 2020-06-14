@@ -785,7 +785,8 @@ namespace EasyBlog.Controllers
                     DeleteResume();
                     DeleteBlog();
                     DeleteTemplate();
-                    return Json("false", JsonRequestBehavior.AllowGet);
+                    DeleteImages();
+                    return Json("true", JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
@@ -1014,6 +1015,23 @@ namespace EasyBlog.Controllers
                 return false;
             }
         }
-
+        private bool DeleteImages()
+        {
+            try
+            {
+                string path = Server.MapPath("~/Images/" + Session["UserInformation"].ToString());
+                System.IO.DirectoryInfo directory = new DirectoryInfo(path);
+                foreach (FileInfo file in directory.EnumerateFiles())
+                {
+                    file.Delete();
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
     }
 }
