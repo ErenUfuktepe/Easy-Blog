@@ -174,23 +174,27 @@ window.addEventListener('load', (event) => {
         if (response == 'false') {
             CreateDialog('warning', 'Warning', 'You already have a blog! If you continue, your old blog will be deleted.', 'Continue', 'DeletePage()', '');
         }
-        document.getElementById('create-blog').onsubmit = function () {
+        document.getElementById('submit').onclick = function () {
             var formdata = new FormData();
-            var fileInput = document.getElementById('fileInput');
             Array.from(document.getElementsByClassName('custom-file-input')).forEach(function (fileInput) {
                 for (i = 0; i < fileInput.files.length; i++) {
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
             });
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/Admin/UploadImages');
+            xhr.open('POST', '/Admin/UploadImages', false);
             xhr.send(formdata);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     CreateDialog('success', 'Success', 'Your page is ready!', '', '', 'ReturnHome()');
                 } else if (xhr.status == 500) {
-                    CreateDialog('error', 'Error', 'System upload file error!', '', '', '');
+                    CreateDialog('error', 'Error', 'System upload file error!', '', '', 'ReturnHome()');
                 }
+            };
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                CreateDialog('success', 'Success', 'Your page is ready!', '', '', 'window.history.back()');
+            } else if (xhr.status == 500) {
+                CreateDialog('error', 'Error', 'System upload file error!', '', '', 'window.history.back()');
             }
         }    
     }
@@ -1406,10 +1410,6 @@ function GetResumeItems() {
         counter++;
     });
     return resume;
-}
-
-function ReturnHome() {
-    window.location.href = "../Admin/Home";
 }
 
 function DeletePage() {

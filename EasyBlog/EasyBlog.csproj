@@ -184,6 +184,7 @@
     <Compile Include="Models\NavigationItemModel.cs" />
     <Compile Include="Models\NavigationModel.cs" />
     <Compile Include="Models\MainComponentsModel.cs" />
+    <Compile Include="Models\PageModel.cs" />
     <Compile Include="Models\Portfolio.cs">
       <DependentUpon>EasyBlogModel.tt</DependentUpon>
     </Compile>

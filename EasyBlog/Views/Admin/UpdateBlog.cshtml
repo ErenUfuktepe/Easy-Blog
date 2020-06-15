@@ -1,11 +1,10 @@
-﻿@model EasyBlog.Models.UserInformationModel
+﻿@model EasyBlog.Models.PageModel
 
 @{
-    ViewBag.Title = "Admin";
+    ViewBag.Title = "Update";
 }
 
-
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -13,37 +12,612 @@
     <title>Easy Blog</title>
     <link href="~/Content/Site.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-3.4.1.js"></script>
-
 </head>
 <body>
     <div class="container active-page">
         <div class="form-group">
             <div class="mb-5">
-                <h2 class="text-center text-uppercase" id="title">Easy Blog</h2>
+                <h2 class="text-center text-uppercase" id="title">Update Page</h2>
             </div>
-            <div class="setting-form">
-                <div class="text-center">
-                    <h3>Welcome</h3>
-                </div>
-                <div class="row input-padding">
-                    <div class="col-lg-12" style="padding-bottom: 15px; text-align:left">
-                        @{<p>
-                                Welcome back! Your last login date is <b>@Model.lastLoginDate.ToString("MM/dd/yyyy")</b>
-                                and last modified date is <b>@Model.modifiedDate.ToString("MM/dd/yyyy")</b>.
-                            </p>
-                        }
+            @if (Model.mainComponents.logo != null)
+            {
+                <!--Main-->
+                <div class="setting-form" id="main-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="main-components-controller">Main Components</a>
+                    </div>
+                    <div class="row main-components-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div id="add-social-media">
+                                <div class="form-row text-left">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Web Page Logo:</b>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" id="web-page-logo" required>
+                                            <label class="custom-file-label" for="web-page-logo">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Web Page Title:</b>
+                                        <input type="text" class="form-control" id="web-page-title" placeholder="Easy Blog" value="@Model.mainComponents.title" required>
+                                    </div>
+                                </div>
+                                <div class="form-row text-left">
+                                    <div class="col-lg-4 input-padding">
+                                        <b>Title Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="@Model.mainComponents.titleColor" id="main-title-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="@Model.mainComponents.titleColor" id="main-title-color">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 input-padding">
+                                        <b>Text Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="@Model.mainComponents.textColor" id="main-text-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="@Model.mainComponents.textColor" id="main-text-color">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 input-padding">
+                                        <b>Hover Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="@Model.mainComponents.hoverColor" id="main-hover-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="@Model.mainComponents.hoverColor" id="main-hover-color">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row text-right">
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-success" onclick="AddSocialMedia()">Add Social Media</button>
+                                    </div>
+                                </div>
+                                @foreach (EasyBlog.Models.SocialMediaModel media in Model.mainComponents.socialMediaList)
+                                {
+                                    <div class="form-row text-left social-media">
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Social Media:</b>
+                                            <div class="input-group mb-3">
+                                                <select class="form-control" style="overflow:scroll;" id="select-social-media">
+                                                    @foreach (EasyBlog.Models.SocialMedia socialMedia in ViewData["SocialMedias"] as List<EasyBlog.Models.SocialMedia>)
+                                                    {
+                                                        if (socialMedia.code == media.socialMedia)
+                                                        {
+                                                            <option value="@socialMedia.code" selected>@socialMedia.name</option>
+                                                        }
+                                                        <option value="@socialMedia.code">@socialMedia.name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Link:</b>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" value="@media.link">
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @if (Model.mainComponents.socialMediaList.Count ==  0)
+                                {
+                                    <div class="form-row text-left social-media">
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Social Media:</b>
+                                            <div class="input-group mb-3">
+                                                <select class="form-control" style="overflow:scroll;" id="select-social-media">
+                                                    @foreach (EasyBlog.Models.SocialMedia socialMedia in ViewData["SocialMedias"] as List<EasyBlog.Models.SocialMedia>)
+                                                    {
+                                                        <option value="@socialMedia.code">@socialMedia.name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Link:</b>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="main-button" type="button" onclick="SaveAndDisableMainSection()" class="btn btn-success">Save And Continuee</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="setting-form">
-                <div class="text-center">
-                    <h3>What is Easy Blog?</h3>
+            }
+            @if (Model.navigationModel.barColor != null)
+            {
+                <!--Nav-->
+                <div class="setting-form" id="nav-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="navigation-controller">Navigation</a>
+                    </div>
+                    <div class="row navigation-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Logo:</b>
+                                    <div class="custom-file">
+                                        <input type="file" name="file" class="custom-file-input" id="navigation-logo">
+                                        <label class="custom-file-label" for="navigation-logo">Choose file</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Navigation Bar Color:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="@Model.navigationModel.barColor" id="nav-bar-color-code">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <input class="color-change" type="color" value="@Model.navigationModel.barColor" id="nav-bar-color">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-left">
+                                <b>Sections:</b>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="border:0px;">#</th>
+                                            <th class="text-center" scope="col" style="border:0px;">Section Name</th>
+                                            <th class="text-right" scope="col" style="border:0px;"></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="nav-button" type="button" onclick="SaveAndDisableNavigationSection()" class="btn btn-success">Save And Continuee</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="row input-padding">
-                    <div class="col-lg-12" style="padding-bottom: 15px; text-align:left">
-                        <p>
-                            Easy Blog basically helps you to pick a Bootstrap template and modify it without dealing with any coding and it allows you to manage your blog easily.
-                        </p>
+            }
+            @if (Model.home.background != null)
+            {
+                <!--Home-->
+                <div class="setting-form" id="home-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="home-controller">Home Section</a>
+                    </div>
+                    <div class="row home-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Background Image:</b>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="home-background">
+                                        <label class="custom-file-label" for="home-background">Choose file</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Text Color:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="@Model.home.textColor" id="home-text-color-code">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <input class="color-change" type="color" value="@Model.home.textColor" id="home-text-color">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-left" id="home-sub-text">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Main Text:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="I'm a" id="home-main-text" value="@Model.home.mainText">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Sub Text:</b>
+                                    <a href="javascript:void(0);" onclick="AddSubTextToHome()" id="home-add-sub-text" class="close" style="float:none; padding: 0px;" aria-label="Close">
+                                        <span class="green" aria-hidden="true">&plus;</span>
+                                    </a>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control sub-text" placeholder="developer" value="@Model.home.subTextList[0]">
+                                    </div>
+                                </div>
+                                @for (int index = 1; index < Model.home.subTextList.ToArray().Length; index++)
+                                {
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-6 new-item">
+                                            <div class="custom-file">
+                                                <input type="text" class="form-control sub-text" placeholder="developer" value="@Model.home.subTextList[index]">
+                                                <a href="javascript:void(0);" onclick="RemoveSubTextFromHome()" class="red close home-remove-sub-text" aria-label="Close" style="display:flex;">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 }
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="home-button" type="button" onclick="SaveAndDisableHomeSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.about.image != null)
+            {
+                <!--About-->
+                <div class="setting-form" id="about-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="about-controller">About Section</a>
+                    </div>
+                    <div class="row about-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div class="form-row text-left">
+                                <div class="col-lg-4 input-padding">
+                                    <b>Background Color:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="@Model.about.background" id="about-background-color-code">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <input class="color-change" type="color" value="@Model.about.background" id="about-background-color">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 input-padding">
+                                    <b>Frame Color:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="@Model.about.frame" id="about-frame-color-code">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <input class="color-change" type="color" value="@Model.about.frame" id="about-frame-color">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 input-padding">
+                                    <b>Image:</b>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="about-section-image">
+                                        <label class="custom-file-label" for="about-section-image">Choose file</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-left">
+                                <div class="col-lg-12 input-padding">
+                                    <b>Header:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="About" id="about-header" value="@Model.about.header">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 input-padding extra">
+                                    <b>Sub Title:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="About" id="about-sub-title" value="@Model.about.subTitle">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 input-padding">
+                                    <b>Body: </b>
+                                    <textarea class="form-control" id="about-body" rows="3">@Model.about.body</textarea>
+                                </div>
+                            </div>
+                            <div class="form-row text-left extra">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddInformationToAboutSection()" id="add-info-button">Add Information</button>
+                                </div>
+                            </div>
+                            <div class="form-row text-left extra" id="about-extra-info">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Information Title: </b>
+                                    <input type="text" class="form-control" placeholder="Age">
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Information Value: </b>
+                                    <input type="text" class="form-control" placeholder="30">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="about-button" type="button" onclick="SaveAndDisableAboutSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.resume.header != null)
+            {
+                <!--Resume-->
+                <div class="setting-form" id="resume-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="resume-controller">Resume Section</a>
+                    </div>
+                    <div class="row resume-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div id="resume-section">
+                                <div class="form-row text-left">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Resume Header:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control" placeholder="Resume" id="resume-header">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Background Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="#ffffff" id="resume-background-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="#ffffff" id="resume-background-color">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row text-left">
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSection()">Add Resume Section</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-row text-left">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Resume Section Header:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-section-header" placeholder="Education">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSubSection()">Add Sub Section</button>
+                                    </div>
+                                    <div class="col-lg-12 input-padding">
+                                        <b>Sub Header:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-sub-header" placeholder="MASTER OF FINE ARTS & GRAPHIC DESIGN">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 input-padding">
+                                        <b>From:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-date" placeholder="2001">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 input-padding">
+                                        <b>To:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-date" placeholder="2005">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Place or Location:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control resume-location" placeholder="Rochester Institute of Technology, Rochester, NY">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 input-padding">
+                                        <b>Explanation: </b>
+                                        <textarea class="form-control resume-explanation" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-lg-12 input-padding">
+                                        <b>List of Explanations: </b>
+                                        <a href="javascript:void(0);" onclick="AddExplanation()" class="close resume-list-item" style="float:none;" aria-label="Close">
+                                            <span class="green" aria-hidden="true">&plus;</span>
+                                        </a>
+                                        <textarea class="form-control resume-item" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" type="button" onclick="SaveAndDisableResumeSection()" id="resume-save" class="btn btn-success">Save And Continue</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.portfolio.header != null)
+            {
+                <!--Portfolio-->
+                <div class="setting-form" id="portfolio-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="portfolio-controller">Portfolio Section</a>
+                    </div>
+                    <div class="row portfolio-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Section Header:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="Portfolio" id="portfolio-header">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Background Color:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="#ffffff" id="portfolio-background-color-code">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <input class="color-change" type="color" value="#ffffff" id="portfolio-background-color">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-left category">
+                                <div class="col-lg-12">
+                                    <button type="button" class="btn btn-success" style="float:right;" onclick="AddCatagory()">Add Catagory</button>
+                                </div>
+                            </div>
+                            <div class="form-row text-left category">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Category:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control category-input" placeholder="Branding">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Image:</b>
+                                    <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="close catagory-disable" style="float:none;" aria-label="Close">
+                                        <span class="green" aria-hidden="true">&plus;</span>
+                                    </a>
+                                    <div class="custom-file" style="width:90%;">
+                                        <input type="file" class="custom-file-input category-image">
+                                        <label class="custom-file-label">Choose file</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="portfolio-button" type="button" onclick="SaveAndDisablePortfolioSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.blog.header != null)
+            {
+                <!--Blog-->
+                <div class="setting-form" id="blog-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="blog-controller">Blog Section</a>
+                    </div>
+                    <div class="row blog-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Section Header:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="Journal" id="blog-header">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Background Color:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="#ffffff" id="blog-background-color-code">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <input class="color-change" type="color" value="#ffffff" id="blog-background-color">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-left">
+                                <div class="col-lg-12">
+                                    <div class="col-lg-12" style="text-align:right; padding:0px;">
+                                        <a href="javascript:void(0);" onclick="AddStory()" class="btn btn-success disable-blog">Add Story</a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Title:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="Story Title">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Image:</b>
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input">
+                                        <label class="custom-file-label">Choose file</label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 input-padding">
+                                    <b>Body: </b>
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="blog-button" type="button" onclick="SaveAndDisableBlogSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (Model.contact.header != null)
+            {
+                <!--Contact-->
+                <div class="setting-form" id="contact-settings">
+                    <div class="text-center">
+                        <a class="toggle" id="contact-controller">Contact Section</a>
+                    </div>
+                    <div class="row contact-controller" style="display:none;">
+                        <div class="col-lg-12" style="padding-bottom: 15px;">
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Section Header:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="Contact" id="contact-header" value="@Model.contact.header">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Background Color:</b>
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" value="@Model.contact.background" id="contact-background-color-code">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text">
+                                                <input class="color-change" type="color" value="@Model.contact.background" id="contact-background-color">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-left">
+                                <div class="col-lg-6 input-padding">
+                                    <b>Address:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="Street" id="street" value="@Model.contact.address">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 input-padding">
+                                    <b>City:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="City" id="city" value="@Model.contact.city">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 input-padding">
+                                    <b>State:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="State" id="state" value="@Model.contact.state">
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 input-padding">
+                                    <b>Country:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="Country" id="country" value="@Model.contact.country">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Phone:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="+18000000000" id="phone" value="@Model.contact.phone">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 input-padding">
+                                    <b>Email:</b>
+                                    <div class="custom-file">
+                                        <input type="text" class="form-control" placeholder="example@example.com" id="email" value="@Model.contact.email">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" style="text-align:right">
+                            <button style="margin:5px;" id="contact-button" type="button" onclick="SaveAndDisableContactSection()" class="btn btn-success">Save And Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+            <div class="setting-form" id="submit">
+                <div class="row">
+                    <div class="col-lg-12" style="text-align:right">
+                        <button style="margin:5px;" type="button" onclick="Preview()" class="btn btn-primary">Preview</button>
+                        <input style="margin:5px;" class="btn btn-success" type="button" id="submit" value="Submit" />
                     </div>
                 </div>
             </div>
@@ -51,6 +625,38 @@
         </div>
     </div>
 
+    <div id="dialog"></div>
+    <a href="#" data-toggle="modal" data-target="#my-dialog" id="trigger-dialog" style="display: none;"></a>
+
+    <div class="modal fade" id="change-section-name" tabindex="-1" role="dialog" aria-labelledby="change-section-name" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Change Section Name</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label for="old-section-name">Old Section Name</label>
+                            <input type="text" class="form-control" id="old-section-name" disabled>
+                        </div>  <div class="form-group">
+                            <label for="new-section-name">New Section Name</label>
+                            <input type="text" class="form-control" id="new-section-name">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="edit-close">Close</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" onclick="ChangeSectionName()" data-dismiss="modal">Change</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="~/Scripts/main.js"></script>
+
 </body>
 </html>
