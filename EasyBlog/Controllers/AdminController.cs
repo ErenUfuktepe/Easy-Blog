@@ -308,7 +308,10 @@ namespace EasyBlog.Controllers
                     db.SaveChanges();
                 }
                 else{
-                    checkMain.logo = mainComponentsModel.logo;
+                    if (mainComponentsModel.logo != null)
+                    {
+                        checkMain.logo = mainComponentsModel.logo;
+                    }
                     checkMain.title = mainComponentsModel.title;
                     checkMain.textColor = mainComponentsModel.textColor;
                     checkMain.hoverColor = mainComponentsModel.hoverColor;
@@ -402,7 +405,10 @@ namespace EasyBlog.Controllers
                 else
                 {
                     check.barColor = navigationModel.barColor;
-                    check.logo = navigationModel.logo;
+                    if (navigationModel.logo != null)
+                    {
+                        check.logo = navigationModel.logo;
+                    }
                     db.SaveChanges();
                 }
                 string response = SaveNavigationItems(navigationModel.navigationItems);
@@ -487,7 +493,10 @@ namespace EasyBlog.Controllers
                 {
                     check.mainText = homeModel.mainText;
                     check.textColor = homeModel.textColor;
-                    check.background = homeModel.background;
+                    if (homeModel.background != null)
+                    {
+                        check.background = homeModel.background;
+                    }
                     db.SaveChanges();
                 }
                 return Json(SaveHomeSubTexts(homeModel.subTextList), JsonRequestBehavior.AllowGet);                                  
@@ -503,6 +512,12 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
+                List<HomeSubText> check = db.HomeSubTexts.Where(x => x.homeID == id).ToList();
+                if (check.Count() > 0)
+                {
+                    db.HomeSubTexts.RemoveRange(check);
+                    db.SaveChanges();
+                }
                 foreach (string text in subTexts)
                 {
                     HomeSubText homeSubText = new HomeSubText();
@@ -524,19 +539,40 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-
-                About about = new About();
-                about.background = aboutModel.background;
-                about.image = aboutModel.image;
-                about.header = aboutModel.header;
-                about.subTitle = aboutModel.subTitle;
-                about.body = aboutModel.body;
-                about.frameColor = aboutModel.frame;
-                about.id = id;
-                db.Abouts.Add(about);
-                db.SaveChanges();
+                About check = db.Abouts.Where(x => x.id == id).SingleOrDefault();
+                if (check == null)
+                {
+                    About about = new About();
+                    about.background = aboutModel.background;
+                    about.image = aboutModel.image;
+                    about.header = aboutModel.header;
+                    about.subTitle = aboutModel.subTitle;
+                    about.body = aboutModel.body;
+                    about.frameColor = aboutModel.frame;
+                    about.id = id;
+                    db.Abouts.Add(about);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    check.background = aboutModel.background;
+                    if (aboutModel.image != null)
+                    {
+                        check.image = aboutModel.image;
+                    }
+                    check.header = aboutModel.header;
+                    check.subTitle = aboutModel.subTitle;
+                    check.body = aboutModel.body;
+                    check.frameColor = aboutModel.frame;
+                    db.SaveChanges();
+                }
                 if (aboutModel.informationList != null )
                 {
+                    List<AboutInformation> checkInfo = db.AboutInformations.Where(x => x.aboutID == id).ToList();
+                    if (checkInfo.Count() > 0)
+                    {
+                        db.AboutInformations.RemoveRange(checkInfo);
+                    }
                     foreach (List<string> information in aboutModel.informationList)
                     {
                         AboutInformation aboutInformation = new AboutInformation();
@@ -560,7 +596,11 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-
+                Portfolio check = db.Portfolios.Where(x => x.id == id).SingleOrDefault();
+                if (check != null )
+                {
+                    DeletePortfolio();
+                }
                 Portfolio portfolio = new Portfolio();
                 portfolio.id = id;
                 portfolio.background = portfolioModel.background;
@@ -637,22 +677,43 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-
-                Blog blog = new Blog();
-                blog.id = id;
-                blog.backgroundColor = blogModel.background;
-                blog.header = blogModel.header;
-                db.Blogs.Add(blog);
-                db.SaveChanges();
+                Blog checkBlog = db.Blogs.Where(x => x.id == id).SingleOrDefault();
+                if (checkBlog == null)
+                {
+                    Blog blog = new Blog();
+                    blog.id = id;
+                    blog.backgroundColor = blogModel.background;
+                    blog.header = blogModel.header;
+                    db.Blogs.Add(blog);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    checkBlog.backgroundColor = blogModel.background;
+                    checkBlog.header = blogModel.header;
+                    db.SaveChanges();
+                }
                 foreach (StoryModel storyModel in blogModel.stories)
                 {
-                    Story story = new Story();
-                    story.blogID = id;
-                    story.body = storyModel.body;
-                    story.title = storyModel.title;
-                    story.image = storyModel.image;
-                    db.Stories.Add(story);
-                    db.SaveChanges();
+                    Story checkStories = db.Stories.Where(x => x.blogID == id && (x.body == storyModel.body
+                        || x.title == storyModel.title || x.image == storyModel.image)).SingleOrDefault();
+                    if (checkStories == null)
+                    {
+                        Story story = new Story();
+                        story.blogID = id;
+                        story.body = storyModel.body;
+                        story.title = storyModel.title;
+                        story.image = storyModel.image;
+                        db.Stories.Add(story);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        checkStories.body = storyModel.body;
+                        checkStories.title = storyModel.title;
+                        checkStories.image = storyModel.image;
+                        db.SaveChanges();
+                    }
                 }
                 return Json("Blog section saved.", JsonRequestBehavior.AllowGet);
             }
@@ -1346,6 +1407,46 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-
+        public JsonResult DeletePortfolioCategory(PortfolioCategoryModel categoryModel)
+        {
+            try
+            {
+                if (categoryModel.category != null)
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    PortfolioCategory category = db.PortfolioCategories.Where(x => x.portfolioID == id && x.category == categoryModel.category).SingleOrDefault();
+                    List<PortfolioCategoryImageRelationship> relationship = db.PortfolioCategoryImageRelationships.Where(x => x.portfolioCategoryID == category.id).ToList();
+                    db.PortfolioCategoryImageRelationships.RemoveRange(relationship);
+                    db.PortfolioCategories.Remove(category);
+                    db.SaveChanges();
+                }
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+        
+        public JsonResult DeleteSubTextFromHome(string subText)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(subText))
+                {
+                    long id = long.Parse(Session["UserInformation"].ToString());
+                    HomeSubText homeSubText = db.HomeSubTexts.Where(x => x.homeID == id && x.subText == subText).SingleOrDefault();
+                    db.HomeSubTexts.Remove(homeSubText);
+                    db.SaveChanges();
+                }
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

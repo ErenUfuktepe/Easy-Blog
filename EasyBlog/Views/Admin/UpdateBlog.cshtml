@@ -34,7 +34,7 @@ DOCTYPE html>
                                         <b>Web Page Logo:</b>
                                         <div class="custom-file">
                                             <input type="file" class="custom-file-input" id="web-page-logo" required>
-                                            <label class="custom-file-label" for="web-page-logo">Choose file</label>
+                                            <label class="custom-file-label" for="web-page-logo">@Model.mainComponents.logo</label>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 input-padding">
@@ -156,7 +156,7 @@ DOCTYPE html>
                                     <b>Logo:</b>
                                     <div class="custom-file">
                                         <input type="file" name="file" class="custom-file-input" id="navigation-logo">
-                                        <label class="custom-file-label" for="navigation-logo">Choose file</label>
+                                        <label class="custom-file-label" for="navigation-logo">@Model.navigationModel.logo</label>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 input-padding">
@@ -222,7 +222,7 @@ DOCTYPE html>
                                     <b>Background Image:</b>
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="home-background">
-                                        <label class="custom-file-label" for="home-background">Choose file</label>
+                                        <label class="custom-file-label" for="home-background">@Model.home.background</label>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 input-padding">
@@ -310,7 +310,7 @@ DOCTYPE html>
                                     <b>Image:</b>
                                     <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="about-section-image">
-                                        <label class="custom-file-label" for="about-section-image">Choose file</label>
+                                        <label class="custom-file-label" for="about-section-image">@Model.about.image</label>
                                     </div>
                                 </div>
                             </div>
@@ -476,28 +476,52 @@ DOCTYPE html>
                                     <button type="button" class="btn btn-success" style="float:right;" onclick="AddCatagory()">Add Catagory</button>
                                 </div>
                             </div>
-                            @{
-                                foreach(EasyBlog.Models.PortfolioCategoryModel category in Model.portfolio.portfolioCategories)
-                                {
+                            
+                            @foreach(EasyBlog.Models.PortfolioCategoryModel category in Model.portfolio.portfolioCategories)
+                            {
                                 <div class="form-row text-left category">
+                                    <div class="col-lg-12" style="padding-top: 10px;">
+                                        <button type="button" onclick="RemoveCategory()" class="btn btn-danger" style="float:right;"> Remove Catagory</button>
+                                    </div>
                                     <div class="col-lg-6 input-padding">
                                         <b>Category:</b>
                                         <div class="custom-file">
                                             <input type="text" class="form-control category-input" placeholder="Branding" value="@category.category">
                                         </div>
                                     </div>
-                                    <div class="col-lg-6 input-padding">
-                                        <b>Image:</b>
-                                        <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="close catagory-disable" style="float:none;" aria-label="Close">
-                                            <span class="green" aria-hidden="true">&plus;</span>
-                                        </a>
-                                        <div class="custom-file" style="width:90%;">
-                                            <input type="file" class="custom-file-input category-image">
-                                            <label class="custom-file-label">Choose file</label>
-                                        </div>
-                                    </div>
+                                    @for (int index = 0; index < category.images.Count; index++)
+                                    {
+                                        if (index == 0)
+                                        {
+                                            <div class="col-lg-6 input-padding">
+                                                <b>Image:</b>
+                                                <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="close catagory-disable" style="float:none;" aria-label="Close">
+                                                    <span class="green" aria-hidden="true">&plus;</span>
+                                                </a>
+                                                <div class="custom-file" style="width:90%;">
+                                                    <input type="file" class="custom-file-input category-image" name="@category.images.ToArray()[index]">
+                                                    <label class="custom-file-label">@category.images.ToArray()[index]</label>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col-lg-12 input-padding">
+                                                <div class="col-lg-6 new-item">
+                                                    <div class="custom-file">
+                                                        <div class="custom-file" style="width:90%;">
+                                                            <input type="file" class="custom-file-input" name="@category.images.ToArray()[index]">
+                                                            <label class="custom-file-label">@category.images.ToArray()[index]</label>
+                                                        </div>
+                                                        <a href="javascript:void(0);" onclick="RemoveImageFromPortfolio()" class="red close catagory-disable" aria-label="Close" style="display:flex;">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
                                 </div>
-                                }
                             }
                         </div>
                         <div class="col-lg-12" style="text-align:right">

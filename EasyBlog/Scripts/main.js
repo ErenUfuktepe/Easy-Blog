@@ -438,9 +438,17 @@ function Folio() {
 }
 
 function SaveAndDisableMainSection() {
-    if ($('#web-page-logo').val() != '' && $('#web-page-title').val() != '') {
+    if (($('#web-page-logo').val() != '' || window.location.href.includes("UpdateBlog")) && $('#web-page-title').val() != '') {
         var data = {};
-        data.logo = GetFileName('#web-page-logo');
+        if (window.location.href.includes("UpdateBlog")) {
+            if ($('#web-page-logo').val() != '') {
+                data.logo = GetFileName('#web-page-logo');
+            } else {
+                data.logo = null;
+            }
+        } else {
+            data.logo = GetFileName('#web-page-logo');
+        }
         data.title = $('#web-page-title').val();
         data.titleColor = $('#main-title-color').val();
         data.textColor = $('#main-text-color').val();
@@ -468,10 +476,18 @@ function SaveAndDisableMainSection() {
 }
 
 function SaveAndDisableNavigationSection() {
-    if ($('#navigation-logo').val() != '') {
+    if ($('#navigation-logo').val() != '' || window.location.href.includes("UpdateBlog")) {
         var data = {}
+        if (window.location.href.includes("UpdateBlog")) {
+            if ($('#navigation-logo').val() != '') {
+                data.logo = GetFileName('#navigation-logo');
+            } else {
+                data.logo = null;
+            }
+        } else {
+            data.logo = GetFileName('#navigation-logo');
+        }
         data.barColor = $('#nav-bar-color').val();
-        data.logo = GetFileName('#navigation-logo');
         var navigationItems = [];
         GetSectionInformation().forEach(function (element) {
             var item = {};
@@ -498,7 +514,7 @@ function SaveAndDisableNavigationSection() {
 }
 
 function SaveAndDisableHomeSection() {
-    if ($('#home-background').val() != '' || $('#home-main-text').val() != '') {
+    if (($('#home-background').val() != '' || window.location.href.includes("UpdateBlog")) && $('#home-main-text').val() != '') {
         var subTextList = [];
         let flag = false;
         Array.from(document.getElementsByClassName('sub-text')).forEach(function (sub) {
@@ -511,7 +527,15 @@ function SaveAndDisableHomeSection() {
             CreateDialog('error','Invalid Input','Fill all empty fields!','','','');
         } else {
             var data = {};
-            data.background = GetFileName('#home-background');
+            if (window.location.href.includes("UpdateBlog")) {
+                if ($('#home-background').val() != '') {
+                    data.background = GetFileName('#home-background');
+                } else {
+                    data.background = null;
+                }
+            } else {
+                data.background = GetFileName('#home-background');
+            }
             data.textColor = $('#home-text-color').val();
             data.mainText = $('#home-main-text').val();
             data.subTextList = subTextList;
@@ -534,12 +558,20 @@ function SaveAndDisableHomeSection() {
 }
 
 function SaveAndDisableAboutSection() {
-    if ($('#about-section-image').val() == '' || $('#about-header').val() == ''
+    if (($('#about-section-image').val() == '' && !window.location.href.includes("UpdateBlog")) || $('#about-header').val() == ''
         || $('#about-body').val() == '') {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
         var data = {};
-        data.image = GetFileName('#about-section-image');
+        if (window.location.href.includes("UpdateBlog")) {
+            if ($('#about-section-image').val() != '') {
+                data.image = GetFileName('#about-section-image');
+            } else {
+                data.image = null;
+            }
+        } else {
+            data.image = GetFileName('#about-section-image');
+        }
         data.background = $('#about-background-color').val();
         data.frame = $('#about-frame-color').val();
         data.header = $('#about-header').val();
@@ -845,7 +877,18 @@ function AddSubTextToHome() {
 }
 
 function RemoveSubTextFromHome() {
-    event.target.parentElement.parentElement.parentElement.parentElement.remove();
+    if (window.location.href.includes("UpdateBlog")) {
+        var data = {};
+        data.subText = event.target.parentElement.parentElement.children[0].value;
+        var response = AjaxCall("Admin", "DeleteSubTextFromHome", data);
+        if (response == "Success") {
+            event.target.parentElement.parentElement.parentElement.parentElement.remove();
+        } else {
+            CreateDialog('error', 'System Error', response, '', '', '');
+        }
+    } else {
+        event.target.parentElement.parentElement.parentElement.parentElement.remove();
+    }
 }
 
 function AddImageToPortfolio() {
@@ -870,7 +913,7 @@ function RemoveImageFromPortfolio() {
 
 function AddCatagory() {
     var innerHTML = '<div class="col-lg-12">\
-                        <button type="button" onclick="RemoveCatagory()" class="btn btn-danger" style = "float:right;"> Remove Catagory</a>\
+                        <button type="button" onclick="RemoveCategory()" class="btn btn-danger" style = "float:right;"> Remove Catagory</button>\
                     </div >\
                     <div class="col-lg-6 input-padding">\
                         <b>Category:</b>\
@@ -892,8 +935,25 @@ function AddCatagory() {
     FileEventListenerRefresh();
 }
 
-function RemoveCatagory() {
-    event.target.parentElement.parentElement.remove();
+function RemoveCategory() {
+    if (window.location.href.includes("UpdateBlog")) {
+        var category = event.target.parentElement.parentElement.children[1].children[1].children[0].value;
+        var data = {}
+        GetPortfolioCategories()[1].forEach(function (element) {
+            if (category == element.category) {
+                data = element;
+            }
+        });
+        var response = AjaxCall("Admin", "DeletePortfolioCategory", data)
+        if (response == 'Success') {
+            event.target.parentElement.parentElement.remove();
+        } else {
+            CreateDialog('error', 'System Error', response, '', '', '');
+        }
+    }
+    else {
+        event.target.parentElement.parentElement.remove();
+    }
 }
 
 function AddStory() {
@@ -1330,7 +1390,15 @@ function GetPortfolioCategories() {
                     emptyInputFlag = true;
                 }
                 flag = true;
-                imageList.push(GetFileNameWithValue(input.value));
+                if (window.location.href.includes("UpdateBlog")) {
+                    if (input.name != '') {
+                        imageList.push(input.name);
+                    } else {
+                        imageList.push(GetFileNameWithValue(input.value));
+                    }
+                } else {
+                    imageList.push(GetFileNameWithValue(input.value));
+                }
                 newCatagory.images = imageList;
             }
         }
