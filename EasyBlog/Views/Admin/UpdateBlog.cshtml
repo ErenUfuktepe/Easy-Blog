@@ -95,7 +95,10 @@ DOCTYPE html>
                                                         {
                                                             <option value="@socialMedia.code" selected>@socialMedia.name</option>
                                                         }
-                                                        <option value="@socialMedia.code">@socialMedia.name</option>
+                                                        else
+                                                        {
+                                                            <option value="@socialMedia.code">@socialMedia.name</option>
+                                                        }
                                                     }
                                                 </select>
                                             </div>
@@ -104,6 +107,7 @@ DOCTYPE html>
                                             <b>Link:</b>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" value="@media.link">
+                                                <a href="javascript:void(0);" onclick="DeleteSocialMedia()" class="red close remove-social-media" aria-label="Close" style="display:flex; padding:5px;"><span aria-hidden="true">&times;</span></a>
                                             </div>
                                         </div>
                                     </div>
@@ -177,6 +181,23 @@ DOCTYPE html>
                                             <th class="text-right" scope="col" style="border:0px;"></th>
                                         </tr>
                                     </thead>
+                                    <tbody class="table-body">
+                                       
+                                        @foreach (EasyBlog.Models.NavigationItemModel item in Model.navigationModel.navigationItems)
+                                        {
+                                            <tr>
+                                                <th scope="row">@item.priority</th>
+                                                <td class="text-center" id="@item.content">@item.sectionName</td>
+                                                <td class="text-right">
+                                                    @if (item.content != "home")
+                                                    {
+                                                        <button class="table-icon delete-row close" href="javascript:void(0)"> <span class="fa fa-trash"></span></button>
+                                                    }
+                                                    <button class="table-icon edit-row close" href="javascript:void(0)" data-toggle="modal" data-target="#change-section-name"> <span class="fa fa-edit"></span></button>
+                                                </td>
+                                            </tr>
+                                         }
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -186,6 +207,7 @@ DOCTYPE html>
                     </div>
                 </div>
             }
+            
             @if (Model.home.background != null)
             {
                 <!--Home-->
@@ -434,16 +456,16 @@ DOCTYPE html>
                                 <div class="col-lg-6 input-padding">
                                     <b>Section Header:</b>
                                     <div class="custom-file">
-                                        <input type="text" class="form-control" placeholder="Portfolio" id="portfolio-header">
+                                        <input type="text" class="form-control" placeholder="Portfolio" id="portfolio-header" value="@Model.portfolio.header">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 input-padding">
                                     <b>Background Color:</b>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="#ffffff" id="portfolio-background-color-code">
+                                        <input type="text" class="form-control" value="@Model.portfolio.background" id="portfolio-background-color-code">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
-                                                <input class="color-change" type="color" value="#ffffff" id="portfolio-background-color">
+                                                <input class="color-change" type="color" value="@Model.portfolio.background" id="portfolio-background-color">
                                             </div>
                                         </div>
                                     </div>
@@ -454,31 +476,36 @@ DOCTYPE html>
                                     <button type="button" class="btn btn-success" style="float:right;" onclick="AddCatagory()">Add Catagory</button>
                                 </div>
                             </div>
-                            <div class="form-row text-left category">
-                                <div class="col-lg-6 input-padding">
-                                    <b>Category:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control category-input" placeholder="Branding">
+                            @{
+                                foreach(EasyBlog.Models.PortfolioCategoryModel category in Model.portfolio.portfolioCategories)
+                                {
+                                <div class="form-row text-left category">
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Category:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control category-input" placeholder="Branding" value="@category.category">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Image:</b>
+                                        <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="close catagory-disable" style="float:none;" aria-label="Close">
+                                            <span class="green" aria-hidden="true">&plus;</span>
+                                        </a>
+                                        <div class="custom-file" style="width:90%;">
+                                            <input type="file" class="custom-file-input category-image">
+                                            <label class="custom-file-label">Choose file</label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Image:</b>
-                                    <a href="javascript:void(0);" onclick="AddImageToPortfolio()" class="close catagory-disable" style="float:none;" aria-label="Close">
-                                        <span class="green" aria-hidden="true">&plus;</span>
-                                    </a>
-                                    <div class="custom-file" style="width:90%;">
-                                        <input type="file" class="custom-file-input category-image">
-                                        <label class="custom-file-label">Choose file</label>
-                                    </div>
-                                </div>
-                            </div>
+                                }
+                            }
                         </div>
                         <div class="col-lg-12" style="text-align:right">
                             <button style="margin:5px;" id="portfolio-button" type="button" onclick="SaveAndDisablePortfolioSection()" class="btn btn-success">Save And Continue</button>
                         </div>
                     </div>
                 </div>
-            }
+                                }
             @if (Model.blog.header != null)
             {
                 <!--Blog-->
@@ -492,16 +519,16 @@ DOCTYPE html>
                                 <div class="col-lg-6 input-padding">
                                     <b>Section Header:</b>
                                     <div class="custom-file">
-                                        <input type="text" class="form-control" placeholder="Journal" id="blog-header">
+                                        <input type="text" class="form-control" placeholder="Journal" id="blog-header" value="@Model.blog.header">
                                     </div>
                                 </div>
                                 <div class="col-lg-6 input-padding">
                                     <b>Background Color:</b>
                                     <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="#ffffff" id="blog-background-color-code">
+                                        <input type="text" class="form-control" value="@Model.blog.background" id="blog-background-color-code">
                                         <div class="input-group-prepend">
                                             <div class="input-group-text">
-                                                <input class="color-change" type="color" value="#ffffff" id="blog-background-color">
+                                                <input class="color-change" type="color" value="@Model.blog.background" id="blog-background-color">
                                             </div>
                                         </div>
                                     </div>
@@ -513,24 +540,35 @@ DOCTYPE html>
                                         <a href="javascript:void(0);" onclick="AddStory()" class="btn btn-success disable-blog">Add Story</a>
                                     </div>
                                 </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Title:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control" placeholder="Story Title">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Image:</b>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input">
-                                        <label class="custom-file-label">Choose file</label>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 input-padding">
-                                    <b>Body: </b>
-                                    <textarea class="form-control" rows="3"></textarea>
-                                </div>
                             </div>
+                            @foreach (EasyBlog.Models.StoryModel story in Model.blog.stories)
+                            {
+                                <div class="form-row text-left">
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-12" style="text-align:right; padding:0px; padding-top:10px;">
+                                            <a href="javascript:void(0);" onclick="RemoveStory()" class="btn btn-danger disable-blog">Remove</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Title:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control" placeholder="Story Title" value="@story.title">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 input-padding">
+                                        <b>Image:</b>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" >
+                                            <label class="custom-file-label">@story.image</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 input-padding">
+                                        <b>Body: </b>
+                                        <textarea class="form-control" value="@story.body" rows="3">@story.body</textarea>
+                                    </div>
+                                </div>
+
+                            }
                         </div>
                         <div class="col-lg-12" style="text-align:right">
                             <button style="margin:5px;" id="blog-button" type="button" onclick="SaveAndDisableBlogSection()" class="btn btn-success">Save And Continue</button>

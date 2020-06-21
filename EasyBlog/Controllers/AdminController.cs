@@ -1,19 +1,13 @@
-﻿using Antlr.Runtime.Misc;
-using EasyBlog.Helpers;
+﻿using EasyBlog.Helpers;
 using EasyBlog.Models;
 using EasyBlog.Models.RequestModels;
+using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Security.Cryptography.X509Certificates;
 using System.Web;
-using System.Web.DynamicData;
-using System.Web.Helpers;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 
 namespace EasyBlog.Controllers
 {
@@ -87,24 +81,21 @@ namespace EasyBlog.Controllers
                     response = "Invalid email address!";
                     return Json(response, JsonRequestBehavior.AllowGet);
                 }
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                UserInformation userInformation = db.UserInformations.Where(x => x.email == oldEmail).SingleOrDefault();
+                UserLogin userLogin = db.UserLogins.Where(x => x.email == oldEmail).SingleOrDefault();
+                if (userInformation != null && userLogin != null)
                 {
-                    UserInformation userInformation = db.UserInformations.Where(x => x.email == oldEmail).SingleOrDefault();
-                    UserLogin userLogin = db.UserLogins.Where(x => x.email == oldEmail).SingleOrDefault();
-                    if (userInformation != null && userLogin != null)
-                    {
-                        userInformation.email = newEmail;
-                        db.SaveChanges();
-                        userLogin.email = newEmail;
-                        db.SaveChanges();
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
-                    else
-                    {
-                        response = "System Error!";
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
+                    userInformation.email = newEmail;
+                    db.SaveChanges();
+                    userLogin.email = newEmail;
+                    db.SaveChanges();
+                    return Json(response, JsonRequestBehavior.AllowGet);
                 }
+                else
+                {
+                    response = "System Error!";
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }   
             }
             catch (System.Data.Entity.Infrastructure.DbUpdateException e)
             {
@@ -138,25 +129,22 @@ namespace EasyBlog.Controllers
             }
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    UserInformation userInformation = db.UserInformations.Where(x => x.email == email && x.phone == oldPhone).SingleOrDefault();
+                UserInformation userInformation = db.UserInformations.Where(x => x.email == email && x.phone == oldPhone).SingleOrDefault();
 
-                    if (!string.IsNullOrEmpty(newPhone)) {
-                        UserInformation newPhoneCheck = db.UserInformations.Where(x => x.phone == newPhone).SingleOrDefault();
-                        if (newPhoneCheck != null)
-                        {
-                            response = "This phone number belongs to someone else!";
-                            return Json(response, JsonRequestBehavior.AllowGet);
-                        }
-                    }
-                    if (userInformation != null)
+                if (!string.IsNullOrEmpty(newPhone)) {
+                    UserInformation newPhoneCheck = db.UserInformations.Where(x => x.phone == newPhone).SingleOrDefault();
+                    if (newPhoneCheck != null)
                     {
-                        userInformation.phone = newPhone;
-                        db.SaveChanges();
+                        response = "This phone number belongs to someone else!";
                         return Json(response, JsonRequestBehavior.AllowGet);
                     }
                 }
+                if (userInformation != null)
+                {
+                    userInformation.phone = newPhone;
+                    db.SaveChanges();
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                } 
             }
             catch (Exception e)
             {
@@ -168,19 +156,16 @@ namespace EasyBlog.Controllers
         private UserInformationModel RefreshUserInformationModel(long id)
         {
             try {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    UserInformation userInformation = db.UserInformations.Where(x => x.id == id).SingleOrDefault();
-                    UserInformationModel userInformationModel = new UserInformationModel();
-                    userInformationModel.email = userInformation.email;
-                    userInformationModel.phone = userInformation.phone;
-                    userInformationModel.createdDate = userInformation.createdDate;
-                    userInformationModel.modifiedDate = userInformation.modifiedDate;
-                    userInformationModel.lastLoginDate = userInformation.lastLoginDate;
-                    userInformationModel.name = userInformation.name;
-                    userInformationModel.surname = userInformation.surname;
-                    return userInformationModel;
-                }
+                UserInformation userInformation = db.UserInformations.Where(x => x.id == id).SingleOrDefault();
+                UserInformationModel userInformationModel = new UserInformationModel();
+                userInformationModel.email = userInformation.email;
+                userInformationModel.phone = userInformation.phone;
+                userInformationModel.createdDate = userInformation.createdDate;
+                userInformationModel.modifiedDate = userInformation.modifiedDate;
+                userInformationModel.lastLoginDate = userInformation.lastLoginDate;
+                userInformationModel.name = userInformation.name;
+                userInformationModel.surname = userInformation.surname;
+                return userInformationModel;
             }
             catch (Exception e)
             {
@@ -194,20 +179,17 @@ namespace EasyBlog.Controllers
             string response = "Success";
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                UserLogin userLogin = db.UserLogins.Where(x => x.email == email).SingleOrDefault();
+                if (securityUtilize.Encrypt(oldPassword) == userLogin.password)
                 {
-                    UserLogin userLogin = db.UserLogins.Where(x => x.email == email).SingleOrDefault();
-                    if (securityUtilize.Encrypt(oldPassword) == userLogin.password)
-                    {
-                        userLogin.password = securityUtilize.Encrypt(newPassword);
-                        db.SaveChanges();
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
-                    else
-                    {
-                        response = "Wronge password!";
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
+                    userLogin.password = securityUtilize.Encrypt(newPassword);
+                    db.SaveChanges();
+                    return Json(response, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    response = "Wronge password!";
+                    return Json(response, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e){
@@ -216,18 +198,15 @@ namespace EasyBlog.Controllers
             }
         }
         public List<SocialMedia> GetSocialMediaList() {
-            using (EasyBlogEntities db = new EasyBlogEntities())
+            try
             {
-                try
-                {
-                    List<SocialMedia> socialMedias = db.SocialMedias.ToList();
-                    return socialMedias;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return null;
-                }
+                List<SocialMedia> socialMedias = db.SocialMedias.ToList();
+                return socialMedias;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
             }
         }
         public JsonResult UploadImages()
@@ -283,27 +262,25 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Template checkExisting = db.Templates.Where(x => x.id == id).SingleOrDefault();
+                if (checkExisting == null)
                 {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    Template checkExisting = db.Templates.Where(x => x.id == id).SingleOrDefault();
-                    if (checkExisting == null)
-                    {
-                        Template mainTemplate = new Template();
-                        mainTemplate.templateName = template;
-                        mainTemplate.id = id;
-                        db.Templates.Add(mainTemplate);
-                        db.SaveChanges();
-                        return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
-                    }
-                    else if (checkExisting.templateName != template)
-                    {
-                        checkExisting.templateName = template;
-                        db.SaveChanges();
-                        return Json("Template updated successfully!", JsonRequestBehavior.AllowGet);
-                    }
+                    Template mainTemplate = new Template();
+                    mainTemplate.templateName = template;
+                    mainTemplate.id = id;
+                    db.Templates.Add(mainTemplate);
+                    db.SaveChanges();
                     return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
                 }
+                else if (checkExisting.templateName != template)
+                {
+                    checkExisting.templateName = template;
+                    db.SaveChanges();
+                    return Json("Template updated successfully!", JsonRequestBehavior.AllowGet);
+                }
+                return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
+                
             }
             catch(Exception e)
             {
@@ -315,33 +292,34 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                string response = "Success";
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Main checkMain = db.Mains.Where(x => x.id == id).SingleOrDefault();
+                if (checkMain == null)
                 {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    Main checkMain = db.Mains.Where(x => x.id == id).SingleOrDefault();
-                    if (checkMain == null)
-                    {
-                        Main main = new Main();
-                        main.id = id;
-                        main.logo = mainComponentsModel.logo;
-                        main.title = mainComponentsModel.title;
-                        main.textColor = mainComponentsModel.textColor;
-                        main.hoverColor = mainComponentsModel.hoverColor;
-                        main.titleColor = mainComponentsModel.titleColor;
-                        db.Mains.Add(main);
-                        db.SaveChanges();
-                    }
-                    else{
-                        checkMain.logo = mainComponentsModel.logo;
-                        checkMain.title = mainComponentsModel.title;
-                        checkMain.textColor = mainComponentsModel.textColor;
-                        checkMain.hoverColor = mainComponentsModel.hoverColor;
-                        checkMain.titleColor = mainComponentsModel.titleColor;
-                        db.SaveChanges();
-                    }
-                    string response = AddSocialMediaLink(mainComponentsModel.socialMediaList);
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    Main main = new Main();
+                    main.id = id;
+                    main.logo = mainComponentsModel.logo;
+                    main.title = mainComponentsModel.title;
+                    main.textColor = mainComponentsModel.textColor;
+                    main.hoverColor = mainComponentsModel.hoverColor;
+                    main.titleColor = mainComponentsModel.titleColor;
+                    db.Mains.Add(main);
+                    db.SaveChanges();
                 }
+                else{
+                    checkMain.logo = mainComponentsModel.logo;
+                    checkMain.title = mainComponentsModel.title;
+                    checkMain.textColor = mainComponentsModel.textColor;
+                    checkMain.hoverColor = mainComponentsModel.hoverColor;
+                    checkMain.titleColor = mainComponentsModel.titleColor;
+                    db.SaveChanges();
+                }
+                if (mainComponentsModel.socialMediaList.Count() > 0)
+                {
+                    response = AddSocialMediaLink(mainComponentsModel.socialMediaList);
+                }
+                return Json(response, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -354,54 +332,51 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                List<SocialMediaLink> socialMedias = db.SocialMediaLinks.Where(x => x.userID == id).ToList();
+                if (socialMedias.Count == 0)
                 {
-                    List<SocialMediaLink> socialMedias = db.SocialMediaLinks.Where(x => x.userID == id).ToList();
-                    if (socialMedias.Count == 0)
+                    foreach (SocialMediaModel socialMediaModel in socialMediaModels)
                     {
-                        foreach (SocialMediaModel socialMediaModel in socialMediaModels)
+                        if (socialMediaModel.link != null)
                         {
-                            if (socialMediaModel.link != null)
-                            {
-                                SocialMediaLink socialMediaLink = new SocialMediaLink();
-                                socialMediaLink.userID = id;
-                                socialMediaLink.link = socialMediaModel.link;
-                                socialMediaLink.socialMedia = db.SocialMedias.Where(x => x.code == socialMediaModel.socialMedia).SingleOrDefault().id;
-                                db.SocialMediaLinks.Add(socialMediaLink);
-                                db.SaveChanges();
-                            }
+                            SocialMediaLink socialMediaLink = new SocialMediaLink();
+                            socialMediaLink.userID = id;
+                            socialMediaLink.link = socialMediaModel.link;
+                            socialMediaLink.socialMedia = db.SocialMedias.Where(x => x.code == socialMediaModel.socialMedia).SingleOrDefault().id;
+                            db.SocialMediaLinks.Add(socialMediaLink);
+                            db.SaveChanges();
                         }
                     }
-                    else
+                }
+                else
+                {
+                    foreach (SocialMediaModel socialMediaModel in socialMediaModels)
                     {
                         bool flag = false;
-                        foreach (SocialMediaModel socialMediaModel in socialMediaModels)
+                        long socialMediaID = db.SocialMedias.Where(x => x.code == socialMediaModel.socialMedia).SingleOrDefault().id;
+                        foreach (SocialMediaLink link in socialMedias)
                         {
-                            long socialMediaID = db.SocialMedias.Where(x => x.code == socialMediaModel.socialMedia).SingleOrDefault().id;
-                            flag = false;
-                            foreach (SocialMediaLink link in socialMedias)
+                            if (link.socialMedia == socialMediaID)
                             {
-                                if (link.id == socialMediaID)
-                                {
-                                    link.link = socialMediaModel.link;
-                                    db.SaveChanges();
-                                    flag = true;
-                                    break;
-                                }
-                            }
-                            if (!flag)
-                            {
-                                SocialMediaLink socialMediaLink = new SocialMediaLink();
-                                socialMediaLink.userID = id;
-                                socialMediaLink.link = socialMediaModel.link;
-                                socialMediaLink.socialMedia = socialMediaID;
-                                db.SocialMediaLinks.Add(socialMediaLink);
+                                link.link = socialMediaModel.link;
                                 db.SaveChanges();
+                                flag = true;
+                                break;
                             }
                         }
+                        if (!flag)
+                        {
+                            SocialMediaLink socialMediaLink = new SocialMediaLink();
+                            socialMediaLink.userID = id;
+                            socialMediaLink.link = socialMediaModel.link;
+                            socialMediaLink.socialMedia = socialMediaID;
+                            db.SocialMediaLinks.Add(socialMediaLink);
+                            db.SaveChanges();
+                        }
                     }
-                    return "Main components saved successfully";
                 }
+                return "Main components saved successfully";
+                
             }
             catch (Exception e)
             {
@@ -414,27 +389,24 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                Navigation check = db.Navigations.Where(x => x.id == id).SingleOrDefault();
+                if (check == null)
                 {
-                    Navigation check = db.Navigations.Where(x => x.id == id).SingleOrDefault();
-                    if (check == null)
-                    {
-                        Navigation navigation = new Navigation();
-                        navigation.barColor = navigationModel.barColor;
-                        navigation.logo = navigationModel.logo;
-                        navigation.id = id;
-                        db.Navigations.Add(navigation);
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        check.barColor = navigationModel.barColor;
-                        check.logo = navigationModel.logo;
-                        db.SaveChanges();
-                    }
-                    string response = SaveNavigationItems(navigationModel.navigationItems);
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    Navigation navigation = new Navigation();
+                    navigation.barColor = navigationModel.barColor;
+                    navigation.logo = navigationModel.logo;
+                    navigation.id = id;
+                    db.Navigations.Add(navigation);
+                    db.SaveChanges();
                 }
+                else
+                {
+                    check.barColor = navigationModel.barColor;
+                    check.logo = navigationModel.logo;
+                    db.SaveChanges();
+                }
+                string response = SaveNavigationItems(navigationModel.navigationItems);
+                return Json(response, JsonRequestBehavior.AllowGet);    
             }
             catch (Exception e)
             {
@@ -447,50 +419,47 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                List<NavigationItem> check = db.NavigationItems.Where(x => x.navID == id).ToList();
+                if(check.Count == 0)
                 {
-                    List<NavigationItem> check = db.NavigationItems.Where(x => x.navID == id).ToList();
-                    if(check.Count == 0)
+                    foreach (NavigationItemModel navigationItemModel in navigationItemModels)
                     {
-                        foreach (NavigationItemModel navigationItemModel in navigationItemModels)
+                        NavigationItem navigationItem = new NavigationItem();
+                        navigationItem.navID = db.Navigations.Where(x =>  x.id == id).SingleOrDefault().id;
+                        navigationItem.content = navigationItemModel.content;
+                        navigationItem.sectionName = navigationItemModel.sectionName;
+                        db.NavigationItems.Add(navigationItem);
+                        db.SaveChanges();
+                    }
+                }
+                else
+                {
+                    bool flag = false;
+                    foreach (NavigationItemModel navigationItemModel in navigationItemModels)
+                    {
+                        flag = false;
+                        foreach (NavigationItem navigationItem in check)
+                        {
+                            if (navigationItemModel.content == navigationItem.content)
+                            {
+                                navigationItem.sectionName = navigationItemModel.sectionName;
+                                flag = true;
+                                db.SaveChanges();
+                                break;
+                            }
+                        }
+                        if (!flag)
                         {
                             NavigationItem navigationItem = new NavigationItem();
-                            navigationItem.navID = db.Navigations.Where(x =>  x.id == id).SingleOrDefault().id;
+                            navigationItem.navID = id;
                             navigationItem.content = navigationItemModel.content;
                             navigationItem.sectionName = navigationItemModel.sectionName;
                             db.NavigationItems.Add(navigationItem);
                             db.SaveChanges();
                         }
                     }
-                    else
-                    {
-                        bool flag = false;
-                        foreach (NavigationItemModel navigationItemModel in navigationItemModels)
-                        {
-                            flag = false;
-                            foreach (NavigationItem navigationItem in check)
-                            {
-                                if (navigationItemModel.content == navigationItem.content)
-                                {
-                                    navigationItem.sectionName = navigationItemModel.sectionName;
-                                    flag = true;
-                                    db.SaveChanges();
-                                    break;
-                                }
-                            }
-                            if (!flag)
-                            {
-                                NavigationItem navigationItem = new NavigationItem();
-                                navigationItem.navID = id;
-                                navigationItem.content = navigationItemModel.content;
-                                navigationItem.sectionName = navigationItemModel.sectionName;
-                                db.NavigationItems.Add(navigationItem);
-                                db.SaveChanges();
-                            }
-                        }
-                    }
-                    return "Navigation Items saved.";
                 }
+                return "Navigation Items saved.";             
             }
             catch (Exception e)
             {
@@ -502,29 +471,26 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using(EasyBlogEntities db = new EasyBlogEntities())
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Home check = db.Homes.Where(x => x.id == id).SingleOrDefault();
+                if (check == null)
                 {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    Home check = db.Homes.Where(x => x.id == id).SingleOrDefault();
-                    if (check == null)
-                    {
-                        Home home = new Home();
-                        home.mainText = homeModel.mainText;
-                        home.id = id;
-                        home.textColor = homeModel.textColor;
-                        home.background = homeModel.background;
-                        db.Homes.Add(home);
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        check.mainText = homeModel.mainText;
-                        check.textColor = homeModel.textColor;
-                        check.background = homeModel.background;
-                        db.SaveChanges();
-                    }
-                    return Json(SaveHomeSubTexts(homeModel.subTextList), JsonRequestBehavior.AllowGet);                    
+                    Home home = new Home();
+                    home.mainText = homeModel.mainText;
+                    home.id = id;
+                    home.textColor = homeModel.textColor;
+                    home.background = homeModel.background;
+                    db.Homes.Add(home);
+                    db.SaveChanges();
                 }
+                else
+                {
+                    check.mainText = homeModel.mainText;
+                    check.textColor = homeModel.textColor;
+                    check.background = homeModel.background;
+                    db.SaveChanges();
+                }
+                return Json(SaveHomeSubTexts(homeModel.subTextList), JsonRequestBehavior.AllowGet);                                  
             }
             catch (Exception e)
             {
@@ -536,19 +502,16 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                long id = long.Parse(Session["UserInformation"].ToString());
+                foreach (string text in subTexts)
                 {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    foreach (string text in subTexts)
-                    {
-                        HomeSubText homeSubText = new HomeSubText();
-                        homeSubText.homeID = id;
-                        homeSubText.subText = text;
-                        db.HomeSubTexts.Add(homeSubText);
-                        db.SaveChanges();
-                    }
-                    return "Home section saved.";
+                    HomeSubText homeSubText = new HomeSubText();
+                    homeSubText.homeID = id;
+                    homeSubText.subText = text;
+                    db.HomeSubTexts.Add(homeSubText);
+                    db.SaveChanges();
                 }
+                return "Home section saved.";
             }
             catch (Exception e)
             {
@@ -560,34 +523,31 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
+                long id = long.Parse(Session["UserInformation"].ToString());
 
-                    About about = new About();
-                    about.background = aboutModel.background;
-                    about.image = aboutModel.image;
-                    about.header = aboutModel.header;
-                    about.subTitle = aboutModel.subTitle;
-                    about.body = aboutModel.body;
-                    about.frameColor = aboutModel.frame;
-                    about.id = id;
-                    db.Abouts.Add(about);
-                    db.SaveChanges();
-                    if (aboutModel.informationList != null )
+                About about = new About();
+                about.background = aboutModel.background;
+                about.image = aboutModel.image;
+                about.header = aboutModel.header;
+                about.subTitle = aboutModel.subTitle;
+                about.body = aboutModel.body;
+                about.frameColor = aboutModel.frame;
+                about.id = id;
+                db.Abouts.Add(about);
+                db.SaveChanges();
+                if (aboutModel.informationList != null )
+                {
+                    foreach (List<string> information in aboutModel.informationList)
                     {
-                        foreach (List<string> information in aboutModel.informationList)
-                        {
-                            AboutInformation aboutInformation = new AboutInformation();
-                            aboutInformation.aboutID = id;
-                            aboutInformation.informationTitle = information[0];
-                            aboutInformation.informationValue = information[1];
-                            db.AboutInformations.Add(aboutInformation);
-                            db.SaveChanges();
-                        }
+                        AboutInformation aboutInformation = new AboutInformation();
+                        aboutInformation.aboutID = id;
+                        aboutInformation.informationTitle = information[0];
+                        aboutInformation.informationValue = information[1];
+                        db.AboutInformations.Add(aboutInformation);
+                        db.SaveChanges();
                     }
-                    return Json("About section saved.", JsonRequestBehavior.AllowGet);
                 }
+                return Json("About section saved.", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -599,35 +559,32 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
+                long id = long.Parse(Session["UserInformation"].ToString());
 
-                    Portfolio portfolio = new Portfolio();
-                    portfolio.id = id;
-                    portfolio.background = portfolioModel.background;
-                    portfolio.header = portfolioModel.header;
-                    db.Portfolios.Add(portfolio);
+                Portfolio portfolio = new Portfolio();
+                portfolio.id = id;
+                portfolio.background = portfolioModel.background;
+                portfolio.header = portfolioModel.header;
+                db.Portfolios.Add(portfolio);
+                db.SaveChanges();
+                foreach (PortfolioCategoryModel categoryModel in portfolioModel.portfolioCategories)
+                {
+                    PortfolioCategory portfolioCategory = new PortfolioCategory();
+                    portfolioCategory.portfolioID = id;
+                    portfolioCategory.category = categoryModel.category;
+                    db.PortfolioCategories.Add(portfolioCategory);
                     db.SaveChanges();
-                    foreach (PortfolioCategoryModel categoryModel in portfolioModel.portfolioCategories)
+                    long categoryID = db.PortfolioCategories.Where(x => x.category == categoryModel.category && x.portfolioID == id).SingleOrDefault().id;
+                    foreach (string image in categoryModel.images)
                     {
-                        PortfolioCategory portfolioCategory = new PortfolioCategory();
-                        portfolioCategory.portfolioID = id;
-                        portfolioCategory.category = categoryModel.category;
-                        db.PortfolioCategories.Add(portfolioCategory);
+                        PortfolioCategoryImageRelationship portfolioCategoryImageRelationship = new PortfolioCategoryImageRelationship();
+                        portfolioCategoryImageRelationship.portfolioCategoryID = categoryID;
+                        portfolioCategoryImageRelationship.image = image;
+                        db.PortfolioCategoryImageRelationships.Add(portfolioCategoryImageRelationship);
                         db.SaveChanges();
-                        long categoryID = db.PortfolioCategories.Where(x => x.category == categoryModel.category && x.portfolioID == id).SingleOrDefault().id;
-                        foreach (string image in categoryModel.images)
-                        {
-                            PortfolioCategoryImageRelationship portfolioCategoryImageRelationship = new PortfolioCategoryImageRelationship();
-                            portfolioCategoryImageRelationship.portfolioCategoryID = categoryID;
-                            portfolioCategoryImageRelationship.image = image;
-                            db.PortfolioCategoryImageRelationships.Add(portfolioCategoryImageRelationship);
-                            db.SaveChanges();
-                        }
                     }
-                    return Json("Portfolio section saved.", JsonRequestBehavior.AllowGet);
                 }
+                return Json("Portfolio section saved.", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -639,10 +596,10 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Contact checkContact = db.Contacts.Where(x => x.id == id).SingleOrDefault();
+                if (checkContact == null)
                 {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-
                     Contact contact = new Contact();
                     contact.id = id;
                     contact.header = contactModel.header;
@@ -654,9 +611,20 @@ namespace EasyBlog.Controllers
                     contact.country = contactModel.country;
                     contact.state = contactModel.state;
                     db.Contacts.Add(contact);
-                    db.SaveChanges();
-                    return Json("Contact section saved.", JsonRequestBehavior.AllowGet);
                 }
+                else
+                {
+                    checkContact.header = contactModel.header;
+                    checkContact.backgroundColor = contactModel.background;
+                    checkContact.phone = contactModel.phone;
+                    checkContact.email = contactModel.email;
+                    checkContact.address = contactModel.address;
+                    checkContact.city = contactModel.city;
+                    checkContact.country = contactModel.country;
+                    checkContact.state = contactModel.state;
+                }
+                db.SaveChanges();
+                return Json("Contact section saved.", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -668,28 +636,25 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
+                long id = long.Parse(Session["UserInformation"].ToString());
 
-                    Blog blog = new Blog();
-                    blog.id = id;
-                    blog.backgroundColor = blogModel.background;
-                    blog.header = blogModel.header;
-                    db.Blogs.Add(blog);
+                Blog blog = new Blog();
+                blog.id = id;
+                blog.backgroundColor = blogModel.background;
+                blog.header = blogModel.header;
+                db.Blogs.Add(blog);
+                db.SaveChanges();
+                foreach (StoryModel storyModel in blogModel.stories)
+                {
+                    Story story = new Story();
+                    story.blogID = id;
+                    story.body = storyModel.body;
+                    story.title = storyModel.title;
+                    story.image = storyModel.image;
+                    db.Stories.Add(story);
                     db.SaveChanges();
-                    foreach (StoryModel storyModel in blogModel.stories)
-                    {
-                        Story story = new Story();
-                        story.blogID = id;
-                        story.body = storyModel.body;
-                        story.title = storyModel.title;
-                        story.image = storyModel.image;
-                        db.Stories.Add(story);
-                        db.SaveChanges();
-                    }
-                    return Json("Blog section saved.", JsonRequestBehavior.AllowGet);
                 }
+                return Json("Blog section saved.", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -701,51 +666,48 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
+                long id = long.Parse(Session["UserInformation"].ToString());
 
-                    Resume resume = new Resume();
-                    resume.header = resumeModel.header;
-                    resume.background = resumeModel.background;
-                    resume.id = id;
-                    db.Resumes.Add(resume);
+                Resume resume = new Resume();
+                resume.header = resumeModel.header;
+                resume.background = resumeModel.background;
+                resume.id = id;
+                db.Resumes.Add(resume);
+                db.SaveChanges();
+                foreach (ResumeSectionModel section in resumeModel.resumeSections)
+                {
+                    ResumeSection resumeSection = new ResumeSection();
+                    resumeSection.header = section.header;
+                    resumeSection.resumeID = id;
+                    db.ResumeSections.Add(resumeSection);
                     db.SaveChanges();
-                    foreach (ResumeSectionModel section in resumeModel.resumeSections)
+                    long sectionID = db.ResumeSections.Where(x => x.header == section.header && x.id == id).SingleOrDefault().id;
+                    foreach (ResumeSubSectionModel subSection in section.resumeSubSections)
                     {
-                        ResumeSection resumeSection = new ResumeSection();
-                        resumeSection.header = section.header;
-                        resumeSection.resumeID = id;
-                        db.ResumeSections.Add(resumeSection);
+                        ResumeSectionItem resumeSectionItem = new ResumeSectionItem();
+                        resumeSectionItem.resumeSectionID = sectionID;
+                        resumeSectionItem.header = subSection.header;
+                        resumeSectionItem.date = subSection.date;
+                        resumeSectionItem.location = subSection.location;
+                        resumeSectionItem.explanation = subSection.explanation;
+                        db.ResumeSectionItems.Add(resumeSectionItem);
                         db.SaveChanges();
-                        long sectionID = db.ResumeSections.Where(x => x.header == section.header && x.id == id).SingleOrDefault().id;
-                        foreach (ResumeSubSectionModel subSection in section.resumeSubSections)
+                        long subSectionID = db.ResumeSectionItems.Where(x => x.header == subSection.header && x.id == sectionID).SingleOrDefault().id;
+                        if (subSection.explanationItems.Count != 0 || subSection.explanationItems != null)
                         {
-                            ResumeSectionItem resumeSectionItem = new ResumeSectionItem();
-                            resumeSectionItem.resumeSectionID = sectionID;
-                            resumeSectionItem.header = subSection.header;
-                            resumeSectionItem.date = subSection.date;
-                            resumeSectionItem.location = subSection.location;
-                            resumeSectionItem.explanation = subSection.explanation;
-                            db.ResumeSectionItems.Add(resumeSectionItem);
-                            db.SaveChanges();
-                            long subSectionID = db.ResumeSectionItems.Where(x => x.header == subSection.header && x.id == sectionID).SingleOrDefault().id;
-                            if (subSection.explanationItems.Count != 0 || subSection.explanationItems != null)
+                            foreach (string explanationItem in subSection.explanationItems)
                             {
-                                foreach (string explanationItem in subSection.explanationItems)
-                                {
-                                    ResumeSectionItemExplanation resumeSectionItemExplanation = new ResumeSectionItemExplanation();
-                                    resumeSectionItemExplanation.resumeSectionItemID = subSectionID;
-                                    resumeSectionItemExplanation.explanation = explanationItem;
-                                    db.ResumeSectionItemExplanations.Add(resumeSectionItemExplanation);
-                                    db.SaveChanges();
-                                }
+                                ResumeSectionItemExplanation resumeSectionItemExplanation = new ResumeSectionItemExplanation();
+                                resumeSectionItemExplanation.resumeSectionItemID = subSectionID;
+                                resumeSectionItemExplanation.explanation = explanationItem;
+                                db.ResumeSectionItemExplanations.Add(resumeSectionItemExplanation);
+                                db.SaveChanges();
                             }
                         }
                     }
-                  
-                    return Json("Resume section saved.", JsonRequestBehavior.AllowGet);
                 }
+                  
+                return Json("Resume section saved.", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -757,16 +719,13 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
+                if (template == null)
                 {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
-                    if (template == null)
-                    {
-                        return Json("true", JsonRequestBehavior.AllowGet);
-                    }
-                    return Json("false", JsonRequestBehavior.AllowGet);
+                    return Json("true", JsonRequestBehavior.AllowGet);
                 }
+                return Json("false", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -778,21 +737,18 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    DeleteMain();
-                    DeleteNavigation();
-                    DeleteHome();
-                    DeleteAbout();
-                    DeleteSocialMedia();
-                    DeletePortfolio();
-                    DeleteContact();
-                    DeleteResume();
-                    DeleteBlog();
-                    DeleteTemplate();
-                    DeleteImages();
-                    return Json("true", JsonRequestBehavior.AllowGet);
-                }
+                DeleteMain();
+                DeleteNavigation();
+                DeleteHome();
+                DeleteAbout();
+                DeleteSocialMedia();
+                DeletePortfolio();
+                DeleteContact();
+                DeleteResume();
+                DeleteBlog();
+                DeleteTemplate();
+                DeleteImages();
+                return Json("true", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -804,14 +760,11 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
-                    db.Templates.Remove(template);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
+                db.Templates.Remove(template);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -823,14 +776,11 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    Main main = db.Mains.Where(x => x.id == id).SingleOrDefault();
-                    db.Mains.Remove(main);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Main main = db.Mains.Where(x => x.id == id).SingleOrDefault();
+                db.Mains.Remove(main);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -842,17 +792,14 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    List<NavigationItem> navigationItems = db.NavigationItems.Where(x => x.navID == id).ToList();
-                    db.NavigationItems.RemoveRange(navigationItems);
-                    db.SaveChanges();
-                    Navigation navigation = db.Navigations.Where(x => x.id == id).SingleOrDefault();
-                    db.Navigations.Remove(navigation);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<NavigationItem> navigationItems = db.NavigationItems.Where(x => x.navID == id).ToList();
+                db.NavigationItems.RemoveRange(navigationItems);
+                db.SaveChanges();
+                Navigation navigation = db.Navigations.Where(x => x.id == id).SingleOrDefault();
+                db.Navigations.Remove(navigation);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -864,17 +811,14 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    List<HomeSubText> homeSubTexts = db.HomeSubTexts.Where(x => x.homeID == id).ToList();
-                    db.HomeSubTexts.RemoveRange(homeSubTexts);
-                    db.SaveChanges();
-                    Home home = db.Homes.Where(x => x.id == id).SingleOrDefault();
-                    db.Homes.Remove(home);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<HomeSubText> homeSubTexts = db.HomeSubTexts.Where(x => x.homeID == id).ToList();
+                db.HomeSubTexts.RemoveRange(homeSubTexts);
+                db.SaveChanges();
+                Home home = db.Homes.Where(x => x.id == id).SingleOrDefault();
+                db.Homes.Remove(home);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -886,17 +830,14 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    List<AboutInformation> aboutInformation = db.AboutInformations.Where(x => x.aboutID == id).ToList();
-                    db.AboutInformations.RemoveRange(aboutInformation);
-                    db.SaveChanges();
-                    About about = db.Abouts.Where(x => x.id == id).SingleOrDefault();
-                    db.Abouts.Remove(about);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<AboutInformation> aboutInformation = db.AboutInformations.Where(x => x.aboutID == id).ToList();
+                db.AboutInformations.RemoveRange(aboutInformation);
+                db.SaveChanges();
+                About about = db.Abouts.Where(x => x.id == id).SingleOrDefault();
+                db.Abouts.Remove(about);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -908,17 +849,14 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    List<Story> stories = db.Stories.Where(x => x.blogID == id).ToList();
-                    db.Stories.RemoveRange(stories);
-                    db.SaveChanges();
-                    Blog blog = db.Blogs.Where(x => x.id == id).SingleOrDefault();
-                    db.Blogs.Remove(blog);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<Story> stories = db.Stories.Where(x => x.blogID == id).ToList();
+                db.Stories.RemoveRange(stories);
+                db.SaveChanges();
+                Blog blog = db.Blogs.Where(x => x.id == id).SingleOrDefault();
+                db.Blogs.Remove(blog);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -930,14 +868,11 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    List<SocialMediaLink> socialMediaLinks = db.SocialMediaLinks.Where(x => x.userID == id).ToList();
-                    db.SocialMediaLinks.RemoveRange(socialMediaLinks);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<SocialMediaLink> socialMediaLinks = db.SocialMediaLinks.Where(x => x.userID == id).ToList();
+                db.SocialMediaLinks.RemoveRange(socialMediaLinks);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -949,23 +884,20 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<PortfolioCategory> portfolioCategories = db.PortfolioCategories.Where(x => x.portfolioID == id).ToList();
+                foreach(PortfolioCategory portfolioCategory in portfolioCategories)
                 {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    List<PortfolioCategory> portfolioCategories = db.PortfolioCategories.Where(x => x.portfolioID == id).ToList();
-                    foreach(PortfolioCategory portfolioCategory in portfolioCategories)
-                    {
-                        List<PortfolioCategoryImageRelationship> portfolioCategoryImageRelationships = db.PortfolioCategoryImageRelationships.Where(x => x.portfolioCategoryID == portfolioCategory.id).ToList();
-                        db.PortfolioCategoryImageRelationships.RemoveRange(portfolioCategoryImageRelationships);
-                        db.SaveChanges();
-                        db.PortfolioCategories.Remove(portfolioCategory);
-                        db.SaveChanges();
-                    }
-                    Portfolio portfolio = db.Portfolios.Where(x => x.id == id).SingleOrDefault();
-                    db.Portfolios.Remove(portfolio);
+                    List<PortfolioCategoryImageRelationship> portfolioCategoryImageRelationships = db.PortfolioCategoryImageRelationships.Where(x => x.portfolioCategoryID == portfolioCategory.id).ToList();
+                    db.PortfolioCategoryImageRelationships.RemoveRange(portfolioCategoryImageRelationships);
                     db.SaveChanges();
-                    return true;
+                    db.PortfolioCategories.Remove(portfolioCategory);
+                    db.SaveChanges();
                 }
+                Portfolio portfolio = db.Portfolios.Where(x => x.id == id).SingleOrDefault();
+                db.Portfolios.Remove(portfolio);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -977,23 +909,20 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    List<ResumeSectionItemExplanation> resumeSectionItemExplanations = db.ResumeSectionItemExplanations.Where(x => x.resumeSectionItemID == id).ToList();
-                    db.ResumeSectionItemExplanations.RemoveRange(resumeSectionItemExplanations);
-                    db.SaveChanges();
-                    List<ResumeSectionItem> resumeSectionItems = db.ResumeSectionItems.Where(x => x.resumeSectionID == id).ToList();
-                    db.ResumeSectionItems.RemoveRange(resumeSectionItems);
-                    db.SaveChanges();
-                    List<ResumeSection> resumeSections = db.ResumeSections.Where(x => x.resumeID == id).ToList();
-                    db.ResumeSections.RemoveRange(resumeSections);
-                    db.SaveChanges();
-                    Resume resume = db.Resumes.Where(x => x.id == id).SingleOrDefault();
-                    db.Resumes.Remove(resume);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<ResumeSectionItemExplanation> resumeSectionItemExplanations = db.ResumeSectionItemExplanations.Where(x => x.resumeSectionItemID == id).ToList();
+                db.ResumeSectionItemExplanations.RemoveRange(resumeSectionItemExplanations);
+                db.SaveChanges();
+                List<ResumeSectionItem> resumeSectionItems = db.ResumeSectionItems.Where(x => x.resumeSectionID == id).ToList();
+                db.ResumeSectionItems.RemoveRange(resumeSectionItems);
+                db.SaveChanges();
+                List<ResumeSection> resumeSections = db.ResumeSections.Where(x => x.resumeID == id).ToList();
+                db.ResumeSections.RemoveRange(resumeSections);
+                db.SaveChanges();
+                Resume resume = db.Resumes.Where(x => x.id == id).SingleOrDefault();
+                db.Resumes.Remove(resume);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -1005,14 +934,11 @@ namespace EasyBlog.Controllers
         {
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
-                {
-                    long id = long.Parse(Session["UserInformation"].ToString());
-                    Contact contact = db.Contacts.Where(x => x.id == id).SingleOrDefault();
-                    db.Contacts.Remove(contact);
-                    db.SaveChanges();
-                    return true;
-                }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Contact contact = db.Contacts.Where(x => x.id == id).SingleOrDefault();
+                db.Contacts.Remove(contact);
+                db.SaveChanges();
+                return true;
             }
             catch (Exception e)
             {
@@ -1096,7 +1022,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         private NavigationModel GetNavigationModel(long id)
         {
             try
@@ -1129,7 +1054,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         private HomeModel GetHomeModel(long id)
         {
             try
@@ -1160,7 +1084,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         private AboutModel GetAboutModel(long id)
         {
             try
@@ -1197,7 +1120,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         private BlogModel GetBlogModel(long id)
         {
             try
@@ -1231,7 +1153,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         private ContactModel GetContactModel(long id)
         {
             try
@@ -1257,7 +1178,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         private PortfolioModel GetPortfolioModel(long id)
         {
             try
@@ -1300,7 +1220,6 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
-
         private ResumeModel GetResumeModel(long id)
         {
             try
@@ -1358,5 +1277,75 @@ namespace EasyBlog.Controllers
                 return null;
             }
         }
+        public JsonResult DeleteSocialMediaLink(SocialMediaModel socialMedia)
+        {
+            try
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                long mediaID = db.SocialMedias.Where(x => x.code == socialMedia.socialMedia).SingleOrDefault().id;
+                SocialMediaLink link = db.SocialMediaLinks.Where(x => x.socialMedia == mediaID && x.link == socialMedia.link && x.userID == id).SingleOrDefault();
+                db.SocialMediaLinks.Remove(link);
+                db.SaveChanges();
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult DeleteSectionFromNavigation(string content)
+        {
+            try
+            {
+                if (content == "home")
+                {
+                    DeleteHome();
+                }
+                else if (content == "about")
+                {
+                    DeleteAbout();
+                }
+                else if (content == "blog")
+                {
+                    DeleteBlog();
+                }
+                else if (content == "contact")
+                {
+                    DeleteContact();
+                }
+                else if (content == "resume")
+                {
+                    DeleteResume();
+                }
+                else if (content == "portfolio")
+                {
+                    DeletePortfolio();
+                }
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult DeleteStory(StoryModel storyModel)
+        {
+            try
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                Story story = db.Stories.Where(x => x.blogID == id && x.title == storyModel.title && x.body == storyModel.body).SingleOrDefault();
+                db.Stories.Remove(story);
+                db.SaveChanges();
+                return Json("Success", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

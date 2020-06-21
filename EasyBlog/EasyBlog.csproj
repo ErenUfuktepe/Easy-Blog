@@ -239,6 +239,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Folio\bootstrap.min.css" />
+    <Content Include="Content\fonts\ionicons.svg" />
+    <Content Include="Content\Folio\style.css" />
+    <Content Include="Content\Folio\owl.carousel.min.css" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -253,10 +257,15 @@
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
       <LastGenOutput>EasyBlogModel.cs</LastGenOutput>
     </Content>
+    <Content Include="Content\Folio\ionicons.min.css" />
+    <Content Include="Scripts\Folio\isotope.pkgd.min.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\Folio\main.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
+    <Content Include="Scripts\Folio\jquery.min.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\Folio\typed.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -291,11 +300,15 @@
     <Content Include="Models\EasyBlogModel.edmx.diagram">
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Content\fonts\ionicons.eot" />
+    <Content Include="Content\fonts\ionicons.ttf" />
+    <Content Include="Content\fonts\ionicons.woff" />
     <None Include="packages.config" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Admin\CreateBlog.cshtml" />
     <Content Include="Views\Admin\UpdateBlog.cshtml" />
     <Content Include="Views\Admin\Settings.cshtml" />
+    <Content Include="Scripts\Folio\jquery.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

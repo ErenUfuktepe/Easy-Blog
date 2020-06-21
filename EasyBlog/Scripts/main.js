@@ -198,6 +198,9 @@ window.addEventListener('load', (event) => {
             }
         }    
     }
+    if (window.location.href.includes("UpdateBlog")) {
+        TableEventListener();
+    }
 });
 
 function ChangePasswordCondition(array) {
@@ -425,6 +428,13 @@ function Folio() {
 
     $('#portfolio-background-color-code').val('#ffffff');
     $('#portfolio-background-color').val('#ffffff');
+
+    $('#blog-background-color').val('#f7f7f7');
+    $('#blog-background-color-code').val('#f7f7f7');
+
+    $('#contact-background-color').val('#ffffff');
+    $('#contact-background-color-code').val('#ffffff');
+
 }
 
 function SaveAndDisableMainSection() {
@@ -769,14 +779,22 @@ function TableEventListener() {
             event.preventDefault();
             window.delete = this.parentElement.parentElement.parentElement;
             if (window.delete.className != 'table-body') {
-                CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
+                if (window.location.href.includes("UpdateBlog")) {
+                    CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteNavigationSection()', '');
+                } else {
+                    CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
+                }
             }
             else {
                 $("table").delegate("tr", "click", function () {
                     window.delete = this;
                 });
             }
-            CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
+            if (window.location.href.includes("UpdateBlog")) {
+                CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteNavigationSection()', '');
+            } else {
+                CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
+            }
         });
     });
 }
@@ -901,12 +919,25 @@ function AddStory() {
                         <b>Body: </b>\
                         <textarea class="form-control" rows="3"></textarea>\
                     </div>';
-    event.target.parentElement.parentElement.parentElement.appendChild(StringToHTML(innerHTML, 'form-row text-left'));
+    event.target.parentElement.parentElement.parentElement.parentElement.appendChild(StringToHTML(innerHTML, 'form-row text-left'));
     FileEventListenerRefresh();
 }
 
 function RemoveStory() {
-    event.target.parentElement.parentElement.parentElement.remove();
+    if (window.location.href.includes("UpdateBlog")) {
+        var data = {}
+        data.title = event.target.parentElement.parentElement.parentElement.children[1].children[1].children[0].value;
+        data.image = event.target.parentElement.parentElement.parentElement.children[2].children[1].children[1].innerHTML;
+        data.body = event.target.parentElement.parentElement.parentElement.children[3].children[1].value;
+        var response = AjaxCall("Admin", "DeleteStory", data)
+        if (response == 'Success') {
+            event.target.parentElement.parentElement.parentElement.remove();
+        } else {
+            CreateDialog('error', 'System Error', response, '', '', '');
+        }
+    } else {
+        event.target.parentElement.parentElement.parentElement.remove();
+    }
 }
 
 function StringToHTML(str, cls) {
@@ -1414,4 +1445,50 @@ function GetResumeItems() {
 
 function DeletePage() {
     AjaxCall("Admin", "DeletePage", {});
+}
+
+function DeleteSocialMedia() {
+    window.target = event.target.parentElement.parentElement.parentElement;
+    window.remove = event.target.parentElement.parentElement.parentElement.parentElement;
+
+    if (typeof window.target.parentElement.children[0].children[1].children[0].value != 'undefined') {
+        CreateDialog('warning', 'Delete Social Media', 'Do you want to delete this social media?', 'Yes', 'DeleteSocialMediaLink()', '');
+    }
+}
+
+function DeleteSocialMediaLink() {
+    var data = new Object();
+    var remove = new Object();
+    data.socialMedia = window.target.parentElement.children[0].children[1].children[0].value;
+    data.link = window.target.children[1].children[0].value;
+    remove.socialMedia = data;
+    var response = AjaxCall("Admin", "DeleteSocialMediaLink", remove);
+    if (response == "Success") {
+        window.remove.remove();
+    } else {
+        CreateDialog('error', 'System Error', response, '','','');
+    }
+}
+
+function DeleteNavigationSection() {
+    var data = {};
+    data.content = window.delete.children[1].id;
+    var response = AjaxCall("Admin", "DeleteSectionFromNavigation", data);
+    if (response == "Success") {
+        let deletedValue = window.delete.children[0].innerHTML;
+        var tableElements = window.delete.parentElement;
+        var flag = false;
+        Array.from(tableElements.children).forEach(function (tr) {
+            if (tr.children[0].innerHTML == deletedValue) {
+                flag = true;
+            }
+            if (flag) {
+                tr.children[0].innerHTML = Number.parseInt(tr.children[0].innerHTML) - 1;
+            }
+        });
+        window.delete.remove();
+    } else {
+        CreateDialog('error', 'System Error', response, '', '', '');
+    }
+    
 }
