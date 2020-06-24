@@ -1,6 +1,6 @@
 ﻿@model EasyBlog.Models.PageModel
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = Model.mainComponents.title;
 }
 
 <!DOCTYPE html>
@@ -10,13 +10,8 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>@Model.mainComponents.title</title>
     <meta content="" name="descriptison">
     <meta content="" name="keywords">
-
-    <!-- Favicons -->
-    <link href="~/Images/3/Biometrik.jpeg" rel="icon">
-    <link href="~/Images/3/Biometrik.jpeg" rel="apple-touch-icon">
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i|Playfair+Display:400,400i,500,500i,600,600i,700,700i,900,900i" rel="stylesheet">

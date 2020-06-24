@@ -88,7 +88,7 @@
     <Property Name="id" Type="Int64" Nullable="false" />
     <Property Name="logo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="barColor" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
-    <NavigationProperty Name="NavigationItems" Relationship="Self.FK__Navigatio__navID__658C0CBD" FromRole="Navigation" ToRole="NavigationItem" />
+    <NavigationProperty Name="NavigationItems" Relationship="Self.FK__Navigatio__navID__190BB0C3" FromRole="Navigation" ToRole="NavigationItem" />
     <NavigationProperty Name="Template" Relationship="Self.FK__Navigation__id__62AFA012" FromRole="Navigation" ToRole="Template" />
   </EntityType>
   <EntityType Name="NavigationItem">
@@ -99,7 +99,8 @@
     <Property Name="navID" Type="Int64" />
     <Property Name="content" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="sectionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-    <NavigationProperty Name="Navigation" Relationship="Self.FK__Navigatio__navID__658C0CBD" FromRole="NavigationItem" ToRole="Navigation" />
+    <Property Name="priority" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Navigation" Relationship="Self.FK__Navigatio__navID__190BB0C3" FromRole="NavigationItem" ToRole="Navigation" />
   </EntityType>
   <EntityType Name="Portfolio">
     <Key>
@@ -341,7 +342,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Navigatio__navID__658C0CBD">
+  <Association Name="FK__Navigatio__navID__190BB0C3">
     <End Role="Navigation" Type="Self.Navigation" Multiplicity="0..1" />
     <End Role="NavigationItem" Type="Self.NavigationItem" Multiplicity="*" />
     <ReferentialConstraint>
@@ -552,7 +553,7 @@
       <End Role="Template" EntitySet="Templates" />
       <End Role="Main" EntitySet="Mains" />
     </AssociationSet>
-    <AssociationSet Name="FK__Navigatio__navID__658C0CBD" Association="Self.FK__Navigatio__navID__658C0CBD">
+    <AssociationSet Name="FK__Navigatio__navID__190BB0C3" Association="Self.FK__Navigatio__navID__190BB0C3">
       <End Role="Navigation" EntitySet="Navigations" />
       <End Role="NavigationItem" EntitySet="NavigationItems" />
     </AssociationSet>

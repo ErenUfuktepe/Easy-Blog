@@ -4,29 +4,29 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d42f015f579f48fb86552924b78b8769" Name="Diagram1">
+      <Diagram DiagramId="8ef59b984e124ebda5467a0dd645c67e" Name="Diagram1">
         <EntityTypeShape EntityType="EasyBlogModel.About" Width="1.5" PointX="5.25" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.AboutInformation" Width="1.5" PointX="7.5" PointY="7.125" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.Blog" Width="1.5" PointX="5.25" PointY="10.25" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.Contact" Width="1.5" PointX="5.25" PointY="13.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.Home" Width="1.5" PointX="5.25" PointY="16.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Home" Width="1.5" PointX="5.25" PointY="16.875" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.HomeSubText" Width="1.5" PointX="7.5" PointY="17" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.Main" Width="1.5" PointX="5.25" PointY="19.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.Navigation" Width="1.5" PointX="5.25" PointY="22.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Navigation" Width="1.5" PointX="5.25" PointY="23" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.NavigationItem" Width="1.5" PointX="7.5" PointY="22.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.Portfolio" Width="1.5" PointX="5.25" PointY="25.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.PortfolioCategory" Width="1.5" PointX="7.5" PointY="25.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.PortfolioCategoryImageRelationship" Width="1.5" PointX="9.75" PointY="25.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.Resume" Width="1.5" PointX="5.25" PointY="28.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.ResumeSection" Width="1.5" PointX="7.5" PointY="28.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.ResumeSectionItem" Width="1.5" PointX="9.75" PointY="28.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.ResumeSectionItemExplanation" Width="1.5" PointX="12" PointY="28.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.SocialMedia" Width="1.5" PointX="0.75" PointY="12.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.SocialMediaLink" Width="1.5" PointX="3" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Portfolio" Width="1.5" PointX="5.25" PointY="25.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.PortfolioCategory" Width="1.5" PointX="7.5" PointY="25.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.PortfolioCategoryImageRelationship" Width="1.5" PointX="9.75" PointY="25.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Resume" Width="1.5" PointX="5.25" PointY="28.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.ResumeSection" Width="1.5" PointX="7.5" PointY="28.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.ResumeSectionItem" Width="1.5" PointX="9.75" PointY="28.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.ResumeSectionItemExplanation" Width="1.5" PointX="12" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.SocialMedia" Width="1.5" PointX="0.75" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.SocialMediaLink" Width="1.5" PointX="3" PointY="14.125" IsExpanded="true" />
         <EntityTypeShape EntityType="EasyBlogModel.Story" Width="1.5" PointX="7.5" PointY="10.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.Template" Width="1.5" PointX="3" PointY="17.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.UserInformation" Width="1.5" PointX="0.75" PointY="15.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="EasyBlogModel.UserLogin" Width="1.5" PointX="3" PointY="31.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.Template" Width="1.5" PointX="3" PointY="17.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.UserInformation" Width="1.5" PointX="0.75" PointY="15.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="EasyBlogModel.UserLogin" Width="1.5" PointX="3" PointY="31.75" IsExpanded="true" />
         <AssociationConnector Association="EasyBlogModel.FK__About__id__6E2152BE" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__AboutInfo__about__70FDBF69" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Blog__id__573DED66" ManuallyRouted="false" />
@@ -35,7 +35,7 @@
         <AssociationConnector Association="EasyBlogModel.FK__Home__id__68687968" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__HomeSubTe__homeI__6B44E613" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Main__id__5FD33367" ManuallyRouted="false" />
-        <AssociationConnector Association="EasyBlogModel.FK__Navigatio__navID__658C0CBD" ManuallyRouted="false" />
+        <AssociationConnector Association="EasyBlogModel.FK__Navigatio__navID__190BB0C3" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Navigation__id__62AFA012" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Portfolio__id__7F4BDEC0" ManuallyRouted="false" />
         <AssociationConnector Association="EasyBlogModel.FK__Portfolio__portf__02284B6B" ManuallyRouted="false" />

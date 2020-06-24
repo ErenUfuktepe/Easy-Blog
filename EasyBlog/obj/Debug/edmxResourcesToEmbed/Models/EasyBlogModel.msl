@@ -95,6 +95,7 @@
           <ScalarProperty Name="navID" ColumnName="navID" />
           <ScalarProperty Name="content" ColumnName="content" />
           <ScalarProperty Name="sectionName" ColumnName="sectionName" />
+          <ScalarProperty Name="priority" ColumnName="priority" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

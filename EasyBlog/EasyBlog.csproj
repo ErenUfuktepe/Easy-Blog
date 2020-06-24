@@ -247,6 +247,7 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="Content\Folio\ionicons.min.css" />
     <Content Include="Models\EasyBlogModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
@@ -257,7 +258,6 @@
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
       <LastGenOutput>EasyBlogModel.cs</LastGenOutput>
     </Content>
-    <Content Include="Content\Folio\ionicons.min.css" />
     <Content Include="Scripts\Folio\isotope.pkgd.min.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Folio\main.js" />
@@ -293,6 +293,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\fonts\ionicons.eot" />
+    <Content Include="Content\fonts\ionicons.ttf" />
+    <Content Include="Content\fonts\ionicons.woff" />
     <EntityDeploy Include="Models\EasyBlogModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>EasyBlogModel.Designer.cs</LastGenOutput>
@@ -300,9 +303,6 @@
     <Content Include="Models\EasyBlogModel.edmx.diagram">
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
     </Content>
-    <Content Include="Content\fonts\ionicons.eot" />
-    <Content Include="Content\fonts\ionicons.ttf" />
-    <Content Include="Content\fonts\ionicons.woff" />
     <None Include="packages.config" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Admin\CreateBlog.cshtml" />

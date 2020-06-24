@@ -18,6 +18,7 @@ namespace EasyBlog.Models
         public Nullable<long> navID { get; set; }
         public string content { get; set; }
         public string sectionName { get; set; }
+        public int priority { get; set; }
     
         public virtual Navigation Navigation { get; set; }
     }

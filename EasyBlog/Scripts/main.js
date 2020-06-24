@@ -172,7 +172,7 @@ window.addEventListener('load', (event) => {
     if (window.location.href.includes("CreateBlog")) {
         var response = AjaxCall("Admin", "HasBlog", {});
         if (response == 'false') {
-            CreateDialog('warning', 'Warning', 'You already have a blog! If you continue, your old blog will be deleted.', 'Continue', 'DeletePage()', '');
+            CreateDialog('warning', 'Warning', 'You already have a blog! If you continue, your old blog will be deleted.', 'Continue', 'DeletePage()', 'window.history.back()');
         }
         document.getElementById('submit').onclick = function () {
             var formdata = new FormData();
@@ -1379,15 +1379,27 @@ function GetPortfolioCategories() {
                     flag = false;
                 }
                 if (input.value == '' && input.type != 'button') {
-                    emptyInputFlag = true;
+                    if (!window.location.href.includes("UpdateBlog")) {
+                        emptyInputFlag = true;
+                    }
                 }
                 if (input.type != 'button') {
                     imageList = [];
-                    newCatagory.category = input.value;
+                    if (window.location.href.includes("UpdateBlog")) {
+                        if (input.value != '') {
+                            newCatagory.category = input.value;
+                        } else {
+                            newCatagory.category = null;
+                        }
+                    } else {
+                        newCatagory.category = input.value;
+                    }
                 }
             } else {
                 if (input.value == '') {
-                    emptyInputFlag = true;
+                    if (!window.location.href.includes("UpdateBlog")) {
+                        emptyInputFlag = true;
+                    }
                 }
                 flag = true;
                 if (window.location.href.includes("UpdateBlog")) {
@@ -1429,13 +1441,23 @@ function GetBlogStories() {
                 newStory = new Object;
             }
             if (input.value == '' && input.type != 'button') {
-                flag = true;
+                if (!window.location.href.includes("UpdateBlog")) {
+                    flag = true;
+                }
             }
             if (input.type == 'text') {
                 newStory.title = input.value;
             }
             if (input.type == 'file') {
-                newStory.image = GetFileNameWithValue(input.value);
+                if (window.location.href.includes("UpdateBlog")) {
+                    if (input.value != '') {
+                        newStory.image = GetFileNameWithValue(input.value);
+                    } else {
+                        newStory.image = null;
+                    }
+                } else {
+                    newStory.image = GetFileNameWithValue(input.value);
+                }
             }
             if (input.type == 'textarea') {
                 newStory.body = input.value;

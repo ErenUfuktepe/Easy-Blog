@@ -434,6 +434,7 @@ namespace EasyBlog.Controllers
                         navigationItem.navID = db.Navigations.Where(x =>  x.id == id).SingleOrDefault().id;
                         navigationItem.content = navigationItemModel.content;
                         navigationItem.sectionName = navigationItemModel.sectionName;
+                        navigationItem.priority = navigationItemModel.priority;
                         db.NavigationItems.Add(navigationItem);
                         db.SaveChanges();
                     }
@@ -711,7 +712,10 @@ namespace EasyBlog.Controllers
                     {
                         checkStories.body = storyModel.body;
                         checkStories.title = storyModel.title;
-                        checkStories.image = storyModel.image;
+                        if (storyModel.image != null)
+                        {
+                            checkStories.image = storyModel.image;
+                        }
                         db.SaveChanges();
                     }
                 }
@@ -1102,6 +1106,7 @@ namespace EasyBlog.Controllers
                             NavigationItemModel navigationItemModel = new NavigationItemModel();
                             navigationItemModel.content = navigationItem.content;
                             navigationItemModel.sectionName = navigationItem.sectionName;
+                            navigationItemModel.priority = navigationItem.priority;
                             navigationItemModels.Add(navigationItemModel);
                         }
                         navigationModel.navigationItems = navigationItemModels;
