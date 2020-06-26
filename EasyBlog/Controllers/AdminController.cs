@@ -608,21 +608,24 @@ namespace EasyBlog.Controllers
                 portfolio.header = portfolioModel.header;
                 db.Portfolios.Add(portfolio);
                 db.SaveChanges();
-                foreach (PortfolioCategoryModel categoryModel in portfolioModel.portfolioCategories)
+                if (portfolioModel.portfolioCategories != null || portfolioModel.portfolioCategories.Count() !=  0)
                 {
-                    PortfolioCategory portfolioCategory = new PortfolioCategory();
-                    portfolioCategory.portfolioID = id;
-                    portfolioCategory.category = categoryModel.category;
-                    db.PortfolioCategories.Add(portfolioCategory);
-                    db.SaveChanges();
-                    long categoryID = db.PortfolioCategories.Where(x => x.category == categoryModel.category && x.portfolioID == id).SingleOrDefault().id;
-                    foreach (string image in categoryModel.images)
+                    foreach (PortfolioCategoryModel categoryModel in portfolioModel.portfolioCategories)
                     {
-                        PortfolioCategoryImageRelationship portfolioCategoryImageRelationship = new PortfolioCategoryImageRelationship();
-                        portfolioCategoryImageRelationship.portfolioCategoryID = categoryID;
-                        portfolioCategoryImageRelationship.image = image;
-                        db.PortfolioCategoryImageRelationships.Add(portfolioCategoryImageRelationship);
+                        PortfolioCategory portfolioCategory = new PortfolioCategory();
+                        portfolioCategory.portfolioID = id;
+                        portfolioCategory.category = categoryModel.category;
+                        db.PortfolioCategories.Add(portfolioCategory);
                         db.SaveChanges();
+                        long categoryID = db.PortfolioCategories.Where(x => x.category == categoryModel.category && x.portfolioID == id).SingleOrDefault().id;
+                        foreach (string image in categoryModel.images)
+                        {
+                            PortfolioCategoryImageRelationship portfolioCategoryImageRelationship = new PortfolioCategoryImageRelationship();
+                            portfolioCategoryImageRelationship.portfolioCategoryID = categoryID;
+                            portfolioCategoryImageRelationship.image = image;
+                            db.PortfolioCategoryImageRelationships.Add(portfolioCategoryImageRelationship);
+                            db.SaveChanges();
+                        }
                     }
                 }
                 return Json("Portfolio section saved.", JsonRequestBehavior.AllowGet);
@@ -1388,6 +1391,14 @@ namespace EasyBlog.Controllers
                 {
                     DeletePortfolio();
                 }
+                long id = long.Parse(Session["UserInformation"].ToString());
+                NavigationItem navigationItem = db.NavigationItems.Where(x => x.navID == id && x.content == content).SingleOrDefault();
+                if (navigationItem != null)
+                {
+                    db.NavigationItems.Remove(navigationItem);
+                    db.SaveChanges();
+                }
+                ChangeNavigationItemPrioroty();
                 return Json("Success", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -1433,7 +1444,6 @@ namespace EasyBlog.Controllers
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
             }
         }
-        
         public JsonResult DeleteSubTextFromHome(string subText)
         {
             try
@@ -1451,6 +1461,34 @@ namespace EasyBlog.Controllers
             {
                 Console.WriteLine(e);
                 return Json("System Error!", JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private bool ChangeNavigationItemPrioroty()
+        {
+            try
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                List<NavigationItem> navigationItems = db.NavigationItems.Where(x => x.navID == id).ToList();
+                if (navigationItems.Count() > 0)
+                {
+                    int priority = 1;
+                    foreach(NavigationItem navigationItem in navigationItems)
+                    {
+                        if (priority != navigationItem.priority)
+                        {
+                            navigationItem.priority = priority;
+                            db.SaveChanges();
+                        }
+                        priority++;
+                    }
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
             }
         }
     }

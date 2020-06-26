@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.EnterpriseServices;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 
 namespace EasyBlog.Controllers
@@ -14,10 +15,12 @@ namespace EasyBlog.Controllers
     {
         private SecurityUtilize securityUtilize = new SecurityUtilize();
         private UserInformationModel userInformationModel = new UserInformationModel();
-        
+        private EasyBlogEntities db = new EasyBlogEntities();
+
         public ActionResult Login()
         {
-            Session["UserInformation"] = null;
+            HttpContext.Session.Abandon();
+            HttpContext.Session["UserInformation"] = null;
             return View();
         }
         public ActionResult Register()
@@ -26,81 +29,59 @@ namespace EasyBlog.Controllers
         }
         public JsonResult Authorization(UserLoginModel userLoginModel)
         {
-            string response = "";
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                if (IsAnyNullOrEmpty(userLoginModel))
                 {
-                    if(string.IsNullOrWhiteSpace(userLoginModel.email) || string.IsNullOrWhiteSpace(userLoginModel.password))
-                    {
-                        response = "Fill the required fields!";
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
-                    if (!(userLoginModel.email.Contains('@') && userLoginModel.email.Contains('.')))
-                    {
-                        response = "Invalid email address!";
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
-
-                    string password = securityUtilize.Encrypt(userLoginModel.password);
-                    UserLogin userLogin = db.UserLogins.Single(x => x.email == userLoginModel.email && x.password == password);
-                    UserInformation userInformation = db.UserInformations.Single(x => x.id == userLogin.id);
-
-                    userInformationModel.email = userInformation.email;
-                    userInformationModel.name = userInformation.name;
-                    userInformationModel.surname = userInformation.surname;
-                    userInformationModel.phone = userInformation.phone;
-                    userInformationModel.createdDate = userInformation.createdDate;
-                    userInformationModel.modifiedDate = userInformation.modifiedDate;
-                    userInformationModel.lastLoginDate = userInformation.lastLoginDate;
-                    Session["UserInformation"] = userInformation.id;
-                    TempData["UserInformation"] = userInformationModel;
-                    response = "Success";
+                    return Json(ResponseMessages.RequiredFields, JsonRequestBehavior.AllowGet);
                 }
+                else if (IsValidEmail(userLoginModel.email) != ResponseMessages.Success)
+                {
+                    return Json(ResponseMessages.InvalidEmailAddress, JsonRequestBehavior.AllowGet);
+                }
+                string password = securityUtilize.Encrypt(userLoginModel.password);
+                UserLogin userLogin = db.UserLogins.Single(x => x.email == userLoginModel.email && x.password == password);
+                UserInformation userInformation = db.UserInformations.Single(x => x.id == userLogin.id);
+                userInformationModel.email = userInformation.email;
+                userInformationModel.name = userInformation.name;
+                userInformationModel.surname = userInformation.surname;
+                userInformationModel.phone = userInformation.phone;
+                userInformationModel.createdDate = userInformation.createdDate;
+                userInformationModel.modifiedDate = userInformation.modifiedDate;
+                userInformationModel.lastLoginDate = userInformation.lastLoginDate;
+                Session["UserInformation"] = userInformation.id;
+                TempData["UserInformation"] = userInformationModel;
+                return Json(ResponseMessages.Success, JsonRequestBehavior.AllowGet);
             }
             catch (System.InvalidOperationException exception)
             {
                 Console.WriteLine(exception);
-                response = "Invalid email address or password. Please try again.";
-                return Json(response, JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.LoginException, JsonRequestBehavior.AllowGet);
             }
-            return Json(response, JsonRequestBehavior.AllowGet);
         }
         public JsonResult ConfirmEmail(string email)
         {
-            string response = "User not found";
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                if (IsValidEmail(email) != ResponseMessages.Success)
                 {
-                    if (string.IsNullOrWhiteSpace(email))
-                    {
-                        response = "Fill the required fields!";
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
-                    if (!(email.Contains('@') && email.Contains('.')))
-                    {
-                        response = "Invalid email address!";
-                        return Json(response, JsonRequestBehavior.AllowGet);
-                    }
-
-                    UserInformation userInformation = db.UserInformations.Single( x => x.email == email);
-
-                    if (string.IsNullOrWhiteSpace(userInformation.phone) || string.IsNullOrEmpty(userInformation.phone))
-                    {
-                        response = PhoneNumberWithStar(userInformation.phone) + "," + EmailAddressWithStar(userInformation.email);
-                    }
-                    else
-                    {
-                        response = PhoneNumberWithStar(userInformation.phone) + "," + EmailAddressWithStar(userInformation.email); 
-                    }
+                    return Json(ResponseMessages.InvalidEmailAddress, JsonRequestBehavior.AllowGet);
+                }
+                UserInformation userInformation = db.UserInformations.Single( x => x.email == email);
+                if (userInformation == null)
+                {
+                    return Json(ResponseMessages.InvalidUser, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    string response = PhoneNumberWithStar(userInformation.phone) + "," + EmailAddressWithStar(userInformation.email);
                     return Json(response, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (System.InvalidOperationException exception)
             {
                 Console.WriteLine(exception);
-                return Json(response, JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.InvalidUser, JsonRequestBehavior.AllowGet);
             }
         }
         private string PhoneNumberWithStar(string phone)
@@ -109,7 +90,6 @@ namespace EasyBlog.Controllers
             {
                 return "";
             }
-
             char[] phoneFormat = phone.ToCharArray();
             int numberOfStars = (phone.Length - 4);
             string phoneNumberWithStar = "";
@@ -159,99 +139,92 @@ namespace EasyBlog.Controllers
         }
         public JsonResult CreateUser(UserCreateModel userCreateModel)
         {
-            string check = CheckUserArguments(userCreateModel);
-            if (check != "Success")
+            string responseMessage = CheckUserArguments(userCreateModel);
+            if (responseMessage != ResponseMessages.Success)
             {
-                return Json(check, JsonRequestBehavior.AllowGet);
+                return Json(responseMessage, JsonRequestBehavior.AllowGet);
             }
-
             try
             {
-                using (EasyBlogEntities db = new EasyBlogEntities())
+                string isExisting = IsExistingUser(userCreateModel);
+                if (isExisting != ResponseMessages.Success)
                 {
-                    if (IsExistingUser(userCreateModel))
-                    {
-                        return Json("Existing User!", JsonRequestBehavior.AllowGet);
-                    }
+                    return Json(isExisting, JsonRequestBehavior.AllowGet);
+                }
+                DateTime now = DateTime.Now;
+                UserInformation userInformation = new UserInformation();
+                userInformation.name = userCreateModel.name;
+                userInformation.surname = userCreateModel.surname;
+                userInformation.email = userCreateModel.email;
+                userInformation.phone = string.IsNullOrEmpty(userCreateModel.phone) ? "" : userCreateModel.phone; 
+                userInformation.createdDate = now;
+                userInformation.modifiedDate = now;
+                userInformation.lastLoginDate = now;
+                db.UserInformations.Add(userInformation);
+                db.SaveChanges();
 
-                    DateTime now = DateTime.Now;
-
-                    UserInformation userInformation = new UserInformation();
-                    userInformation.name = userCreateModel.name;
-                    userInformation.surname = userCreateModel.surname;
-                    userInformation.email = userCreateModel.email;
-                    userInformation.phone = string.IsNullOrEmpty(userCreateModel.phone) ? "" : userCreateModel.phone; 
-                    userInformation.createdDate = now;
-                    userInformation.modifiedDate = now;
-                    userInformation.lastLoginDate = now;
-                    db.UserInformations.Add(userInformation);
-                    db.SaveChanges();
-
-                    UserLogin userLogin = new UserLogin();
-                    userLogin.id = db.UserInformations.Single(x => x.email == userCreateModel.email).id;
-                    userLogin.email = userCreateModel.email;
-                    userLogin.password = securityUtilize.Encrypt(userCreateModel.password);
-                    db.UserLogins.Add(userLogin);
-                    db.SaveChanges();
-                } 
+                UserLogin userLogin = new UserLogin();
+                userLogin.id = db.UserInformations.Single(x => x.email == userCreateModel.email).id;
+                userLogin.email = userCreateModel.email;
+                userLogin.password = securityUtilize.Encrypt(userCreateModel.password);
+                db.UserLogins.Add(userLogin);
+                db.SaveChanges();
+                return Json(ResponseMessages.Success, JsonRequestBehavior.AllowGet);
             }
             catch (System.Data.Entity.Infrastructure.DbUpdateException exception)
             {
                 Console.WriteLine(exception);
-                return Json("Database Error", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.DatabaseError, JsonRequestBehavior.AllowGet);
             }
-
-            return Json("Success", JsonRequestBehavior.AllowGet);
         }
         private string CheckUserArguments(UserCreateModel userCreateModel)
         {
             if (userCreateModel.password != userCreateModel.confirmPassword)
             {
-                return "Password and Confirm Password are different!";
+                return ResponseMessages.DifferentConfirmationPassword;
             }
             else if (string.IsNullOrWhiteSpace(userCreateModel.email) || string.IsNullOrWhiteSpace(userCreateModel.name)
                 || string.IsNullOrWhiteSpace(userCreateModel.surname) || string.IsNullOrWhiteSpace(userCreateModel.password))
             {
-                return "Please fill all required fields!";
+                return ResponseMessages.RequiredFields;
             }
-            else if (!(userCreateModel.email.Contains('@') && userCreateModel.email.Contains('.')))
+            else if (IsValidEmail(userCreateModel.email) != ResponseMessages.Success)
             {
-                return "Invalid email address!";
+                return ResponseMessages.InvalidEmailAddress;
             }
             else if (!string.IsNullOrWhiteSpace(userCreateModel.phone))
             {
-                string validNumber = userCreateModel.phone.Trim('+');
-                if (!userCreateModel.phone.Contains('+') || validNumber.Length <= 10)
+                string responseMessage = IsValidPhone(userCreateModel.phone);
+                if(responseMessage != ResponseMessages.Success)
                 {
-                    return "Please add country code with + symbol!";
-                }
-                else if (!validNumber.All(char.IsDigit))
-                {
-                    return "Given phone number is not valid";
+                    return responseMessage;
                 }
             }
-            return "Success";
+            return ResponseMessages.Success;
         }
-        private bool IsExistingUser(UserCreateModel userCreateModel)
+        private string IsExistingUser(UserCreateModel userCreateModel)
         {
-            using (EasyBlogEntities db = new EasyBlogEntities())
+            try
             {
-                try
+                UserInformation userInformationEmailCheck = db.UserInformations.Where(x => x.email == userCreateModel.email).SingleOrDefault();
+                if (userInformationEmailCheck != null)
                 {
-                    UserInformation userInformationEmailCheck = db.UserInformations.Where(x => x.email == userCreateModel.email).SingleOrDefault();
+                    return ResponseMessages.ExistingEmailAddress;
+                }
+                if (!string.IsNullOrEmpty(userCreateModel.phone))
+                {
                     UserInformation userInformationPhoneCheck = db.UserInformations.Where(x => x.phone == userCreateModel.phone).SingleOrDefault();
-
-                    if (userInformationEmailCheck != null || userInformationPhoneCheck != null)
+                    if (userInformationPhoneCheck != null)
                     {
-                        return true;
+                        return ResponseMessages.ExistingPhoneNumber;
                     }
-                    return false;
                 }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception);
-                    throw (exception);
-                }
+                return ResponseMessages.Success;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                return ResponseMessages.UnexpectedSystemError;
             }
         }
         public RedirectToRouteResult Entry()
@@ -264,6 +237,44 @@ namespace EasyBlog.Controllers
             }
             return RedirectToAction("Home","Admin", userInformation);
         }
-
+        private string IsValidEmail(string email)
+        {
+            if (!string.IsNullOrEmpty(email) && email.Contains('@'))
+            {
+                return ResponseMessages.Success;
+            }
+            else
+            {
+                return ResponseMessages.InvalidEmailAddress;
+            }
+        }
+        private string IsValidPhone(string phone)
+        {
+            string validNumber = phone.Trim('+');
+            if (!phone.Contains('+') || validNumber.Length <= 10)
+            {
+                return ResponseMessages.MissingCountryCode;
+            }
+            else if (!validNumber.All(char.IsDigit))
+            {
+                return ResponseMessages.InvalidPhoneNumber;
+            }
+            return ResponseMessages.Success;
+        }
+        private bool IsAnyNullOrEmpty(object myObject)
+        {
+            foreach (PropertyInfo propertyInfo in myObject.GetType().GetProperties())
+            {
+                if (propertyInfo.PropertyType == typeof(string))
+                {
+                    string value = (string)propertyInfo.GetValue(myObject);
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }

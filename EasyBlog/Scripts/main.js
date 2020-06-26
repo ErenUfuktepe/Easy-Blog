@@ -651,6 +651,7 @@ function SaveAndDisableBlogSection() {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
         var stories = GetBlogStories();
+        console.log(stories)
         if (stories[0]) {
             CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
         } else {
@@ -891,6 +892,23 @@ function RemoveSubTextFromHome() {
     }
 }
 
+function DeleteSubText() {
+    window.value = event.target.parentElement.parentElement.children[0].value;
+    window.target = event.target.parentElement.parentElement.parentElement.parentElement;
+    CreateDialog('warning', 'Warning', 'Do you want to delete this sub text?', 'Yes','DeleteSubTextFromHome()','')
+}
+
+
+function DeleteSubTextFromHome() {
+    var data = {};
+    data.subText = window.value;
+    var response = AjaxCall("Admin", "DeleteSubTextFromHome", data);
+    if (response == "Success") {
+        window.target.remove();
+    } else {
+        CreateDialog('error', 'System Error', response, '', '', '');
+    }
+}
 function AddImageToPortfolio() {
     var innerHTML = '<div class="col-lg-6 new-item" >\
                         <div class="custom-file">\
@@ -908,11 +926,23 @@ function AddImageToPortfolio() {
 }
 
 function RemoveImageFromPortfolio() {
-    event.target.parentElement.parentElement.parentElement.parentElement.remove();
+    var value = event.target.parentElement.parentElement.children[0].children[0].value;
+    var label = event.target.parentElement.parentElement.children[0].children[1].innerHTML;
+    window.target = event.target.parentElement.parentElement.parentElement.parentElement;
+
+    if (label == 'Choose file' || value.includes('fakepath')) {
+        window.target.remove()
+    } else {
+        CreateDialog('warning', 'Delete Image', 'Do you want to delete this image?', 'Yes', 'DeleteImageFromPortfolio()', '');
+    }
+}
+
+function DeleteImageFromPortfolio() {
+    window.target.remove()
 }
 
 function AddCatagory() {
-    var innerHTML = '<div class="col-lg-12">\
+    var innerHTML = '<div class="col-lg-12" style="padding-top:10px">\
                         <button type="button" onclick="RemoveCategory()" class="btn btn-danger" style = "float:right;"> Remove Catagory</button>\
                     </div >\
                     <div class="col-lg-6 input-padding">\
@@ -935,30 +965,34 @@ function AddCatagory() {
     FileEventListenerRefresh();
 }
 
-function RemoveCategory() {
-    if (window.location.href.includes("UpdateBlog")) {
-        var category = event.target.parentElement.parentElement.children[1].children[1].children[0].value;
-        var data = {}
-        GetPortfolioCategories()[1].forEach(function (element) {
-            if (category == element.category) {
-                data = element;
-            }
-        });
-        var response = AjaxCall("Admin", "DeletePortfolioCategory", data)
-        if (response == 'Success') {
-            event.target.parentElement.parentElement.remove();
-        } else {
-            CreateDialog('error', 'System Error', response, '', '', '');
+function DeleteCategoryMessage() {
+    window.target = event.target.parentElement.parentElement;
+    CreateDialog('warning', 'Delete Category', 'Do you want to delete this category?', 'Yes','DeleteCategory()','');
+}
+
+function DeleteCategory() {
+    var category = window.target.children[1].children[1].children[0].value;
+    var data = {}
+    GetPortfolioCategories()[1].forEach(function (element) {
+        if (category == element.category) {
+            data = element;
         }
+    });
+    var response = AjaxCall("Admin", "DeletePortfolioCategory", data)
+    if (response == 'Success') {
+        window.target.remove();
+    } else {
+        CreateDialog('error', 'System Error', response, '', '', '');
     }
-    else {
-        event.target.parentElement.parentElement.remove();
-    }
+}
+
+function RemoveCategory() {
+    event.target.parentElement.parentElement.remove();
 }
 
 function AddStory() {
     var innerHTML = '<div class="col-lg-12">\
-                        <div class="col-lg-12" style="text-align:right; padding:0px;">\
+                        <div class="col-lg-12" style="text-align:right; padding:0px; padding-top:10px;">\
                             <a href="javascript:void(0);" onclick="RemoveStory()" class="btn btn-danger disable-blog">Remove</a>\
                         </div>\
                     </div>\
@@ -983,21 +1017,26 @@ function AddStory() {
     FileEventListenerRefresh();
 }
 
-function RemoveStory() {
-    if (window.location.href.includes("UpdateBlog")) {
-        var data = {}
-        data.title = event.target.parentElement.parentElement.parentElement.children[1].children[1].children[0].value;
-        data.image = event.target.parentElement.parentElement.parentElement.children[2].children[1].children[1].innerHTML;
-        data.body = event.target.parentElement.parentElement.parentElement.children[3].children[1].value;
-        var response = AjaxCall("Admin", "DeleteStory", data)
-        if (response == 'Success') {
-            event.target.parentElement.parentElement.parentElement.remove();
-        } else {
-            CreateDialog('error', 'System Error', response, '', '', '');
-        }
+function DeleteStoryMessage() {
+    window.target = event.target.parentElement.parentElement.parentElement;
+    CreateDialog('warning', 'Delete Story', 'Do you want to delete this stroy?', 'Yes', 'DeleteStory()', '');
+}
+
+function DeleteStory() {
+    var data = {}
+    data.title = window.target.children[1].children[1].children[0].value;
+    data.image = window.target.children[2].children[1].children[1].innerHTML;
+    data.body = window.target.children[3].children[1].value;
+    var response = AjaxCall("Admin", "DeleteStory", data)
+    if (response == 'Success') {
+        window.target.remove();
     } else {
-        event.target.parentElement.parentElement.parentElement.remove();
+        CreateDialog('error', 'System Error', response, '', '', '');
     }
+}
+
+function RemoveStory() {
+    event.target.parentElement.parentElement.parentElement.remove();
 }
 
 function StringToHTML(str, cls) {
@@ -1323,7 +1362,9 @@ function AddSocialMedia() {
 }
 
 function RemoveSocialMedia() {
-    event.target.parentElement.parentElement.parentElement.parentElement.remove();
+    if(event.target.parentElement.parentElement.parentElement.parentElement.classList.value != ''){
+        event.target.parentElement.parentElement.parentElement.parentElement.remove();
+    }
 }
 
 function SocialMediaList() {
@@ -1436,6 +1477,11 @@ function GetBlogStories() {
     var flag = false;
     Array.from($("#blog-settings :input")).forEach(function (input) {
         if (!(counter < 3)) {
+            console.log(input);
+            console.log(counter);
+            if (input.type == 'textarea') {
+                newStory.body = input.value;
+            }
             if (counter != 3 && counter % 3 == 0) {
                 stories.push(newStory);
                 newStory = new Object;
@@ -1458,9 +1504,6 @@ function GetBlogStories() {
                 } else {
                     newStory.image = GetFileNameWithValue(input.value);
                 }
-            }
-            if (input.type == 'textarea') {
-                newStory.body = input.value;
             }
         }
         counter++;
@@ -1540,7 +1583,6 @@ function DeletePage() {
 function DeleteSocialMedia() {
     window.target = event.target.parentElement.parentElement.parentElement;
     window.remove = event.target.parentElement.parentElement.parentElement.parentElement;
-
     if (typeof window.target.parentElement.children[0].children[1].children[0].value != 'undefined') {
         CreateDialog('warning', 'Delete Social Media', 'Do you want to delete this social media?', 'Yes', 'DeleteSocialMediaLink()', '');
     }
@@ -1549,20 +1591,27 @@ function DeleteSocialMedia() {
 function DeleteSocialMediaLink() {
     var data = new Object();
     var remove = new Object();
+    var numberOfMedias = document.getElementsByClassName('social-media').length;
+
     data.socialMedia = window.target.parentElement.children[0].children[1].children[0].value;
     data.link = window.target.children[1].children[0].value;
     remove.socialMedia = data;
     var response = AjaxCall("Admin", "DeleteSocialMediaLink", remove);
     if (response == "Success") {
-        window.remove.remove();
+        if (numberOfMedias == 1) {
+            window.remove.children[1].children[1].children[0].value = '';
+        } else {
+            window.remove.remove();
+        }
     } else {
         CreateDialog('error', 'System Error', response, '','','');
     }
 }
 
 function DeleteNavigationSection() {
+    var content = window.delete.children[1].id;
     var data = {};
-    data.content = window.delete.children[1].id;
+    data.content = content;
     var response = AjaxCall("Admin", "DeleteSectionFromNavigation", data);
     if (response == "Success") {
         let deletedValue = window.delete.children[0].innerHTML;
@@ -1577,6 +1626,7 @@ function DeleteNavigationSection() {
             }
         });
         window.delete.remove();
+        document.getElementById(content + '-settings').remove();
     } else {
         CreateDialog('error', 'System Error', response, '', '', '');
     }
