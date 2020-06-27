@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,6 +15,7 @@ namespace EasyBlog.Controllers
     public class AdminController : Controller
     {
         private EasyBlogEntities db = new EasyBlogEntities();
+
         public ActionResult Home(UserInformationModel userInformationModel)
         {
             if (userInformationModel.email == null || Session["UserInformation"] == null)
@@ -28,12 +30,9 @@ namespace EasyBlog.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-            else
-            {
-                CreateImagePathForUser(Session["UserInformation"].ToString());
-                ViewData["SocialMedias"] = GetSocialMediaList();
-                return View(userInformationModel);
-            }
+            CreateImagePathForUser(Session["UserInformation"].ToString());
+            ViewData["SocialMedias"] = GetSocialMediaList();
+            return View(userInformationModel);
         }
         public ActionResult Settings(UserInformationModel userInformationModel)
         {
@@ -41,16 +40,13 @@ namespace EasyBlog.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-            else
+            long id = long.Parse(Session["UserInformation"].ToString());
+            userInformationModel = RefreshUserInformationModel(id);
+            if (userInformationModel == null)
             {
-                long id = long.Parse(Session["UserInformation"].ToString());
-                userInformationModel = RefreshUserInformationModel(id);
-                if (userInformationModel == null)
-                {
-                    return RedirectToAction("Login", "User");
-                }
-                return View(userInformationModel);
+                return RedirectToAction("Login", "User");
             }
+            return View(userInformationModel);
         }
         public ActionResult UpdateBlog()
         {
@@ -63,23 +59,17 @@ namespace EasyBlog.Controllers
         }
         public ActionResult Logout()
         {
+            HttpContext.Session.Abandon();
             Session["UserInformation"] = null;
             return RedirectToAction("Login", "User");
         }
         public JsonResult UpdateEmail(string oldEmail, string newEmail)
         {
-            string response = "Success";
             try
             {
-                if (string.IsNullOrEmpty(newEmail))
+                if (IsValidEmail(newEmail) != ResponseMessages.Success)
                 {
-                    response = "Email can't be empty!";
-                    return Json(response, JsonRequestBehavior.AllowGet);
-                }
-                if(!(newEmail.Contains('@') && newEmail.Contains('.')))
-                {
-                    response = "Invalid email address!";
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    return Json(ResponseMessages.InvalidEmailAddress, JsonRequestBehavior.AllowGet);
                 }
                 UserInformation userInformation = db.UserInformations.Where(x => x.email == oldEmail).SingleOrDefault();
                 UserLogin userLogin = db.UserLogins.Where(x => x.email == oldEmail).SingleOrDefault();
@@ -89,69 +79,61 @@ namespace EasyBlog.Controllers
                     db.SaveChanges();
                     userLogin.email = newEmail;
                     db.SaveChanges();
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    return Json(ResponseMessages.EmailAddressUpdated, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    response = "System Error!";
-                    return Json(response, JsonRequestBehavior.AllowGet);
-                }   
+                    return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (System.Data.Entity.Infrastructure.DbUpdateException e)
             {
                 Console.WriteLine(e);
-                response = "This user already exists!";
-                return Json(response, JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.ExistingEmailAddress, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
-                response = "System Error!";
                 Console.WriteLine(e);
-                return Json(response, JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult UpdatePhone(string oldPhone, string newPhone, string email)
         {
-            string response = "Success";
-            if (!string.IsNullOrWhiteSpace(newPhone))
-            {
-                string validNumber = newPhone.Trim('+');
-                if (!newPhone.Contains('+') || validNumber.Length <= 10)
-                {
-                    response = "Please add country code with + symbol!";
-                    return Json(response, JsonRequestBehavior.AllowGet);
-                }
-                else if (!validNumber.All(char.IsDigit))
-                {
-                    response =  "Given phone number is not valid";
-                    return Json(response, JsonRequestBehavior.AllowGet);
-                }
-            }
             try
             {
-                UserInformation userInformation = db.UserInformations.Where(x => x.email == email && x.phone == oldPhone).SingleOrDefault();
-
-                if (!string.IsNullOrEmpty(newPhone)) {
+                if (!string.IsNullOrWhiteSpace(newPhone))
+                {
+                    string validPhone = IsValidPhone(newPhone);
+                    if (validPhone != ResponseMessages.Success)
+                    {
+                        return Json(validPhone, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                if (!string.IsNullOrEmpty(newPhone))
+                {
                     UserInformation newPhoneCheck = db.UserInformations.Where(x => x.phone == newPhone).SingleOrDefault();
                     if (newPhoneCheck != null)
                     {
-                        response = "This phone number belongs to someone else!";
-                        return Json(response, JsonRequestBehavior.AllowGet);
+                        return Json(ResponseMessages.ExistingPhoneNumber, JsonRequestBehavior.AllowGet);
                     }
                 }
+                UserInformation userInformation = db.UserInformations.Where(x => x.email == email && x.phone == oldPhone).SingleOrDefault();            
                 if (userInformation != null)
                 {
                     userInformation.phone = newPhone;
                     db.SaveChanges();
-                    return Json(response, JsonRequestBehavior.AllowGet);
-                } 
+                    return Json(ResponseMessages.PhoneNumberUpdated, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error.", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
             }
-            return Json(response, JsonRequestBehavior.AllowGet);
         }
         private UserInformationModel RefreshUserInformationModel(long id)
         {
@@ -176,7 +158,6 @@ namespace EasyBlog.Controllers
         public JsonResult ResetPassword(string email, string oldPassword, string newPassword)
         {
             SecurityUtilize securityUtilize = new SecurityUtilize();
-            string response = "Success";
             try
             {
                 UserLogin userLogin = db.UserLogins.Where(x => x.email == email).SingleOrDefault();
@@ -184,17 +165,16 @@ namespace EasyBlog.Controllers
                 {
                     userLogin.password = securityUtilize.Encrypt(newPassword);
                     db.SaveChanges();
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    return Json(ResponseMessages.PasswordReset, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    response = "Wronge password!";
-                    return Json(response, JsonRequestBehavior.AllowGet);
+                    return Json(ResponseMessages.WrongPassword, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e){
                 Console.WriteLine(e);
-                return Json("System Error.", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
             }
         }
         public List<SocialMedia> GetSocialMediaList() {
@@ -211,41 +191,31 @@ namespace EasyBlog.Controllers
         }
         public JsonResult UploadImages()
         {
-            List<HttpPostedFileBase> files = new List<HttpPostedFileBase>();
-            for (int i = 0; i < Request.Files.Count; i++)
+            try
             {
-                HttpPostedFileBase file = Request.Files[i];
-                if (CheckMimeType(file))
+                List<HttpPostedFileBase> files = new List<HttpPostedFileBase>();
+                for (int i = 0; i < Request.Files.Count; i++)
                 {
+                    HttpPostedFileBase file = Request.Files[i];
+                    if (!(file.ContentType.Contains("jpeg") || file.ContentType.Contains("png") || file.ContentType.Contains("jpg")))
+                    {
+                        return Json(ResponseMessages.FileExtensionTypeException);
+                    }
                     files.Add(file);
                 }
-                else
+                foreach (HttpPostedFileBase file in files)
                 {
-                    return Json("You can only upload jpeg, jpg and png type files!");
-                }   
+                    System.IO.Stream fileContent = file.InputStream;
+                    string path = Path.Combine(Server.MapPath("~/Images/" + Session["UserInformation"].ToString()),
+                                                       Path.GetFileName(file.FileName));
+                    file.SaveAs(path);
+                }
+                return Json(ResponseMessages.UploadImageFiles);
             }
-            UploadImages(files);
-            return Json("Success");
-        }
-        private void UploadImages(List<HttpPostedFileBase> files)
-        {
-            foreach (HttpPostedFileBase file in files)
+            catch (Exception e)
             {
-                System.IO.Stream fileContent = file.InputStream;
-                string path = Path.Combine(Server.MapPath("~/Images/" + Session["UserInformation"].ToString()),
-                                                   Path.GetFileName(file.FileName));
-                file.SaveAs(path);
-            }
-        }
-        private bool CheckMimeType(HttpPostedFileBase file)
-        {
-            if (file.ContentType.Contains("jpeg") || file.ContentType.Contains("png") || file.ContentType.Contains("jpg"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                Console.WriteLine(e);
+                return Json(ResponseMessages.UploadImageFilesException);
             }
         }
         private bool CreateImagePathForUser(string userID)
@@ -271,28 +241,28 @@ namespace EasyBlog.Controllers
                     mainTemplate.id = id;
                     db.Templates.Add(mainTemplate);
                     db.SaveChanges();
-                    return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
+                    return Json(ResponseMessages.TemplateSave, JsonRequestBehavior.AllowGet);
                 }
                 else if (checkExisting.templateName != template)
                 {
                     checkExisting.templateName = template;
                     db.SaveChanges();
-                    return Json("Template updated successfully!", JsonRequestBehavior.AllowGet);
+                    return Json(ResponseMessages.TemplateUpdate, JsonRequestBehavior.AllowGet);
                 }
-                return Json("Template saved successfully!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.TemplateSave, JsonRequestBehavior.AllowGet);
                 
             }
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.TemplateException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveMainComponents(MainComponentsModel mainComponentsModel)
         {
             try
             {
-                string response = "Success";
+                string responseMessage = ResponseMessages.Success;
                 long id = long.Parse(Session["UserInformation"].ToString());
                 Main checkMain = db.Mains.Where(x => x.id == id).SingleOrDefault();
                 if (checkMain == null)
@@ -306,6 +276,7 @@ namespace EasyBlog.Controllers
                     main.titleColor = mainComponentsModel.titleColor;
                     db.Mains.Add(main);
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.MainComponentsSave;
                 }
                 else{
                     if (mainComponentsModel.logo != null)
@@ -317,17 +288,18 @@ namespace EasyBlog.Controllers
                     checkMain.hoverColor = mainComponentsModel.hoverColor;
                     checkMain.titleColor = mainComponentsModel.titleColor;
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.MainComponentsUpdate;
                 }
                 if (mainComponentsModel.socialMediaList.Count() > 0)
                 {
-                    response = AddSocialMediaLink(mainComponentsModel.socialMediaList);
+                    responseMessage = AddSocialMediaLink(mainComponentsModel.socialMediaList);
                 }
-                return Json(response, JsonRequestBehavior.AllowGet);
+                return Json(responseMessage, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.MainComponentsException, JsonRequestBehavior.AllowGet);
             }
         }
         private string AddSocialMediaLink(List<SocialMediaModel> socialMediaModels)
@@ -350,6 +322,7 @@ namespace EasyBlog.Controllers
                             db.SaveChanges();
                         }
                     }
+                    return ResponseMessages.MainComponentsSave;
                 }
                 else
                 {
@@ -377,20 +350,20 @@ namespace EasyBlog.Controllers
                             db.SaveChanges();
                         }
                     }
+                    return ResponseMessages.MainComponentsUpdate;
                 }
-                return "Main components saved successfully";
-                
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return "System Error!";
+                return ResponseMessages.SocialMediaException;
             }
         }
         public JsonResult SaveNavigation(NavigationModel navigationModel)
         {
             try
             {
+                string responseMessage = ResponseMessages.Success;
                 long id = long.Parse(Session["UserInformation"].ToString());
                 Navigation check = db.Navigations.Where(x => x.id == id).SingleOrDefault();
                 if (check == null)
@@ -401,6 +374,7 @@ namespace EasyBlog.Controllers
                     navigation.id = id;
                     db.Navigations.Add(navigation);
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.NavigationSave;
                 }
                 else
                 {
@@ -410,14 +384,15 @@ namespace EasyBlog.Controllers
                         check.logo = navigationModel.logo;
                     }
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.NavigationUpdate;
                 }
-                string response = SaveNavigationItems(navigationModel.navigationItems);
-                return Json(response, JsonRequestBehavior.AllowGet);    
+                responseMessage = SaveNavigationItems(navigationModel.navigationItems);
+                return Json(responseMessage, JsonRequestBehavior.AllowGet);    
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.NavigationException, JsonRequestBehavior.AllowGet);
             }
         }
         private string SaveNavigationItems(List<NavigationItemModel> navigationItemModels)
@@ -438,6 +413,7 @@ namespace EasyBlog.Controllers
                         db.NavigationItems.Add(navigationItem);
                         db.SaveChanges();
                     }
+                    return ResponseMessages.NavigationSave;
                 }
                 else
                 {
@@ -465,19 +441,20 @@ namespace EasyBlog.Controllers
                             db.SaveChanges();
                         }
                     }
+                    return ResponseMessages.NavigationUpdate;
                 }
-                return "Navigation Items saved.";             
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return "System Error.";
+                return ResponseMessages.NavigationException;
             }
         }
         public JsonResult SaveHome(HomeModel homeModel)
         {
             try
             {
+                string responseMessage = ResponseMessages.Success;
                 long id = long.Parse(Session["UserInformation"].ToString());
                 Home check = db.Homes.Where(x => x.id == id).SingleOrDefault();
                 if (check == null)
@@ -489,6 +466,7 @@ namespace EasyBlog.Controllers
                     home.background = homeModel.background;
                     db.Homes.Add(home);
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.HomeSave;
                 }
                 else
                 {
@@ -499,13 +477,15 @@ namespace EasyBlog.Controllers
                         check.background = homeModel.background;
                     }
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.HomeUpdate;
                 }
-                return Json(SaveHomeSubTexts(homeModel.subTextList), JsonRequestBehavior.AllowGet);                                  
+                responseMessage = SaveHomeSubTexts(homeModel.subTextList);
+                return Json(responseMessage, JsonRequestBehavior.AllowGet);                                  
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.HomeException, JsonRequestBehavior.AllowGet);
             }
         }
         private string SaveHomeSubTexts(List<string> subTexts)
@@ -527,18 +507,19 @@ namespace EasyBlog.Controllers
                     db.HomeSubTexts.Add(homeSubText);
                     db.SaveChanges();
                 }
-                return "Home section saved.";
+                return ResponseMessages.HomeSave;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return "System Error!";
+                return ResponseMessages.HomeException;
             }
         }
         public JsonResult SaveAbout(AboutModel aboutModel)
         {
             try
             {
+                string responseMessage = ResponseMessages.Success;
                 long id = long.Parse(Session["UserInformation"].ToString());
                 About check = db.Abouts.Where(x => x.id == id).SingleOrDefault();
                 if (check == null)
@@ -553,6 +534,7 @@ namespace EasyBlog.Controllers
                     about.id = id;
                     db.Abouts.Add(about);
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.AboutSave;
                 }
                 else
                 {
@@ -566,6 +548,7 @@ namespace EasyBlog.Controllers
                     check.body = aboutModel.body;
                     check.frameColor = aboutModel.frame;
                     db.SaveChanges();
+                    responseMessage = ResponseMessages.AboutUpdate;
                 }
                 if (aboutModel.informationList != null )
                 {
@@ -582,14 +565,15 @@ namespace EasyBlog.Controllers
                         aboutInformation.informationValue = information[1];
                         db.AboutInformations.Add(aboutInformation);
                         db.SaveChanges();
+                        responseMessage = ResponseMessages.AboutUpdate;
                     }
                 }
-                return Json("About section saved.", JsonRequestBehavior.AllowGet);
+                return Json(responseMessage, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.AboutException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SavePortfolio(PortfolioModel portfolioModel)
@@ -628,12 +612,12 @@ namespace EasyBlog.Controllers
                         }
                     }
                 }
-                return Json("Portfolio section saved.", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.PortfolioSaved, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.PortfolioException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveContact(ContactModel contactModel)
@@ -655,6 +639,8 @@ namespace EasyBlog.Controllers
                     contact.country = contactModel.country;
                     contact.state = contactModel.state;
                     db.Contacts.Add(contact);
+                    db.SaveChanges();
+                    return Json(ResponseMessages.ContactSave, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -666,14 +652,14 @@ namespace EasyBlog.Controllers
                     checkContact.city = contactModel.city;
                     checkContact.country = contactModel.country;
                     checkContact.state = contactModel.state;
+                    db.SaveChanges();
+                    return Json(ResponseMessages.ContactUpdate, JsonRequestBehavior.AllowGet);
                 }
-                db.SaveChanges();
-                return Json("Contact section saved.", JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.ContactException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveBlog(BlogModel blogModel)
@@ -722,12 +708,12 @@ namespace EasyBlog.Controllers
                         db.SaveChanges();
                     }
                 }
-                return Json("Blog section saved.", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.BlogSaved, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.BlogException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveResume(ResumeModel resumeModel)
@@ -735,7 +721,11 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-
+                Resume checkResume = db.Resumes.Where(x => x.id == id).SingleOrDefault();
+                if (checkResume != null)
+                {
+                    DeleteResume();
+                }
                 Resume resume = new Resume();
                 resume.header = resumeModel.header;
                 resume.background = resumeModel.background;
@@ -774,13 +764,12 @@ namespace EasyBlog.Controllers
                         }
                     }
                 }
-                  
-                return Json("Resume section saved.", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.ResumeSaved, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.ResumeException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult HasBlog()
@@ -791,14 +780,14 @@ namespace EasyBlog.Controllers
                 Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
                 if (template == null)
                 {
-                    return Json("true", JsonRequestBehavior.AllowGet);
+                    return Json(ResponseMessages.True, JsonRequestBehavior.AllowGet);
                 }
-                return Json("false", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.False, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("false", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.False, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeletePage()
@@ -816,12 +805,12 @@ namespace EasyBlog.Controllers
                 DeleteBlog();
                 DeleteTemplate();
                 DeleteImages();
-                return Json("true", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.True, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("false", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.False, JsonRequestBehavior.AllowGet);
             }
         }
         private bool DeleteTemplate()
@@ -1355,12 +1344,12 @@ namespace EasyBlog.Controllers
                 SocialMediaLink link = db.SocialMediaLinks.Where(x => x.socialMedia == mediaID && x.link == socialMedia.link && x.userID == id).SingleOrDefault();
                 db.SocialMediaLinks.Remove(link);
                 db.SaveChanges();
-                return Json("Success", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.SocialMediaDelete, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.SocialMediaDeleteException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeleteSectionFromNavigation(string content)
@@ -1399,12 +1388,12 @@ namespace EasyBlog.Controllers
                     db.SaveChanges();
                 }
                 ChangeNavigationItemPrioroty();
-                return Json("Success", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.SectionDelete, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.SectionDeleteException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeleteStory(StoryModel storyModel)
@@ -1415,12 +1404,12 @@ namespace EasyBlog.Controllers
                 Story story = db.Stories.Where(x => x.blogID == id && x.title == storyModel.title && x.body == storyModel.body).SingleOrDefault();
                 db.Stories.Remove(story);
                 db.SaveChanges();
-                return Json("Success", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.StoryDelete, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.StoryDeleteException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeletePortfolioCategory(PortfolioCategoryModel categoryModel)
@@ -1436,12 +1425,12 @@ namespace EasyBlog.Controllers
                     db.PortfolioCategories.Remove(category);
                     db.SaveChanges();
                 }
-                return Json("Success", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.CategoryDelete, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.CategoryDeleteException, JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeleteSubTextFromHome(string subText)
@@ -1455,15 +1444,14 @@ namespace EasyBlog.Controllers
                     db.HomeSubTexts.Remove(homeSubText);
                     db.SaveChanges();
                 }
-                return Json("Success", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.SubTextDelete, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json("System Error!", JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.SubTextDeleteException, JsonRequestBehavior.AllowGet);
             }
         }
-
         private bool ChangeNavigationItemPrioroty()
         {
             try
@@ -1490,6 +1478,30 @@ namespace EasyBlog.Controllers
                 Console.WriteLine(e);
                 return false;
             }
+        }
+        private string IsValidEmail(string email)
+        {
+            if (!string.IsNullOrEmpty(email) && email.Contains('@'))
+            {
+                return ResponseMessages.Success;
+            }
+            else
+            {
+                return ResponseMessages.InvalidEmailAddress;
+            }
+        }
+        private string IsValidPhone(string phone)
+        {
+            string validNumber = phone.Trim('+');
+            if (!phone.Contains('+') || validNumber.Length <= 10)
+            {
+                return ResponseMessages.MissingCountryCode;
+            }
+            else if (!validNumber.All(char.IsDigit))
+            {
+                return ResponseMessages.InvalidPhoneNumber;
+            }
+            return ResponseMessages.Success;
         }
     }
 }

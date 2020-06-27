@@ -19,7 +19,7 @@ namespace EasyBlog.Controllers
 
         public ActionResult Login()
         {
-            HttpContext.Session.Abandon();
+            HttpContext.Session.Clear();
             HttpContext.Session["UserInformation"] = null;
             return View();
         }
@@ -174,7 +174,7 @@ namespace EasyBlog.Controllers
             catch (System.Data.Entity.Infrastructure.DbUpdateException exception)
             {
                 Console.WriteLine(exception);
-                return Json(ResponseMessages.DatabaseError, JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.DatabaseException, JsonRequestBehavior.AllowGet);
             }
         }
         private string CheckUserArguments(UserCreateModel userCreateModel)
@@ -224,7 +224,7 @@ namespace EasyBlog.Controllers
             catch (Exception exception)
             {
                 Console.WriteLine(exception);
-                return ResponseMessages.UnexpectedSystemError;
+                return ResponseMessages.UnexpectedSystemException;
             }
         }
         public RedirectToRouteResult Entry()
