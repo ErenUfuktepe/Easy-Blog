@@ -7,7 +7,9 @@ namespace EasyBlog.Helpers
 {
     public static class ResponseMessages
     {
-        public static string Success = "Success";
+        public static string Success = "success";
+        public static string Warning = "warning";
+        public static string Error = "error";
         public static string RequiredFields = "Fill the required fields!";
         public static string InvalidEmailAddress = "Invalid email address!";
         public static string LoginException = "Invalid email address or password. Please try again.";
@@ -63,8 +65,10 @@ namespace EasyBlog.Helpers
         public static string CategoryDeleteException = "An error occurred while deleting the category!";
         public static string SubTextDelete = "Sub text deleted successfully!";
         public static string SubTextDeleteException = "An error occurred while deleting the sub text!";
-
-
+        public static string CreateAccount = "Your account has been created successfully!";
+        public static string ExistingPage = "You already have a page! If you continue, your old blog will be deleted!";
+        public static string DeletePageException = "An error occurred while deleting the page!";
+        public static string DeletePage = "You old page is deleted!";
 
     }
 }

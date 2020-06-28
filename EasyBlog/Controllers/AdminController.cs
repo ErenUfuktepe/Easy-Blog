@@ -106,7 +106,7 @@ namespace EasyBlog.Controllers
                     string validPhone = IsValidPhone(newPhone);
                     if (validPhone != ResponseMessages.Success)
                     {
-                        return Json(validPhone, JsonRequestBehavior.AllowGet);
+                        return Json(new Response(validPhone, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
                     }
                 }
                 if (!string.IsNullOrEmpty(newPhone))
@@ -114,7 +114,7 @@ namespace EasyBlog.Controllers
                     UserInformation newPhoneCheck = db.UserInformations.Where(x => x.phone == newPhone).SingleOrDefault();
                     if (newPhoneCheck != null)
                     {
-                        return Json(ResponseMessages.ExistingPhoneNumber, JsonRequestBehavior.AllowGet);
+                        return Json(new Response(ResponseMessages.ExistingPhoneNumber, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
                     }
                 }
                 UserInformation userInformation = db.UserInformations.Where(x => x.email == email && x.phone == oldPhone).SingleOrDefault();            
@@ -122,17 +122,17 @@ namespace EasyBlog.Controllers
                 {
                     userInformation.phone = newPhone;
                     db.SaveChanges();
-                    return Json(ResponseMessages.PhoneNumberUpdated, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.PhoneNumberUpdated, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.UnexpectedSystemException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.UnexpectedSystemException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         private UserInformationModel RefreshUserInformationModel(long id)
@@ -241,21 +241,19 @@ namespace EasyBlog.Controllers
                     mainTemplate.id = id;
                     db.Templates.Add(mainTemplate);
                     db.SaveChanges();
-                    return Json(ResponseMessages.TemplateSave, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.TemplateSave, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
                 }
-                else if (checkExisting.templateName != template)
+                else
                 {
                     checkExisting.templateName = template;
                     db.SaveChanges();
-                    return Json(ResponseMessages.TemplateUpdate, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.TemplateUpdate, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
                 }
-                return Json(ResponseMessages.TemplateSave, JsonRequestBehavior.AllowGet);
-                
             }
             catch(Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.TemplateException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.TemplateException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveMainComponents(MainComponentsModel mainComponentsModel)
@@ -293,13 +291,17 @@ namespace EasyBlog.Controllers
                 if (mainComponentsModel.socialMediaList.Count() > 0)
                 {
                     responseMessage = AddSocialMediaLink(mainComponentsModel.socialMediaList);
+                    if(responseMessage == ResponseMessages.SocialMediaException)
+                    {
+                        return Json(new Response(responseMessage, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+                    }
                 }
-                return Json(responseMessage, JsonRequestBehavior.AllowGet);
+                return Json(new Response(responseMessage, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.MainComponentsException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.MainComponentsException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         private string AddSocialMediaLink(List<SocialMediaModel> socialMediaModels)
@@ -387,12 +389,16 @@ namespace EasyBlog.Controllers
                     responseMessage = ResponseMessages.NavigationUpdate;
                 }
                 responseMessage = SaveNavigationItems(navigationModel.navigationItems);
-                return Json(responseMessage, JsonRequestBehavior.AllowGet);    
+                if (responseMessage == ResponseMessages.NavigationException)
+                {
+                    return Json(new Response(responseMessage, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+                }
+                return Json( new Response(responseMessage, ResponseMessages.Success), JsonRequestBehavior.AllowGet);    
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.NavigationException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.NavigationException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         private string SaveNavigationItems(List<NavigationItemModel> navigationItemModels)
@@ -480,12 +486,16 @@ namespace EasyBlog.Controllers
                     responseMessage = ResponseMessages.HomeUpdate;
                 }
                 responseMessage = SaveHomeSubTexts(homeModel.subTextList);
-                return Json(responseMessage, JsonRequestBehavior.AllowGet);                                  
+                if (responseMessage == ResponseMessages.HomeException)
+                {
+                    return Json(new Response(responseMessage, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+                }
+                return Json(new Response(responseMessage, ResponseMessages.Success), JsonRequestBehavior.AllowGet);                                  
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.HomeException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.HomeException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         private string SaveHomeSubTexts(List<string> subTexts)
@@ -568,12 +578,12 @@ namespace EasyBlog.Controllers
                         responseMessage = ResponseMessages.AboutUpdate;
                     }
                 }
-                return Json(responseMessage, JsonRequestBehavior.AllowGet);
+                return Json(new Response(responseMessage, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.AboutException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.AboutException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SavePortfolio(PortfolioModel portfolioModel)
@@ -612,12 +622,12 @@ namespace EasyBlog.Controllers
                         }
                     }
                 }
-                return Json(ResponseMessages.PortfolioSaved, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.PortfolioSaved, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.PortfolioException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.PortfolioException, ResponseMessages.Error ), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveContact(ContactModel contactModel)
@@ -640,7 +650,7 @@ namespace EasyBlog.Controllers
                     contact.state = contactModel.state;
                     db.Contacts.Add(contact);
                     db.SaveChanges();
-                    return Json(ResponseMessages.ContactSave, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.ContactSave, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -653,13 +663,13 @@ namespace EasyBlog.Controllers
                     checkContact.country = contactModel.country;
                     checkContact.state = contactModel.state;
                     db.SaveChanges();
-                    return Json(ResponseMessages.ContactUpdate, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.ContactUpdate, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.ContactException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.ContactException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveBlog(BlogModel blogModel)
@@ -708,12 +718,12 @@ namespace EasyBlog.Controllers
                         db.SaveChanges();
                     }
                 }
-                return Json(ResponseMessages.BlogSaved, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.BlogSaved, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.BlogException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.BlogException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult SaveResume(ResumeModel resumeModel)
@@ -764,12 +774,12 @@ namespace EasyBlog.Controllers
                         }
                     }
                 }
-                return Json(ResponseMessages.ResumeSaved, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.ResumeSaved, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.ResumeException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.ResumeException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult HasBlog()
@@ -780,14 +790,14 @@ namespace EasyBlog.Controllers
                 Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
                 if (template == null)
                 {
-                    return Json(ResponseMessages.True, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.True, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
                 }
-                return Json(ResponseMessages.False, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.ExistingPage, ResponseMessages.Warning), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.False, JsonRequestBehavior.AllowGet);
+                return Json( new Response(ResponseMessages.UnexpectedSystemException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeletePage()
@@ -805,12 +815,12 @@ namespace EasyBlog.Controllers
                 DeleteBlog();
                 DeleteTemplate();
                 DeleteImages();
-                return Json(ResponseMessages.True, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.DeletePage, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.False, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.DeletePageException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         private bool DeleteTemplate()
@@ -1344,12 +1354,12 @@ namespace EasyBlog.Controllers
                 SocialMediaLink link = db.SocialMediaLinks.Where(x => x.socialMedia == mediaID && x.link == socialMedia.link && x.userID == id).SingleOrDefault();
                 db.SocialMediaLinks.Remove(link);
                 db.SaveChanges();
-                return Json(ResponseMessages.SocialMediaDelete, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.SocialMediaDelete, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.SocialMediaDeleteException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.SocialMediaDeleteException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeleteSectionFromNavigation(string content)
@@ -1388,12 +1398,12 @@ namespace EasyBlog.Controllers
                     db.SaveChanges();
                 }
                 ChangeNavigationItemPrioroty();
-                return Json(ResponseMessages.SectionDelete, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.SectionDelete, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.SectionDeleteException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.SectionDeleteException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeleteStory(StoryModel storyModel)
@@ -1404,12 +1414,12 @@ namespace EasyBlog.Controllers
                 Story story = db.Stories.Where(x => x.blogID == id && x.title == storyModel.title && x.body == storyModel.body).SingleOrDefault();
                 db.Stories.Remove(story);
                 db.SaveChanges();
-                return Json(ResponseMessages.StoryDelete, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.StoryDelete, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.StoryDeleteException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.StoryDeleteException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeletePortfolioCategory(PortfolioCategoryModel categoryModel)
@@ -1425,12 +1435,12 @@ namespace EasyBlog.Controllers
                     db.PortfolioCategories.Remove(category);
                     db.SaveChanges();
                 }
-                return Json(ResponseMessages.CategoryDelete, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.CategoryDelete, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.CategoryDeleteException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.CategoryDeleteException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public JsonResult DeleteSubTextFromHome(string subText)
@@ -1444,12 +1454,12 @@ namespace EasyBlog.Controllers
                     db.HomeSubTexts.Remove(homeSubText);
                     db.SaveChanges();
                 }
-                return Json(ResponseMessages.SubTextDelete, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.SubTextDelete, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.SubTextDeleteException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.SubTextDeleteException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         private bool ChangeNavigationItemPrioroty()

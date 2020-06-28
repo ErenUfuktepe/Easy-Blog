@@ -149,7 +149,7 @@ namespace EasyBlog.Controllers
                 string isExisting = IsExistingUser(userCreateModel);
                 if (isExisting != ResponseMessages.Success)
                 {
-                    return Json(isExisting, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(isExisting, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
                 }
                 DateTime now = DateTime.Now;
                 UserInformation userInformation = new UserInformation();
@@ -169,12 +169,12 @@ namespace EasyBlog.Controllers
                 userLogin.password = securityUtilize.Encrypt(userCreateModel.password);
                 db.UserLogins.Add(userLogin);
                 db.SaveChanges();
-                return Json(ResponseMessages.Success, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.CreateAccount, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
             }
             catch (System.Data.Entity.Infrastructure.DbUpdateException exception)
             {
                 Console.WriteLine(exception);
-                return Json(ResponseMessages.DatabaseException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.DatabaseException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         private string CheckUserArguments(UserCreateModel userCreateModel)

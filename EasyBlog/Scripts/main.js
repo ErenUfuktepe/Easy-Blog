@@ -13,7 +13,7 @@
 
     if (data.email.includes('@') && data.email.length > 1 && data.password.length > 0) {
         var response = AjaxCall("User","Authorization", data);
-        if (response != 'Success') {
+        if (response != 'success') {
             document.getElementById('login-response').innerHTML = response;
             document.getElementsByClassName('alert-danger')[0].style.display = 'block';
         } else {
@@ -122,10 +122,10 @@ function Register() {
     }
     else if (!(data.name == '' || data.surname == '' || data.email == '' || data.password == '' || data.confirmPassword == '' ||
         data.name.trim() == '' || data.surname.trim() == '' || data.email.trim() == '' || data.password.trim() == '' || data.confirmPassword.trim() == '')) {
-        var response = AjaxCall("User", "CreateUser",data);        
-        if (response == 'Success') {
+        var response = AjaxCall("User", "CreateUser", data);
+        if (response.Type == 'success') {
             document.getElementsByClassName('alert-danger')[0].style.display = 'none';
-            CreateDialog('success', 'Success', 'Your account has been created.', '', '','window.history.back()');
+            CreateDialog(response.Type, response.Type, response.Message, '', '', 'window.history.back()');
         }
         else {
             document.getElementById('register-response').innerHTML = response;
@@ -136,7 +136,7 @@ function Register() {
         document.getElementsByClassName('alert-danger')[0].style.display = 'block';
     }
 }
-
+//TODO
 window.addEventListener('load', (event) => {
     if (window.location.href.includes("Register") || window.location.href.includes("Settings")) {
         document.getElementById('password').addEventListener('input', function () {
@@ -171,8 +171,8 @@ window.addEventListener('load', (event) => {
     }
     if (window.location.href.includes("CreateBlog")) {
         var response = AjaxCall("Admin", "HasBlog", {});
-        if (response == 'false') {
-            CreateDialog('warning', 'Warning', 'You already have a blog! If you continue, your old blog will be deleted.', 'Continue', 'DeletePage()', 'window.history.back()');
+        if (response.Type != 'success') {
+            CreateDialog(response.Type, response.Type, response.Message, 'Continue', 'DeletePage()', 'window.history.back()');
         }
         document.getElementById('submit').onclick = function () {
             var formdata = new FormData();
@@ -181,6 +181,8 @@ window.addEventListener('load', (event) => {
                     formdata.append(fileInput.files[i].name, fileInput.files[i]);
                 }
             });
+            //TODO
+            //Response check
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/Admin/UploadImages', false);
             xhr.send(formdata);
@@ -196,6 +198,7 @@ window.addEventListener('load', (event) => {
             } else if (xhr.status == 500) {
                 CreateDialog('error', 'Error', 'System upload file error!', '', '', 'window.history.back()');
             }
+            console.log(xhr.response)
         }    
     }
     if (window.location.href.includes("UpdateBlog")) {
@@ -230,7 +233,6 @@ function CheckPasswordConditions() {
 }
 
 function CreateDialog(type, title, body, button, action, defaultAction){
-
     const color = GetDialogColor(type);
     let myButton = '';
     if (button != '') {
@@ -239,8 +241,8 @@ function CreateDialog(type, title, body, button, action, defaultAction){
     let myDialog = '<div class="modal fade" id="my-dialog" tabindex="-1" role="dialog" aria-labelledby="my-dialog" aria-hidden="true">\
                         <div class="modal-dialog">\
                             <div class="modal-content">\
-                                <div class="modal-header" style="background:'+ color +'">\
-                                    <h4 class="modal-title" id="myModalLabel">'+ title +'</h4>\
+                                <div class="modal-header" style="background:'+ color + '">\
+                                    <h4 class="modal-title" id="myModalLabel">'+ FirstLetterUpperCase(title) +'</h4>\
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">\
                                         <span aria-hidden="true">&times;</span>\
                                     </button>\
@@ -336,7 +338,7 @@ function SaveAndDisableTemplateSection() {
     var data = {}
     data.template = window.template;
     var response = AjaxCall("Admin", "SaveTemplate", data);
-    if (response.includes('saved') || response.includes('updated')) {
+    if (response.Type == 'success') {
         document.getElementById('template-button').disabled = true;
         Array.from(templates).forEach(function (element) {
             element.onclick = '';
@@ -344,11 +346,8 @@ function SaveAndDisableTemplateSection() {
         document.getElementById('main-settings').style.display = 'block';
         window.scrollTo(0, document.body.scrollHeight);
         SetDefaultValues();
-        CreateDialog('success', 'Success', response, '', '', '');
-    } else {
-        CreateDialog('error', 'Error', response, '', '', '');
     }
-
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
 }
 
 function SetDefaultValues() {
@@ -387,7 +386,6 @@ function IPortfolio() {
 
     $('#home-text-color-code').val('#ffffff');
     $('#home-text-color').val('#ffffff');
-
 }
 
 function MyResume() {
@@ -434,7 +432,6 @@ function Folio() {
 
     $('#contact-background-color').val('#ffffff');
     $('#contact-background-color-code').val('#ffffff');
-
 }
 
 function SaveAndDisableMainSection() {
@@ -455,18 +452,19 @@ function SaveAndDisableMainSection() {
         data.hoverColor = $('#main-hover-color').val();
         data.socialMediaList = SocialMediaList();
         var response = AjaxCall("Admin", "SaveMainComponents", data);
-        if (response.includes('saved')) {
-            CreateDialog('success', 'Success', response, '', '', '');
+        if (response.Type == 'success') {
             Array.from(document.getElementsByClassName('remove-social-media')).forEach(function (element) {
                 element.setAttribute('onclick', '');
             });
             DisableInputs('main-settings');
             document.getElementById('nav-settings').style.display = 'block';
-            window.scrollTo(0, document.body.scrollHeight);
-        } else {
-            CreateDialog('error', 'Error', response, '', '', '');
+            if (!window.location.href.includes("UpdateBlog")) {
+                window.scrollTo(0, document.body.scrollHeight);
+            }
         }
-    } else {
+        CreateDialog(response.Type, response.Type, response.Message, '', '', '');
+    }
+    else {
         if ($('#web-page-logo').val() == '') {
             CreateDialog('error', 'Required parameter!', 'Web Page Logo is required!', '', '', '');
         } else {
@@ -498,15 +496,14 @@ function SaveAndDisableNavigationSection() {
         });
         data.navigationItems = navigationItems;
         var response = AjaxCall("Admin", "SaveNavigation", data);
-        if (response.includes('saved')) {
-            CreateDialog('success', 'Success', response, '', '', '');
+        if (response.Type == 'success') {
             window.sectionQueue = GetSectionInformation();
             DisableInputs('nav-settings');
-            NextSection();
-        } else {
-            CreateDialog('error', 'Error', response, '', '', '');
+            if (!window.location.href.includes("UpdateBlog")) {
+                NextSection();
+            }
         }
-
+        CreateDialog(response.Type, response.Type, response.Message, '', '', '');
     } else {
         CreateDialog('error', 'Required parameter!', 'Logo is required!', '', '', '');
     }
@@ -540,17 +537,17 @@ function SaveAndDisableHomeSection() {
             data.mainText = $('#home-main-text').val();
             data.subTextList = subTextList;
             var response = AjaxCall("Admin", "SaveHome", data);
-            if (response.includes('saved.')) {
-                CreateDialog('success', 'Success', response, '', '', '');
+            if (response.Type == 'success') {
                 Array.from(document.getElementsByClassName('home-remove-sub-text')).forEach(function (sub) {
                     sub.setAttribute('onclick', '');
                 });
                 document.getElementById('home-add-sub-text').setAttribute('onclick', '');
                 DisableInputs('home-settings');
-                NextSection();
-            } else {
-                CreateDialog('error', 'Error', response, '', '', '');
+                if (!window.location.href.includes("UpdateBlog")) {
+                    NextSection();
+                }
             }
+            CreateDialog(response.Type, response.Type, response.Message, '', '', '');
         }
     } else {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
@@ -584,16 +581,16 @@ function SaveAndDisableAboutSection() {
         }
         else {
             var response = AjaxCall("Admin", "SaveAbout", data);
-            if (response.includes('saved.')) {
-                CreateDialog('success', 'Success', response, '', '', '');
+            if (response.Type == 'success') {
                 Array.from(document.getElementsByClassName('about-info-remove')).forEach(function (element) {
                     element.setAttribute('onclick', '');
                 });
                 DisableInputs('about-settings');
-                NextSection();
-            } else {
-                CreateDialog('error', 'Error', response, '', '', '');
+                if (!window.location.href.includes("UpdateBlog")) {
+                    NextSection();
+                }
             }
+            CreateDialog(response.Type, response.Type, response.Message, '', '', '');
         }   
     }
 }
@@ -605,18 +602,16 @@ function SaveAndDisableResumeSection() {
     data.header = $('#resume-header').val();
 
     var response = AjaxCall("Admin", "SaveResume", data);
-    if (response.includes('saved.')) {
-        CreateDialog('success', 'Success', response, '', '', '');
-
+    if (response.Type == 'success') {
         Array.from(document.getElementsByClassName('resume-list-item')).forEach(function (element) {
             element.setAttribute('onclick', '');
         });
-
         DisableInputs('resume-settings');
-        NextSection();
-    } else {
-        CreateDialog('error', 'Error', response, '', '', '');
+        if (!window.location.href.includes("UpdateBlog")) {
+            NextSection();
+        }
     }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
 }
 
 function SaveAndDisablePortfolioSection() {
@@ -632,16 +627,16 @@ function SaveAndDisablePortfolioSection() {
             data.header = $('#portfolio-header').val();
             data.portfolioCategories = categories[1];
             var response = AjaxCall("Admin", "SavePortfolio", data);
-            if (response.includes('saved.')) {
-                CreateDialog('success', 'Success', response, '', '', '');
+            if (response.Type == 'success') {
                 Array.from(document.getElementsByClassName('catagory-disable')).forEach(function (element) {
                     element.setAttribute('onclick', '');
                 });
                 DisableInputs('portfolio-settings');
-                NextSection();
-            } else {
-                CreateDialog('error', 'Error', response, '', '', '');
+                if (!window.location.href.includes("UpdateBlog")) {
+                    NextSection();
+                }
             }
+            CreateDialog(response.Type, response.Type, response.Message, '', '', '');
         }
     }
 }
@@ -651,7 +646,6 @@ function SaveAndDisableBlogSection() {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
         var stories = GetBlogStories();
-        console.log(stories)
         if (stories[0]) {
             CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
         } else {
@@ -660,16 +654,16 @@ function SaveAndDisableBlogSection() {
             data.background = $('#blog-background-color').val();
             data.stories = stories[1];
             var response = AjaxCall("Admin", "SaveBlog", data);
-            if (response.includes('saved.')) {
-                CreateDialog('success', 'Success', response, '', '', '');
+            if (response.Type =='success') {
                 Array.from(document.getElementsByClassName('disable-blog')).forEach(function (element) {
                     element.setAttribute('onclick', '');
                 });
                 DisableInputs('blog-settings');
-                NextSection();
-            } else {
-                CreateDialog('error', 'Error', response, '', '', '');
+                if (!window.location.href.includes("UpdateBlog")) {
+                    NextSection();
+                }
             }
+            CreateDialog(response.Type, response.Type, response.Message, '', '', '');
         }
     }
 }
@@ -685,14 +679,14 @@ function SaveAndDisableContactSection() {
         data.country = $('#country').val();
         data.phone = $('#phone').val();
         data.email = $('#email').val();
-        var response = AjaxCall("Admin","SaveContact", data);
-        if (response.includes('saved.')) {
-            CreateDialog('success', 'Success', response, '', '', '');
+        var response = AjaxCall("Admin", "SaveContact", data);
+        if (response.Type == 'success') {
             DisableInputs('contact-settings');
-            NextSection();
-        } else {
-            CreateDialog('error', 'Error', response, '', '', '');
+            if (!window.location.href.includes("UpdateBlog")) {
+                NextSection();
+            }
         }
+        CreateDialog(response.Type, response.Type, response.Message, '', '', '');
     } else {
         CreateDialog('error', 'Error', 'Section header required!', '', '', '');
     }
@@ -882,11 +876,10 @@ function RemoveSubTextFromHome() {
         var data = {};
         data.subText = event.target.parentElement.parentElement.children[0].value;
         var response = AjaxCall("Admin", "DeleteSubTextFromHome", data);
-        if (response == "Success") {
+        if (response.Type == 'success') {
             event.target.parentElement.parentElement.parentElement.parentElement.remove();
-        } else {
-            CreateDialog('error', 'System Error', response, '', '', '');
         }
+        CreateDialog(response.Type, response.Type, response.Message, '', '', '');
     } else {
         event.target.parentElement.parentElement.parentElement.parentElement.remove();
     }
@@ -898,17 +891,16 @@ function DeleteSubText() {
     CreateDialog('warning', 'Warning', 'Do you want to delete this sub text?', 'Yes','DeleteSubTextFromHome()','')
 }
 
-
 function DeleteSubTextFromHome() {
     var data = {};
     data.subText = window.value;
     var response = AjaxCall("Admin", "DeleteSubTextFromHome", data);
-    if (response == "Success") {
+    if (response.Type == "success") {
         window.target.remove();
-    } else {
-        CreateDialog('error', 'System Error', response, '', '', '');
     }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
 }
+
 function AddImageToPortfolio() {
     var innerHTML = '<div class="col-lg-6 new-item" >\
                         <div class="custom-file">\
@@ -979,11 +971,10 @@ function DeleteCategory() {
         }
     });
     var response = AjaxCall("Admin", "DeletePortfolioCategory", data)
-    if (response == 'Success') {
+    if (response.Type == 'success') {
         window.target.remove();
-    } else {
-        CreateDialog('error', 'System Error', response, '', '', '');
     }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
 }
 
 function RemoveCategory() {
@@ -1028,11 +1019,10 @@ function DeleteStory() {
     data.image = window.target.children[2].children[1].children[1].innerHTML;
     data.body = window.target.children[3].children[1].value;
     var response = AjaxCall("Admin", "DeleteStory", data)
-    if (response == 'Success') {
+    if (response.Type == 'success') {
         window.target.remove();
-    } else {
-        CreateDialog('error', 'System Error', response, '', '', '');
     }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
 }
 
 function RemoveStory() {
@@ -1255,13 +1245,7 @@ function UpdatePhone() {
         data.newPhone = $('#update-phone-element').val();
         data.email = window.updateEmail;
         var response = AjaxCall("Admin", "UpdatePhone", data);
-
-        if (response != 'Success') {
-            CreateDialog('error', 'Error', response, '', '', '');
-        }
-        else {
-            CreateDialog('success', 'Success', "Phone number updated successfully.", '', '', 'RefreshPage()');
-        }
+        CreateDialog(response.Type, response.Type, response.Message, '', '', 'RefreshPage()');
     }
     window.update = null;
 }
@@ -1272,13 +1256,7 @@ function UpdateEmail() {
         data.oldEmail = window.updateEmail;
         data.newEmail = $('#update-email-element').val();
         var response = AjaxCall("Admin", "UpdateEmail", data);
-
-        if (response != 'Success') {
-            CreateDialog('error', 'Error', response, '', '', '');
-        }
-        else {
-            CreateDialog('success', 'Success', "Email updated successfully.", '', '', 'RefreshPage()');
-        }
+        CreateDialog(response.Type, response.Type, response.Message, '', '', 'RefreshPage()');
     }
     window.update = null;
 }
@@ -1305,17 +1283,16 @@ function ResetPassword() {
             data.oldPassword = oldPassword;
             data.newPassword = newPassword;
             data.email = $('#update-email-element').val();
-            var response = AjaxCall("Admin", "ResetPassword",data);
-
-            if (response == 'Success') {
+            var response = AjaxCall("Admin", "ResetPassword", data);
+            if (response.Type == 'success') {
                 $('#old-password').val('');
                 $('#password').val('');
                 $('#confirm-password').val('');
                 document.getElementsByClassName('alert-danger')[0].style.display = 'none';
-                CreateDialog('success', 'Success', "Password changed successfully.", '', '', '');
+                CreateDialog(response.Type, response.Type, response.Message, '', '', '');
             } else {
                 document.getElementsByClassName('alert-danger')[0].style.display = 'block';
-                document.getElementById('reset-password-response').innerHTML = response;
+                document.getElementById('reset-password-response').innerHTML = response.Message;
             }
         }
     } else {
@@ -1577,7 +1554,8 @@ function GetResumeItems() {
 }
 
 function DeletePage() {
-    AjaxCall("Admin", "DeletePage", {});
+    var response = AjaxCall("Admin", "DeletePage", {});
+    CreateDialog(response.Type, response.Type, response.Message, '', '','');
 }
 
 function DeleteSocialMedia() {
@@ -1597,15 +1575,14 @@ function DeleteSocialMediaLink() {
     data.link = window.target.children[1].children[0].value;
     remove.socialMedia = data;
     var response = AjaxCall("Admin", "DeleteSocialMediaLink", remove);
-    if (response == "Success") {
+    if (response.Type == "success") {
         if (numberOfMedias == 1) {
             window.remove.children[1].children[1].children[0].value = '';
         } else {
             window.remove.remove();
         }
-    } else {
-        CreateDialog('error', 'System Error', response, '','','');
     }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
 }
 
 function DeleteNavigationSection() {
@@ -1613,7 +1590,7 @@ function DeleteNavigationSection() {
     var data = {};
     data.content = content;
     var response = AjaxCall("Admin", "DeleteSectionFromNavigation", data);
-    if (response == "Success") {
+    if (response.Type == "success") {
         let deletedValue = window.delete.children[0].innerHTML;
         var tableElements = window.delete.parentElement;
         var flag = false;
@@ -1627,8 +1604,6 @@ function DeleteNavigationSection() {
         });
         window.delete.remove();
         document.getElementById(content + '-settings').remove();
-    } else {
-        CreateDialog('error', 'System Error', response, '', '', '');
     }
-    
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');   
 }
