@@ -318,7 +318,7 @@ namespace EasyBlog.Controllers
                     List<ResumeSection> resumeSections = db.ResumeSections.Where(x => x.resumeID == id).ToList();
                     if (resumeSections != null)
                     {
-                        List<ResumeSectionModel> resumeSectionModels = new List<ResumeSectionModel>();
+                        resumeModel.resumeSections = new List<ResumeSectionModel>();
                         foreach (ResumeSection resumeSection in resumeSections)
                         {
                             ResumeSectionModel resumeSectionModel = new ResumeSectionModel();
@@ -347,6 +347,7 @@ namespace EasyBlog.Controllers
                                         }
                                         resumeSubSectionModels.Add(resumeSubSectionModel);
                                         resumeSectionModel.resumeSubSections = resumeSubSectionModels;
+                                        resumeModel.resumeSections.Add(resumeSectionModel);
                                     }
                                 }
                             }

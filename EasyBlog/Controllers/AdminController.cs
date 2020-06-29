@@ -18,43 +18,51 @@ namespace EasyBlog.Controllers
 
         public ActionResult Home(UserInformationModel userInformationModel)
         {
-            if (userInformationModel.email == null || Session["UserInformation"] == null)
+            if (Session["UserInformation"] != null)
             {
-                return RedirectToAction("Login","User");
+                long id = long.Parse(Session["UserInformation"].ToString());
+                return View(RefreshUserInformationModel(id));
             }
-            return View(userInformationModel);
+            return RedirectToAction("Login", "User");
         }
-        public ActionResult CreateBlog(UserInformationModel userInformationModel)
+        public ActionResult CreatePage(UserInformationModel userInformationModel)
         {
-            if (userInformationModel.email == null || Session["UserInformation"] == null)
+            if (Session["UserInformation"] != null)
             {
-                return RedirectToAction("Login", "User");
+                long id = long.Parse(Session["UserInformation"].ToString());
+                CreateImagePathForUser(Session["UserInformation"].ToString());
+                ViewData["SocialMedias"] = GetSocialMediaList();
+                return View(RefreshUserInformationModel(id));
             }
-            CreateImagePathForUser(Session["UserInformation"].ToString());
-            ViewData["SocialMedias"] = GetSocialMediaList();
-            return View(userInformationModel);
+            return RedirectToAction("Login", "User");
         }
         public ActionResult Settings(UserInformationModel userInformationModel)
         {
-            if (userInformationModel.email == null || Session["UserInformation"] == null)
+            if (Session["UserInformation"] != null)
             {
-                return RedirectToAction("Login", "User");
+                long id = long.Parse(Session["UserInformation"].ToString());
+                userInformationModel = RefreshUserInformationModel(id);
+                if (userInformationModel == null)
+                {
+                    return RedirectToAction("Login", "User");
+                }
+                return View(userInformationModel);
             }
-            long id = long.Parse(Session["UserInformation"].ToString());
-            userInformationModel = RefreshUserInformationModel(id);
-            if (userInformationModel == null)
-            {
-                return RedirectToAction("Login", "User");
-            }
-            return View(userInformationModel);
+            return RedirectToAction("Login", "User");
         }
-        public ActionResult UpdateBlog()
+        public ActionResult UpdatePage()
         {
             if (Session["UserInformation"] == null)
             {
                 return RedirectToAction("Login", "User");
             }
             ViewData["SocialMedias"] = GetSocialMediaList();
+            PageModel pageModel = GetPageModel();
+            if (pageModel == null)
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                return RedirectToAction("Admin", "Home", RefreshUserInformationModel(id));
+            }
             return View(GetPageModel());
         }
         public ActionResult Logout()
@@ -749,7 +757,7 @@ namespace EasyBlog.Controllers
                     resumeSection.resumeID = id;
                     db.ResumeSections.Add(resumeSection);
                     db.SaveChanges();
-                    long sectionID = db.ResumeSections.Where(x => x.header == section.header && x.id == id).SingleOrDefault().id;
+                    long sectionID = db.ResumeSections.Where(x => x.header == section.header && x.resumeID == id).FirstOrDefault().id;
                     foreach (ResumeSubSectionModel subSection in section.resumeSubSections)
                     {
                         ResumeSectionItem resumeSectionItem = new ResumeSectionItem();
@@ -760,7 +768,7 @@ namespace EasyBlog.Controllers
                         resumeSectionItem.explanation = subSection.explanation;
                         db.ResumeSectionItems.Add(resumeSectionItem);
                         db.SaveChanges();
-                        long subSectionID = db.ResumeSectionItems.Where(x => x.header == subSection.header && x.id == sectionID).SingleOrDefault().id;
+                        long subSectionID = db.ResumeSectionItems.Where(x => x.header == subSection.header && x.resumeSectionID == sectionID).FirstOrDefault().id;
                         if (subSection.explanationItems.Count != 0 || subSection.explanationItems != null)
                         {
                             foreach (string explanationItem in subSection.explanationItems)
@@ -1036,7 +1044,12 @@ namespace EasyBlog.Controllers
             try {
                 PageModel pageModel = new PageModel();
                 long id = long.Parse(Session["UserInformation"].ToString());
-                pageModel.template = db.Templates.Where(x => x.id == id).SingleOrDefault().templateName;
+                Template template = db.Templates.Where(x => x.id == id).SingleOrDefault();
+                if (template == null)
+                {
+                    return null;
+                }
+                pageModel.template = template.templateName;
                 pageModel.mainComponents = GetMainComponentsModel(id);
                 pageModel.navigationModel = GetNavigationModel(id);
                 pageModel.home = GetHomeModel(id);

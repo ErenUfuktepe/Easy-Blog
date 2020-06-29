@@ -134,6 +134,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Response.cs" />
     <Compile Include="Helpers\ResponseMessages.cs" />
     <Compile Include="Helpers\SecurityUtilize.cs" />
     <Compile Include="Models\About.cs">
@@ -241,9 +242,16 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Folio\bootstrap.min.css" />
+    <Content Include="Content\fonts\boxicons.svg" />
     <Content Include="Content\fonts\ionicons.svg" />
     <Content Include="Content\Folio\style.css" />
     <Content Include="Content\Folio\owl.carousel.min.css" />
+    <Content Include="Content\MyResume\aos.css" />
+    <Content Include="Content\MyResume\bootstrap.min.css" />
+    <Content Include="Content\MyResume\boxicons.min.css" />
+    <Content Include="Content\MyResume\icofont.min.css" />
+    <Content Include="Content\MyResume\owl.carousel.min.css" />
+    <Content Include="Content\MyResume\style.css" />
     <Content Include="Content\Site.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -263,10 +271,20 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Folio\main.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
-    <Content Include="Scripts\Folio\jquery.min.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Folio\typed.js" />
+    <Content Include="Scripts\MyResume\aos.js" />
+    <Content Include="Scripts\MyResume\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\MyResume\counterup.min.js" />
+    <Content Include="Scripts\MyResume\isotope.pkgd.min.js" />
+    <Content Include="Scripts\MyResume\jquery.easing.min.js" />
+    <Content Include="Scripts\MyResume\jquery.min.js" />
+    <Content Include="Scripts\MyResume\jquery.waypoints.min.js" />
+    <Content Include="Scripts\MyResume\main.js" />
+    <Content Include="Scripts\MyResume\owl.carousel.min.js" />
+    <Content Include="Scripts\MyResume\typed.min.js" />
+    <Content Include="Scripts\MyResume\venobox.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -284,7 +302,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\iPortfolio\" />
     <Folder Include="Images\" />
+    <Folder Include="Scripts\iPortfolio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -302,12 +322,19 @@
     <Content Include="Models\EasyBlogModel.edmx.diagram">
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
     </Content>
+    <Content Include="Content\MyResume\fonts\icofont.woff" />
+    <Content Include="Content\MyResume\fonts\icofont.woff2" />
+    <Content Include="Content\fonts\boxicons.eot" />
+    <Content Include="Content\fonts\boxicons.ttf" />
+    <Content Include="Content\fonts\boxicons.woff" />
+    <Content Include="Content\fonts\boxicons.woff2" />
     <None Include="packages.config" />
     <Content Include="Scripts\bootstrap.min.js.map" />
-    <Content Include="Views\Admin\CreateBlog.cshtml" />
-    <Content Include="Views\Admin\UpdateBlog.cshtml" />
+    <Content Include="Views\Admin\CreatePage.cshtml" />
+    <Content Include="Views\Admin\UpdatePage.cshtml" />
     <Content Include="Views\Admin\Settings.cshtml" />
-    <Content Include="Scripts\Folio\jquery.min.map" />
+    <Content Include="Views\Home\Folio.cshtml" />
+    <Content Include="Views\Home\MyResume.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

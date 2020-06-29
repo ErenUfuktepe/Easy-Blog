@@ -169,7 +169,7 @@ window.addEventListener('load', (event) => {
             });
         })
     }
-    if (window.location.href.includes("CreateBlog")) {
+    if (window.location.href.includes("CreatePage")) {
         var response = AjaxCall("Admin", "HasBlog", {});
         if (response.Type != 'success') {
             CreateDialog(response.Type, response.Type, response.Message, 'Continue', 'DeletePage()', 'window.history.back()');
@@ -201,7 +201,7 @@ window.addEventListener('load', (event) => {
             console.log(xhr.response)
         }    
     }
-    if (window.location.href.includes("UpdateBlog")) {
+    if (window.location.href.includes("UpdatePage")) {
         TableEventListener();
     }
 });
@@ -435,9 +435,9 @@ function Folio() {
 }
 
 function SaveAndDisableMainSection() {
-    if (($('#web-page-logo').val() != '' || window.location.href.includes("UpdateBlog")) && $('#web-page-title').val() != '') {
+    if (($('#web-page-logo').val() != '' || window.location.href.includes("UpdatePage")) && $('#web-page-title').val() != '') {
         var data = {};
-        if (window.location.href.includes("UpdateBlog")) {
+        if (window.location.href.includes("UpdatePage")) {
             if ($('#web-page-logo').val() != '') {
                 data.logo = GetFileName('#web-page-logo');
             } else {
@@ -458,7 +458,7 @@ function SaveAndDisableMainSection() {
             });
             DisableInputs('main-settings');
             document.getElementById('nav-settings').style.display = 'block';
-            if (!window.location.href.includes("UpdateBlog")) {
+            if (!window.location.href.includes("UpdatePage")) {
                 window.scrollTo(0, document.body.scrollHeight);
             }
         }
@@ -474,9 +474,9 @@ function SaveAndDisableMainSection() {
 }
 
 function SaveAndDisableNavigationSection() {
-    if ($('#navigation-logo').val() != '' || window.location.href.includes("UpdateBlog")) {
+    if ($('#navigation-logo').val() != '' || window.location.href.includes("UpdatePage")) {
         var data = {}
-        if (window.location.href.includes("UpdateBlog")) {
+        if (window.location.href.includes("UpdatePage")) {
             if ($('#navigation-logo').val() != '') {
                 data.logo = GetFileName('#navigation-logo');
             } else {
@@ -499,7 +499,7 @@ function SaveAndDisableNavigationSection() {
         if (response.Type == 'success') {
             window.sectionQueue = GetSectionInformation();
             DisableInputs('nav-settings');
-            if (!window.location.href.includes("UpdateBlog")) {
+            if (!window.location.href.includes("UpdatePage")) {
                 NextSection();
             }
         }
@@ -511,7 +511,7 @@ function SaveAndDisableNavigationSection() {
 }
 
 function SaveAndDisableHomeSection() {
-    if (($('#home-background').val() != '' || window.location.href.includes("UpdateBlog")) && $('#home-main-text').val() != '') {
+    if (($('#home-background').val() != '' || window.location.href.includes("UpdatePage")) && $('#home-main-text').val() != '') {
         var subTextList = [];
         let flag = false;
         Array.from(document.getElementsByClassName('sub-text')).forEach(function (sub) {
@@ -524,7 +524,7 @@ function SaveAndDisableHomeSection() {
             CreateDialog('error','Invalid Input','Fill all empty fields!','','','');
         } else {
             var data = {};
-            if (window.location.href.includes("UpdateBlog")) {
+            if (window.location.href.includes("UpdatePage")) {
                 if ($('#home-background').val() != '') {
                     data.background = GetFileName('#home-background');
                 } else {
@@ -543,7 +543,7 @@ function SaveAndDisableHomeSection() {
                 });
                 document.getElementById('home-add-sub-text').setAttribute('onclick', '');
                 DisableInputs('home-settings');
-                if (!window.location.href.includes("UpdateBlog")) {
+                if (!window.location.href.includes("UpdatePage")) {
                     NextSection();
                 }
             }
@@ -555,12 +555,12 @@ function SaveAndDisableHomeSection() {
 }
 
 function SaveAndDisableAboutSection() {
-    if (($('#about-section-image').val() == '' && !window.location.href.includes("UpdateBlog")) || $('#about-header').val() == ''
+    if (($('#about-section-image').val() == '' && !window.location.href.includes("UpdatePage")) || $('#about-header').val() == ''
         || $('#about-body').val() == '') {
         CreateDialog('error', 'Invalid Input', 'Fill all empty fields!', '', '', '');
     } else {
         var data = {};
-        if (window.location.href.includes("UpdateBlog")) {
+        if (window.location.href.includes("UpdatePage")) {
             if ($('#about-section-image').val() != '') {
                 data.image = GetFileName('#about-section-image');
             } else {
@@ -586,7 +586,7 @@ function SaveAndDisableAboutSection() {
                     element.setAttribute('onclick', '');
                 });
                 DisableInputs('about-settings');
-                if (!window.location.href.includes("UpdateBlog")) {
+                if (!window.location.href.includes("UpdatePage")) {
                     NextSection();
                 }
             }
@@ -607,7 +607,7 @@ function SaveAndDisableResumeSection() {
             element.setAttribute('onclick', '');
         });
         DisableInputs('resume-settings');
-        if (!window.location.href.includes("UpdateBlog")) {
+        if (!window.location.href.includes("UpdatePage")) {
             NextSection();
         }
     }
@@ -632,7 +632,7 @@ function SaveAndDisablePortfolioSection() {
                     element.setAttribute('onclick', '');
                 });
                 DisableInputs('portfolio-settings');
-                if (!window.location.href.includes("UpdateBlog")) {
+                if (!window.location.href.includes("UpdatePage")) {
                     NextSection();
                 }
             }
@@ -659,7 +659,7 @@ function SaveAndDisableBlogSection() {
                     element.setAttribute('onclick', '');
                 });
                 DisableInputs('blog-settings');
-                if (!window.location.href.includes("UpdateBlog")) {
+                if (!window.location.href.includes("UpdatePage")) {
                     NextSection();
                 }
             }
@@ -682,7 +682,7 @@ function SaveAndDisableContactSection() {
         var response = AjaxCall("Admin", "SaveContact", data);
         if (response.Type == 'success') {
             DisableInputs('contact-settings');
-            if (!window.location.href.includes("UpdateBlog")) {
+            if (!window.location.href.includes("UpdatePage")) {
                 NextSection();
             }
         }
@@ -806,7 +806,7 @@ function TableEventListener() {
             event.preventDefault();
             window.delete = this.parentElement.parentElement.parentElement;
             if (window.delete.className != 'table-body') {
-                if (window.location.href.includes("UpdateBlog")) {
+                if (window.location.href.includes("UpdatePage")) {
                     CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteNavigationSection()', '');
                 } else {
                     CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
@@ -817,7 +817,7 @@ function TableEventListener() {
                     window.delete = this;
                 });
             }
-            if (window.location.href.includes("UpdateBlog")) {
+            if (window.location.href.includes("UpdatePage")) {
                 CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteNavigationSection()', '');
             } else {
                 CreateDialog('warning', 'Delete Section', 'Do you want to delete this section?', 'Yes', 'DeleteRow()', '');
@@ -872,7 +872,7 @@ function AddSubTextToHome() {
 }
 
 function RemoveSubTextFromHome() {
-    if (window.location.href.includes("UpdateBlog")) {
+    if (window.location.href.includes("UpdatePage")) {
         var data = {};
         data.subText = event.target.parentElement.parentElement.children[0].value;
         var response = AjaxCall("Admin", "DeleteSubTextFromHome", data);
@@ -1397,13 +1397,13 @@ function GetPortfolioCategories() {
                     flag = false;
                 }
                 if (input.value == '' && input.type != 'button') {
-                    if (!window.location.href.includes("UpdateBlog")) {
+                    if (!window.location.href.includes("UpdatePage")) {
                         emptyInputFlag = true;
                     }
                 }
                 if (input.type != 'button') {
                     imageList = [];
-                    if (window.location.href.includes("UpdateBlog")) {
+                    if (window.location.href.includes("UpdatePage")) {
                         if (input.value != '') {
                             newCatagory.category = input.value;
                         } else {
@@ -1415,12 +1415,12 @@ function GetPortfolioCategories() {
                 }
             } else {
                 if (input.value == '') {
-                    if (!window.location.href.includes("UpdateBlog")) {
+                    if (!window.location.href.includes("UpdatePage")) {
                         emptyInputFlag = true;
                     }
                 }
                 flag = true;
-                if (window.location.href.includes("UpdateBlog")) {
+                if (window.location.href.includes("UpdatePage")) {
                     if (input.name != '') {
                         imageList.push(input.name);
                     } else {
@@ -1464,7 +1464,7 @@ function GetBlogStories() {
                 newStory = new Object;
             }
             if (input.value == '' && input.type != 'button') {
-                if (!window.location.href.includes("UpdateBlog")) {
+                if (!window.location.href.includes("UpdatePage")) {
                     flag = true;
                 }
             }
@@ -1472,7 +1472,7 @@ function GetBlogStories() {
                 newStory.title = input.value;
             }
             if (input.type == 'file') {
-                if (window.location.href.includes("UpdateBlog")) {
+                if (window.location.href.includes("UpdatePage")) {
                     if (input.value != '') {
                         newStory.image = GetFileNameWithValue(input.value);
                     } else {
