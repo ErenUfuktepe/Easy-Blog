@@ -345,13 +345,12 @@ namespace EasyBlog.Controllers
                                             items.Add(resumeSectionItemExplanation.explanation);
                                             resumeSubSectionModel.explanationItems = items;
                                         }
-                                        resumeSubSectionModels.Add(resumeSubSectionModel);
-                                        resumeSectionModel.resumeSubSections = resumeSubSectionModels;
-                                        resumeModel.resumeSections.Add(resumeSectionModel);
                                     }
+                                    resumeSubSectionModels.Add(resumeSubSectionModel);
+                                    resumeSectionModel.resumeSubSections = resumeSubSectionModels;
                                 }
                             }
-
+                            resumeModel.resumeSections.Add(resumeSectionModel);
                         }
                     }
                 }

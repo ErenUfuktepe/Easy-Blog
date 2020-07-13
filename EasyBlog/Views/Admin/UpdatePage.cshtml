@@ -206,8 +206,7 @@ DOCTYPE html>
                         </div>
                     </div>
                 </div>
-            }
-            
+            }   
             @if (Model.home.background != null)
             {
                 <!--Home-->
@@ -295,17 +294,20 @@ DOCTYPE html>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 input-padding">
-                                    <b>Frame Color:</b>
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" value="@Model.about.frame" id="about-frame-color-code">
-                                        <div class="input-group-prepend">
-                                            <div class="input-group-text">
-                                                <input class="color-change" type="color" value="@Model.about.frame" id="about-frame-color">
+                                @if (Model.template == "Folio")
+                                {
+                                    <div class="col-lg-4 input-padding">
+                                        <b>Frame Color:</b>
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" value="@Model.about.frame" id="about-frame-color-code">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">
+                                                    <input class="color-change" type="color" value="@Model.about.frame" id="about-frame-color">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                                 <div class="col-lg-4 input-padding">
                                     <b>Image:</b>
                                     <div class="custom-file">
@@ -321,32 +323,78 @@ DOCTYPE html>
                                         <input type="text" class="form-control" placeholder="About" id="about-header" value="@Model.about.header">
                                     </div>
                                 </div>
-                                <div class="col-lg-12 input-padding extra">
-                                    <b>Sub Title:</b>
-                                    <div class="custom-file">
-                                        <input type="text" class="form-control" placeholder="About" id="about-sub-title" value="@Model.about.subTitle">
+                                @if (Model.template != "Folio")
+                                {
+                                    <div class="col-lg-12 input-padding">
+                                        <b>Sub Title:</b>
+                                        <div class="custom-file">
+                                            <input type="text" class="form-control" placeholder="About" id="about-sub-title" value="@Model.about.subTitle">
+                                        </div>
                                     </div>
-                                </div>
+                                }
                                 <div class="col-lg-12 input-padding">
                                     <b>Body: </b>
                                     <textarea class="form-control" id="about-body" rows="3">@Model.about.body</textarea>
                                 </div>
                             </div>
-                            <div class="form-row text-left extra">
-                                <div class="col-lg-12">
-                                    <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddInformationToAboutSection()" id="add-info-button">Add Information</button>
+                            @if (Model.template != "Folio")
+                            {
+                                <div class="form-row text-left">
+                                    <div class="col-lg-12">
+                                        <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddInformationToAboutSection()" id="add-info-button">Add Information</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-row text-left extra" id="about-extra-info">
-                                <div class="col-lg-6 input-padding">
-                                    <b>Information Title: </b>
-                                    <input type="text" class="form-control" placeholder="Age">
+                                if (Model.about.informationList.Count() == 0 || Model.about.informationList == null)
+                                {
+                                    <div class="form-row text-left" id="about-extra-info" style="display:block;">
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Information Title: </b>
+                                            <input type="text" class="form-control" placeholder="Age">
+                                        </div>
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Information Value: </b>
+                                            <input type="text" class="form-control" placeholder="30">
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-row text-left" id="about-extra-info" style="display:flex;">
+
+                                    @for(int index = 0; index < Model.about.informationList.Count(); index++)
+                                    {
+                                        if (index == 0)
+                                        {
+                                            <div class="col-lg-6 input-padding">
+                                                <b>Information Title: </b>
+                                                <input type="text" class="form-control" placeholder="Age" value="@Model.about.informationList[index][0]">
+                                            </div>
+                                            <div class="col-lg-6 input-padding">
+                                                <b>Information Value: </b>
+                                                <input type="text" class="form-control" placeholder="30" value="@Model.about.informationList[index][1]">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="add-info">
+                                                <div class="col-lg-6 input-padding">
+                                                    <b>Information Title: </b>
+                                                    <a href="javascript:void(0);" onclick="DeleteAboutInformationMessage()" class="red close about-info-remove" aria-label="Close" style="position: absolute">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </a>
+                                                    <input type="text" class="form-control" placeholder="Age" value="@Model.about.informationList[index][0]">
+                                                </div>
+                                                <div class="col-lg-6 input-padding">
+                                                    <b>Information Value: </b>
+                                                    <input type="text" class="form-control" placeholder="30" value="@Model.about.informationList[index][1]">
+                                                </div>
+                                            </div>
+                                        }
+                                    }
                                 </div>
-                                <div class="col-lg-6 input-padding">
-                                    <b>Information Value: </b>
-                                    <input type="text" class="form-control" placeholder="30">
-                                </div>
-                            </div>
+
+                                }
+                            }
                         </div>
                         <div class="col-lg-12" style="text-align:right">
                             <button style="margin:5px;" id="about-button" type="button" onclick="SaveAndDisableAboutSection()" class="btn btn-success">Save And Continue</button>
@@ -361,88 +409,118 @@ DOCTYPE html>
                     <div class="text-center">
                         <a class="toggle" id="resume-controller">Resume Section</a>
                     </div>
-                    <div class="row resume-controller" style="display:none;">
-                        <div class="col-lg-12" style="padding-bottom: 15px;">
-                            <div id="resume-section">
-                                <div class="form-row text-left">
-                                    <div class="col-lg-6 input-padding">
-                                        <b>Resume Header:</b>
-                                        <div class="custom-file">
-                                            <input type="text" class="form-control" placeholder="Resume" id="resume-header">
+                    @{
+                        <div class="row resume-controller" style="display:none;">
+                            <div class="col-lg-12" style="padding-bottom: 15px;">
+                                <div id="resume-section">
+                                    <div class="form-row text-left">
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Resume Header:</b>
+                                            <div class="custom-file">
+                                                <input type="text" class="form-control" placeholder="Resume" id="resume-header" value="@Model.resume.header">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6 input-padding">
-                                        <b>Background Color:</b>
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control" value="#ffffff" id="resume-background-color-code">
-                                            <div class="input-group-prepend">
-                                                <div class="input-group-text">
-                                                    <input class="color-change" type="color" value="#ffffff" id="resume-background-color">
+                                        <div class="col-lg-6 input-padding">
+                                            <b>Background Color:</b>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" value="@Model.resume.background" id="resume-background-color-code">
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <input class="color-change" type="color" value="@Model.resume.background" id="resume-background-color">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="form-row text-left">
-                                    <div class="col-lg-12">
-                                        <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSection()">Add Resume Section</button>
-                                    </div>
-                                </div>
-
-                                <div class="form-row text-left">
-                                    <div class="col-lg-6 input-padding">
-                                        <b>Resume Section Header:</b>
-                                        <div class="custom-file">
-                                            <input type="text" class="form-control resume-section-header" placeholder="Education">
+                                    <div class="form-row text-left">
+                                        <div class="col-lg-12">
+                                            <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSection()">Add Resume Section</button>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12">
-                                        <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSubSection()">Add Sub Section</button>
-                                    </div>
-                                    <div class="col-lg-12 input-padding">
-                                        <b>Sub Header:</b>
-                                        <div class="custom-file">
-                                            <input type="text" class="form-control resume-sub-header" placeholder="MASTER OF FINE ARTS & GRAPHIC DESIGN">
+                                    @foreach (EasyBlog.Models.ResumeSectionModel sectionModel in Model.resume.resumeSections)
+                                    {
+                                        <div class="form-row text-left">
+                                            <div class="col-lg-6 input-padding">
+                                                <b>Resume Section Header:</b>
+                                                <div class="custom-file">
+                                                    <input type="text" class="form-control resume-section-header" placeholder="Education" value="@sectionModel.header">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6" style="padding-top:35px; padding-bottom:10px;">
+                                                <button type="button" class="btn btn-danger catagory-disable" style="float:right; color: white" onclick="DeleteResumeSectionMessage()">Remove Resume Section</button>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <button type="button" class="btn btn-success" style="float:right; color: white" onclick="AddResumeSubSection()">Add Sub Section</button>
+                                            </div>
+                                            @foreach (EasyBlog.Models.ResumeSubSectionModel subSectionModel in sectionModel.resumeSubSections)
+                                            {
+                                                <div class="col-lg-12 input-padding">
+                                                    <b>Sub Header:</b>
+                                                    <div class="custom-file">
+                                                        <input type="text" class="form-control resume-sub-header" placeholder="MASTER OF FINE ARTS & GRAPHIC DESIGN" value="@subSectionModel.header">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 input-padding">
+                                                    <b>From:</b>
+                                                    <div class="custom-file">
+                                                        <input type="text" class="form-control resume-date" placeholder="2001" value="@subSectionModel.date">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 input-padding">
+                                                    <b>To:</b>
+                                                    <div class="custom-file">
+                                                        <input type="text" class="form-control resume-date" placeholder="2005" value="@subSectionModel.date">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 input-padding">
+                                                    <b>Place or Location:</b>
+                                                    <div class="custom-file">
+                                                        <input type="text" class="form-control resume-location" placeholder="Rochester Institute of Technology, Rochester, NY" value="@subSectionModel.location">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 input-padding">
+                                                    <b>Explanation: </b>
+                                                    <textarea class="form-control resume-explanation" rows="3">@subSectionModel.explanation</textarea>
+                                                </div>
+                                                <div class="col-lg-12 input-padding">
+                                                    <b>List of Explanations: </b>
+                                                    <a href="javascript:void(0);" onclick="AddExplanation()" class="close resume-list-item" style="float:none;" aria-label="Close">
+                                                        <span class="green" aria-hidden="true">&plus;</span>
+                                                    </a>
+                                                    @if (subSectionModel.explanationItems.Count() > 0)
+                                                    {
+                                                        <textarea class="form-control resume-item @subSectionModel.header" rows="3">@subSectionModel.explanationItems[0]</textarea>
+                                                    }
+                                                    else
+                                                    {
+                                                        <textarea class="form-control resume-item" rows="3"></textarea>
+                                                    }
+                                                    @if (subSectionModel.explanationItems.Count() > 1)
+                                                    {
+                                                        for (int index = 1; index < subSectionModel.explanationItems.Count(); index++)
+                                                        {
+                                                            <div>
+                                                                <div class="col-lg-12">
+                                                                    <button type="button" class="btn btn-danger" style="float:right; color: white; margin: 15px 0px 15px 15px;" onclick="DeleteResumeSectionExplanationMessage()"> Resume Item</button>
+                                                                </div>
+                                                                <textarea class="form-control resume-item @subSectionModel.header" rows="3">@subSectionModel.explanationItems[index]</textarea>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                       
+                                            }
                                         </div>
-                                    </div>
-                                    <div class="col-lg-3 input-padding">
-                                        <b>From:</b>
-                                        <div class="custom-file">
-                                            <input type="text" class="form-control resume-date" placeholder="2001">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 input-padding">
-                                        <b>To:</b>
-                                        <div class="custom-file">
-                                            <input type="text" class="form-control resume-date" placeholder="2005">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 input-padding">
-                                        <b>Place or Location:</b>
-                                        <div class="custom-file">
-                                            <input type="text" class="form-control resume-location" placeholder="Rochester Institute of Technology, Rochester, NY">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 input-padding">
-                                        <b>Explanation: </b>
-                                        <textarea class="form-control resume-explanation" rows="3"></textarea>
-                                    </div>
-                                    <div class="col-lg-12 input-padding">
-                                        <b>List of Explanations: </b>
-                                        <a href="javascript:void(0);" onclick="AddExplanation()" class="close resume-list-item" style="float:none;" aria-label="Close">
-                                            <span class="green" aria-hidden="true">&plus;</span>
-                                        </a>
-                                        <textarea class="form-control resume-item" rows="3"></textarea>
-                                    </div>
+                                    }
                                 </div>
                             </div>
+                            <div class="col-lg-12" style="text-align:right">
+                                <button style="margin:5px;" type="button" onclick="SaveAndDisableResumeSection()" id="resume-save" class="btn btn-success">Save And Continue</button>
+                            </div>
                         </div>
-                        <div class="col-lg-12" style="text-align:right">
-                            <button style="margin:5px;" type="button" onclick="SaveAndDisableResumeSection()" id="resume-save" class="btn btn-success">Save And Continue</button>
-                        </div>
-                    </div>
+                    }
                 </div>
-            }
+                        }
             @if (Model.portfolio.header != null)
             {
                 <!--Portfolio-->

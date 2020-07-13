@@ -69,6 +69,11 @@ namespace EasyBlog.Helpers
         public static string ExistingPage = "You already have a page! If you continue, your old blog will be deleted!";
         public static string DeletePageException = "An error occurred while deleting the page!";
         public static string DeletePage = "You old page is deleted!";
-
+        public static string DeleteResumeSectionException = "An error occurred while deleting resume section!";
+        public static string DeleteResumeSection = "Resume section deleted successfully!";
+        public static string DeleteResumeSectionExplanationException = "An error occurred while deleting resume section explanation!";
+        public static string DeleteResumeSectionExplanation = "Resume section explanation deleted successfully!";
+        public static string DeleteAboutInformationException = "An error occurred while deleting information!";
+        public static string DeleteAboutInformation = "Information section explanation deleted successfully!";
     }
 }

@@ -985,16 +985,25 @@ namespace EasyBlog.Controllers
             try
             {
                 long id = long.Parse(Session["UserInformation"].ToString());
-                List<ResumeSectionItemExplanation> resumeSectionItemExplanations = db.ResumeSectionItemExplanations.Where(x => x.resumeSectionItemID == id).ToList();
-                db.ResumeSectionItemExplanations.RemoveRange(resumeSectionItemExplanations);
-                db.SaveChanges();
-                List<ResumeSectionItem> resumeSectionItems = db.ResumeSectionItems.Where(x => x.resumeSectionID == id).ToList();
-                db.ResumeSectionItems.RemoveRange(resumeSectionItems);
-                db.SaveChanges();
+                Resume resume = db.Resumes.Where(x => x.id == id).SingleOrDefault();
                 List<ResumeSection> resumeSections = db.ResumeSections.Where(x => x.resumeID == id).ToList();
+                foreach (ResumeSection section in resumeSections)
+                {
+                    List<ResumeSectionItem> resumeSectionItems = db.ResumeSectionItems.Where(x => x.resumeSectionID == section.id).ToList();
+                    foreach (ResumeSectionItem item in resumeSectionItems)
+                    {
+                        List<ResumeSectionItemExplanation> resumeSectionItemExplanations = db.ResumeSectionItemExplanations.Where(x => x.resumeSectionItemID == item.id).ToList();
+                        if (resumeSectionItemExplanations.Count() > 0)
+                        {
+                            db.ResumeSectionItemExplanations.RemoveRange(resumeSectionItemExplanations);
+                            db.SaveChanges();
+                        }
+                    }
+                    db.ResumeSectionItems.RemoveRange(resumeSectionItems);
+                    db.SaveChanges();
+                }
                 db.ResumeSections.RemoveRange(resumeSections);
                 db.SaveChanges();
-                Resume resume = db.Resumes.Where(x => x.id == id).SingleOrDefault();
                 db.Resumes.Remove(resume);
                 db.SaveChanges();
                 return true;
@@ -1314,7 +1323,7 @@ namespace EasyBlog.Controllers
                     List<ResumeSection> resumeSections = db.ResumeSections.Where(x => x.resumeID == id).ToList();
                     if (resumeSections != null)
                     {
-                        List<ResumeSectionModel> resumeSectionModels = new List<ResumeSectionModel>();
+                        resumeModel.resumeSections = new List<ResumeSectionModel>();
                         foreach (ResumeSection resumeSection in resumeSections)
                         {
                             ResumeSectionModel resumeSectionModel = new ResumeSectionModel();
@@ -1341,12 +1350,12 @@ namespace EasyBlog.Controllers
                                             items.Add(resumeSectionItemExplanation.explanation);
                                             resumeSubSectionModel.explanationItems = items;
                                         }
-                                        resumeSubSectionModels.Add(resumeSubSectionModel);
-                                        resumeSectionModel.resumeSubSections = resumeSubSectionModels;
                                     }
+                                    resumeSubSectionModels.Add(resumeSubSectionModel);
+                                    resumeSectionModel.resumeSubSections = resumeSubSectionModels;
                                 }
                             }
-
+                            resumeModel.resumeSections.Add(resumeSectionModel);
                         }
                     }
                 }
@@ -1525,6 +1534,96 @@ namespace EasyBlog.Controllers
                 return ResponseMessages.InvalidPhoneNumber;
             }
             return ResponseMessages.Success;
+        }
+        public JsonResult DeleteResumeSection(string section)
+        {
+            try
+            {
+                long resumeID = long.Parse(Session["UserInformation"].ToString());
+                ResumeSection resumeSection = db.ResumeSections.Where(x => x.header == section && x.resumeID == resumeID).SingleOrDefault();
+                if (resumeSection != null)
+                {
+                    List<ResumeSectionItem> resumeSectionItems = db.ResumeSectionItems.Where(x => x.resumeSectionID == resumeSection.id).ToList();
+                    if (resumeSectionItems.Count() > 0 && resumeSectionItems != null)
+                    {
+                        foreach (ResumeSectionItem item in resumeSectionItems)
+                        {
+                            List<ResumeSectionItemExplanation> explanations = db.ResumeSectionItemExplanations.Where(x => x.resumeSectionItemID == item.id).ToList();
+                            if (explanations.Count() > 0 && explanations != null)
+                            {
+                                db.ResumeSectionItemExplanations.RemoveRange(explanations);
+                                db.SaveChanges();
+                            }
+                        }
+                        db.ResumeSectionItems.RemoveRange(resumeSectionItems);
+                        db.SaveChanges();
+                    }
+                    db.ResumeSections.Remove(resumeSection);
+                    db.SaveChanges();
+                    return Json(new Response(ResponseMessages.DeleteResumeSection, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new Response(ResponseMessages.DeleteResumeSectionException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json(new Response(ResponseMessages.DeleteResumeSectionException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+            }
+        }
+        public JsonResult DeleteResumeSectionExplanation(string section, string explanation, string subHeader)
+        {
+            try
+            {
+                long resumeID = long.Parse(Session["UserInformation"].ToString());
+                ResumeSection resumeSection = db.ResumeSections.Where(x => x.header == section && x.resumeID == resumeID).SingleOrDefault();
+                if (resumeSection != null)
+                {
+                    ResumeSectionItem resumeSectionItem = db.ResumeSectionItems.Where(x => x.resumeSectionID == resumeSection.id && x.header == subHeader).SingleOrDefault();
+                    if (resumeSectionItem != null)
+                    {
+                        ResumeSectionItemExplanation exp = db.ResumeSectionItemExplanations.Where(x => x.resumeSectionItemID == resumeSectionItem.id && x.explanation == explanation).SingleOrDefault();
+                        if (exp != null)
+                        {
+                            db.ResumeSectionItemExplanations.Remove(exp);
+                            db.SaveChanges();
+                            return Json(new Response(ResponseMessages.DeleteResumeSectionExplanation, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    return Json(new Response(ResponseMessages.DeleteResumeSectionExplanationException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new Response(ResponseMessages.DeleteResumeSectionExplanationException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json(new Response(ResponseMessages.DeleteResumeSectionExplanationException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+            }
+        }    
+        public JsonResult DeleteInformation(string title, string value)
+        {
+            try
+            {
+                long id = long.Parse(Session["UserInformation"].ToString());
+                AboutInformation aboutInformation = db.AboutInformations.Where(x => x.aboutID == id && x.informationTitle == title && x.informationValue == value).SingleOrDefault();
+                if (aboutInformation != null)
+                {
+                    db.AboutInformations.Remove(aboutInformation);
+                    db.SaveChanges();
+                    return Json(new Response(ResponseMessages.DeleteAboutInformation, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
+                }
+                return Json(new Response(ResponseMessages.DeleteAboutInformationException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json(new Response(ResponseMessages.DeleteAboutInformationException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

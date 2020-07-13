@@ -154,36 +154,58 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-6">
-                        @foreach (EasyBlog.Models.ResumeSectionModel resumeSection in Model.resume.resumeSections)
-                        {
-                            <h3 class="resume-title">@resumeSection.header</h3>
-                            foreach (EasyBlog.Models.ResumeSubSectionModel subSection in resumeSection.resumeSubSections)
+                        @{
+                            int first = Model.resume.resumeSections.Count() / 2;
+                            int second = Model.resume.resumeSections.Count() - first;
+
+                            for (int index = 0; index < first; index++)
                             {
-                                <div class="resume-item">
-                                    <h4>@subSection.header</h4>
-                                    <h5>@subSection.date</h5>
-                                    <p><em>@subSection.location</em></p>
-                                </div>
-                                <p>@subSection.explanation</p>
-                                <ul>
-                                </ul>
+                                <h3 class="resume-title">@Model.resume.resumeSections[index].header</h3>
+                                foreach (EasyBlog.Models.ResumeSubSectionModel subSection in Model.resume.resumeSections[index].resumeSubSections)
+                                {
+                                    <div class="resume-item">
+                                        <h4>@subSection.header</h4>
+                                        <h5>@subSection.date</h5>
+                                        <p><em>@subSection.location</em></p>
+                                        <p>@subSection.explanation</p>
+                                        @if (subSection.explanationItems.Count() > 0)
+                                        {
+                                            <ul>
+                                                @foreach (string explanation in subSection.explanationItems)
+                                                {
+                                                    <li>@explanation</li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                }
                             }
                         }
                     </div>
                     <div class="col-lg-6">
-                        @foreach (EasyBlog.Models.ResumeSectionModel resumeSection in Model.resume.resumeSections)
-                        {
-                            <h3 class="resume-title">@resumeSection.header</h3>
-                            foreach (EasyBlog.Models.ResumeSubSectionModel subSection in resumeSection.resumeSubSections)
+                        @{
+                            for (int index = second; index < Model.resume.resumeSections.Count(); index++)
                             {
-                                <div class="resume-item">
-                                    <h4>@subSection.header</h4>
-                                    <h5>@subSection.date</h5>
-                                    <p><em>@subSection.location</em></p>
-                                </div>
-                                <p>@subSection.explanation</p>
-                                <ul>
-                                </ul>
+
+                                <h3 class="resume-title">@Model.resume.resumeSections[index].header</h3>
+                                foreach (EasyBlog.Models.ResumeSubSectionModel subSection in Model.resume.resumeSections[index].resumeSubSections)
+                                {
+                                    <div class="resume-item">
+                                        <h4>@subSection.header</h4>
+                                        <h5>@subSection.date</h5>
+                                        <p><em>@subSection.location</em></p>
+                                        <p>@subSection.explanation</p>
+                                        @if (subSection.explanationItems.Count() > 0)
+                                        {
+                                            <ul>
+                                                @foreach (string explanation in subSection.explanationItems)
+                                                {
+                                                    <li>@explanation</li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                }
                             }
                         }
                     </div>

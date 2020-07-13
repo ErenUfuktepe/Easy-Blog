@@ -1101,6 +1101,24 @@ function AddInformationToAboutSection() {
     document.getElementById('about-extra-info').appendChild(StringToHTML(innerHTML,'add-info'));
 }
 
+function DeleteAboutInformationMessage() {
+    window.target = event.target.parentElement.parentElement.parentElement;
+    window.title = event.target.parentElement.parentElement.parentElement.children[0].children[2].value;
+    window.value = event.target.parentElement.parentElement.parentElement.children[1].children[1].value;
+    CreateDialog('warning', 'Delete Information', 'Do you want to delete this information?', 'Yes', 'DeleteAboutInformation()', '');
+}
+
+function DeleteAboutInformation() {
+    var data = {};
+    data.value = window.value;
+    data.title = window.title;
+    var response = AjaxCall("Admin", "DeleteInformation", data);
+    if (response.Type == "success") {
+        window.target.remove();
+    }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
+}
+
 function RemoveInformation() {
     event.target.parentElement.parentElement.parentElement.remove();
 }
@@ -1375,9 +1393,7 @@ function GetAboutInfo() {
         info.push(input.value);
         counter++;
     });
-    if (flag) {
-        infoPairList.push(info);
-    }
+    infoPairList.push(info);
     return [flag,infoPairList];
 }
 
@@ -1556,6 +1572,41 @@ function GetResumeItems() {
 function DeletePage() {
     var response = AjaxCall("Admin", "DeletePage", {});
     CreateDialog(response.Type, response.Type, response.Message, '', '','');
+}
+
+function DeleteResumeSectionMessage() {
+    window.target = event.target.parentElement.parentElement;
+    window.section = event.target.parentElement.parentElement.children[0].children[1].children[0].value;
+    CreateDialog('warning', 'Delete Resume Section', 'Do you want to delete this resume section?', 'Yes', 'DeleteResumeSection()', '');
+}
+function DeleteResumeSection() {
+    var data = {};
+    data.section = window.section;
+    var response = AjaxCall("Admin", "DeleteResumeSection", data);
+    if (response.Type == "success") {
+        window.target.remove();
+    }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
+}
+
+function DeleteResumeSectionExplanationMessage() {
+    window.target = event.target.parentElement.parentElement;
+    window.section = event.target.parentElement.parentElement.parentElement.parentElement.children[0].children[1].children[0].value;
+    window.explanation = event.target.parentElement.parentElement.children[1].innerHTML;
+    let length = Array.from(event.target.parentElement.parentElement.children[1].classList).length - 1;
+    window.subHeader = Array.from(event.target.parentElement.parentElement.children[1].classList)[length];
+    CreateDialog('warning', 'Delete Resume Section Explanation', 'Do you want to delete this resume section explanation?', 'Yes', 'DeleteResumeSectionExplanation()', '');
+}
+function DeleteResumeSectionExplanation() {
+    var data = {};
+    data.section = window.section;
+    data.explanation = window.explanation;
+    data.subHeader = window.subHeader;
+    var response = AjaxCall("Admin", "DeleteResumeSectionExplanation", data);
+    if (response.Type == "success") {
+        window.target.remove();
+    }
+    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
 }
 
 function DeleteSocialMedia() {
