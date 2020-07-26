@@ -246,6 +246,14 @@
     <Content Include="Content\fonts\ionicons.svg" />
     <Content Include="Content\Folio\style.css" />
     <Content Include="Content\Folio\owl.carousel.min.css" />
+    <Content Include="Content\iPortfolio\aos.css" />
+    <Content Include="Content\iPortfolio\bootstrap.min.css" />
+    <Content Include="Content\iPortfolio\boxicons.min.css" />
+    <Content Include="Content\iPortfolio\fonts\boxicons.svg" />
+    <Content Include="Content\iPortfolio\icofont.min.css" />
+    <Content Include="Content\iPortfolio\owl.carousel.min.css" />
+    <Content Include="Content\iPortfolio\style.css" />
+    <Content Include="Content\iPortfolio\venobox.css" />
     <Content Include="Content\MyResume\aos.css" />
     <Content Include="Content\MyResume\bootstrap.min.css" />
     <Content Include="Content\MyResume\boxicons.min.css" />
@@ -257,6 +265,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Folio\ionicons.min.css" />
+    <Content Include="Images\Biometrik.jpeg" />
     <Content Include="Models\EasyBlogModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
@@ -270,6 +279,17 @@
     <Content Include="Scripts\Folio\isotope.pkgd.min.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Folio\main.js" />
+    <Content Include="Scripts\iPortfolio\aos.js" />
+    <Content Include="Scripts\iPortfolio\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\iPortfolio\counterup.min.js" />
+    <Content Include="Scripts\iPortfolio\isotope.pkgd.min.js" />
+    <Content Include="Scripts\iPortfolio\jquery.easing.min.js" />
+    <Content Include="Scripts\iPortfolio\jquery.min.js" />
+    <Content Include="Scripts\iPortfolio\jquery.waypoints.min.js" />
+    <Content Include="Scripts\iPortfolio\main.js" />
+    <Content Include="Scripts\iPortfolio\owl.carousel.min.js" />
+    <Content Include="Scripts\iPortfolio\typed.min.js" />
+    <Content Include="Scripts\iPortfolio\venobox.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\main.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
@@ -302,9 +322,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\iPortfolio\" />
-    <Folder Include="Images\" />
-    <Folder Include="Scripts\iPortfolio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -328,6 +345,12 @@
     <Content Include="Content\fonts\boxicons.ttf" />
     <Content Include="Content\fonts\boxicons.woff" />
     <Content Include="Content\fonts\boxicons.woff2" />
+    <Content Include="Content\iPortfolio\fonts\icofont.woff" />
+    <Content Include="Content\iPortfolio\fonts\icofont.woff2" />
+    <Content Include="Content\iPortfolio\fonts\boxicons.eot" />
+    <Content Include="Content\iPortfolio\fonts\boxicons.ttf" />
+    <Content Include="Content\iPortfolio\fonts\boxicons.woff" />
+    <Content Include="Content\iPortfolio\fonts\boxicons.woff2" />
     <None Include="packages.config" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Admin\CreatePage.cshtml" />
@@ -335,6 +358,7 @@
     <Content Include="Views\Admin\Settings.cshtml" />
     <Content Include="Views\Home\Folio.cshtml" />
     <Content Include="Views\Home\MyResume.cshtml" />
+    <Content Include="Views\Home\iPortfolio.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
