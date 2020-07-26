@@ -134,6 +134,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\EmailHandler.cs" />
     <Compile Include="Helpers\Response.cs" />
     <Compile Include="Helpers\ResponseMessages.cs" />
     <Compile Include="Helpers\SecurityUtilize.cs" />
@@ -198,6 +199,7 @@
     </Compile>
     <Compile Include="Models\PortfolioCategoryModel.cs" />
     <Compile Include="Models\PortfolioModel.cs" />
+    <Compile Include="Models\RequestModels\EmailModel.cs" />
     <Compile Include="Models\RequestModels\UserCreateModel.cs" />
     <Compile Include="Models\RequestModels\UserLoginModel.cs" />
     <Compile Include="Models\Resume.cs">
@@ -265,7 +267,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Folio\ionicons.min.css" />
-    <Content Include="Images\Biometrik.jpeg" />
     <Content Include="Models\EasyBlogModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>EasyBlogModel.edmx</DependentUpon>
@@ -322,6 +323,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -4,9 +4,11 @@ using EasyBlog.Models.RequestModels;
 using Microsoft.Ajax.Utilities;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using System.EnterpriseServices;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
 
 namespace EasyBlog.Controllers
@@ -275,6 +277,71 @@ namespace EasyBlog.Controllers
                 }
             }
             return false;
+        }
+
+        public JsonResult Handshake(string method, string sendTo)
+        {
+            try {
+                if (method == "email")
+                {
+                    string code = CreateCookie("Handshake");
+                    if (code != null)
+                    {
+                        EmailHandler emailHadler = new EmailHandler();
+                        EmailModel request = new EmailModel();
+                        request.toEmail = sendTo;
+                        request.subject = "Verification";
+                        request.body = "Verification code: " + code;
+                        emailHadler.SendEmail(request);
+                    }
+                }
+
+                return Json(ResponseMessages.LoginException, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json(ResponseMessages.LoginException, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult CheckCode(string code)
+        {
+            try
+            {
+                HttpCookie cookie = HttpContext.Request.Cookies.Get("Handshake");
+                if(cookie.Value == code)
+                {
+                    return Json(ResponseMessages.Success, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(ResponseMessages.Error, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json(ResponseMessages.LoginException, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private string CreateCookie(string name)
+        {
+            try
+            {
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                Random random = new Random();               
+                string value = new string(Enumerable.Repeat(chars, 8).Select(s => s[random.Next(s.Length)]).ToArray());
+                HttpCookie cookie = new HttpCookie(name, value);
+                DateTime now = DateTime.Now;
+                cookie.Expires = now.AddSeconds(60);
+                Response.Cookies.Add(cookie);
+                return value;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
     }
 }

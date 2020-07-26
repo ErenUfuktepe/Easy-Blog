@@ -14,7 +14,7 @@ namespace EasyBlog.Controllers
 
         public ActionResult Index(PageModel pageModel)
         {
-            if(pageModel.mainComponents != null)
+            if (pageModel.mainComponents != null)
             {
                 return View(pageModel);
             }

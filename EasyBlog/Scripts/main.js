@@ -32,6 +32,8 @@
 function ConfirmEmail() {
     let data = {};
     data.email = $('#email-confirm').val();
+    window.email = data.email;
+
     var response = AjaxCall("User", "ConfirmEmail", data);
     var parsedResult = response.split(",");
 
@@ -47,6 +49,7 @@ function ConfirmEmail() {
 
 //TODO
 function HandshakeOptions(option) {
+    console.log(option);
     if (option == 'One') {
 
     } else {
@@ -58,16 +61,27 @@ function HandshakeOptions(option) {
     }
 }
 
+
 //TODO
 function HandshakeTimer() {
+    if (window.lock != null) {
+        return 0;
+    }
+
     let seconds = 60;
     let timer;
-
     if (document.getElementById('email-checkbox').checked == true) {
+        window.lock = true;
+        var data = {};
+        data.method = 'email';
+        data.sendTo = window.email;
+        console.log(document.getElementById('email-checkbox'));
+        var response = AjaxCall("User", "Handshake", data);
 
     }
 
     if (document.getElementById('phone-checkbox').checked == true) {
+        console.log('osman');
 
     }
 
@@ -94,6 +108,21 @@ function HandshakeTimer() {
     document.getElementById("timer").style.width = "100%";
     document.getElementById("timer").innerHTML = "1:00"
 }
+
+function CheckCode() {
+    var data = {};
+    data.code = document.getElementById('handshake-code').value;
+    var response = AjaxCall("User", "CheckCode", data);
+    if (response == 'success') {
+        window.lock = null;
+        console.log(response);
+    }
+    else {
+        window.lock = null;
+        console.log(response);
+    }    
+}
+
 
 function RefreshPage() {
     location.reload();
