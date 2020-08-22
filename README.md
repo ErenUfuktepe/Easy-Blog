@@ -15,4 +15,6 @@ them according to their needs. Also, they can update their blog whenever they wa
 - Microsoft SQL Server
 - Entity Framework
 
-## Ongoing ...
+## Run
+
+- Delete existing database 

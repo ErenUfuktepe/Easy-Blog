@@ -334,13 +334,6 @@
     <Content Include="Content\fonts\ionicons.eot" />
     <Content Include="Content\fonts\ionicons.ttf" />
     <Content Include="Content\fonts\ionicons.woff" />
-    <EntityDeploy Include="Models\EasyBlogModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>EasyBlogModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\EasyBlogModel.edmx.diagram">
-      <DependentUpon>EasyBlogModel.edmx</DependentUpon>
-    </Content>
     <Content Include="Content\MyResume\fonts\icofont.woff" />
     <Content Include="Content\MyResume\fonts\icofont.woff2" />
     <Content Include="Content\fonts\boxicons.eot" />
@@ -353,6 +346,13 @@
     <Content Include="Content\iPortfolio\fonts\boxicons.ttf" />
     <Content Include="Content\iPortfolio\fonts\boxicons.woff" />
     <Content Include="Content\iPortfolio\fonts\boxicons.woff2" />
+    <EntityDeploy Include="Models\EasyBlogModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EasyBlogModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\EasyBlogModel.edmx.diagram">
+      <DependentUpon>EasyBlogModel.edmx</DependentUpon>
+    </Content>
     <None Include="packages.config" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Admin\CreatePage.cshtml" />
@@ -374,6 +374,13 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <Target Name="CopyRoslynFiles" AfterTargets="AfterBuild" Condition="!$(Disable_CopyWebApplication) And '$(OutDir)' != '$(OutputPath)'">
+    <ItemGroup>
+      <RoslynFiles Include="$(CscToolPath)\*" />
+    </ItemGroup>
+    <MakeDir Directories="$(WebProjectOutputDir)\bin\roslyn" />
+    <Copy SourceFiles="@(RoslynFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" SkipUnchangedFiles="true" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" />
   </Target>
   <ProjectExtensions>
     <VisualStudio>

@@ -1,3 +1,8 @@
+CREATE DATABASE EasyBlog
+GO;
+
+USE EasyBlog
+Go;
 
 CREATE TABLE UserInformation
 (
