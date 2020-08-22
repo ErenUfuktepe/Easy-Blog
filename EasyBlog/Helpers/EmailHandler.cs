@@ -11,12 +11,12 @@ namespace EasyBlog.Helpers
     {
         private string email = ConfigurationManager.AppSettings["SenderEmail"];
         private string password = ConfigurationManager.AppSettings["SenderPassword"];
-
+        private string host = "smtp.office365.com";
         public bool SendEmail(EmailModel request)
         {
             try
             {
-                SmtpClient client = new SmtpClient("smtp.live.com", 587);
+                SmtpClient client = new SmtpClient(GetHost(), 587);
                 client.EnableSsl = true;
                 client.Timeout = 100000;
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
@@ -34,6 +34,19 @@ namespace EasyBlog.Helpers
                 Console.WriteLine(e);
                 return false;
             }
+        }
+
+        private string GetHost()
+        {
+            if (this.email.Contains("gmail"))
+            {
+                this.host = "smtp.gmail.com";
+            }
+            else if (this.email.Contains("hotmail"))
+            {
+                this.host = "smtp.live.com";
+            }
+            return this.host;
         }
 
     }

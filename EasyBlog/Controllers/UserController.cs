@@ -29,6 +29,43 @@ namespace EasyBlog.Controllers
         {
             return View();
         }
+
+        public ActionResult Reset()
+        {
+            HttpCookie cookie = HttpContext.Request.Cookies.Get("Email");
+            if (cookie != null)
+            {
+                UserInformationModel userInformationModel = new UserInformationModel();
+                userInformationModel.email = cookie.Value;
+                return View(userInformationModel);
+            }
+            return RedirectToAction("Login", "User");
+        }
+
+        public JsonResult ResetPassword(string email, string newPassword)
+        {
+            SecurityUtilize securityUtilize = new SecurityUtilize();
+            try
+            {
+                UserLogin userLogin = db.UserLogins.Where(x => x.email == email).SingleOrDefault();
+                if (userLogin != null)
+                {
+                    userLogin.password = securityUtilize.Encrypt(newPassword);
+                    db.SaveChanges();
+                    return Json(new Response(ResponseMessages.PasswordReset, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new Response(ResponseMessages.UnexpectedSystemException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Json(new Response(ResponseMessages.UnexpectedSystemException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public JsonResult Authorization(UserLoginModel userLoginModel)
         {
             try
@@ -76,6 +113,10 @@ namespace EasyBlog.Controllers
                 }
                 else
                 {
+                    HttpCookie cookie = new HttpCookie("Email", userInformation.email);
+                    Response.Cookies.Add(cookie);
+                    DateTime now = DateTime.Now;
+                    cookie.Expires = now.AddSeconds(90);
                     string response = PhoneNumberWithStar(userInformation.phone) + "," + EmailAddressWithStar(userInformation.email);
                     return Json(response, JsonRequestBehavior.AllowGet);
                 }

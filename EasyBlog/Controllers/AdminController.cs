@@ -173,16 +173,16 @@ namespace EasyBlog.Controllers
                 {
                     userLogin.password = securityUtilize.Encrypt(newPassword);
                     db.SaveChanges();
-                    return Json(ResponseMessages.PasswordReset, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.PasswordReset, ResponseMessages.Success), JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json(ResponseMessages.WrongPassword, JsonRequestBehavior.AllowGet);
+                    return Json(new Response(ResponseMessages.WrongPassword, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception e){
                 Console.WriteLine(e);
-                return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
+                return Json(new Response(ResponseMessages.UnexpectedSystemException, ResponseMessages.Error), JsonRequestBehavior.AllowGet);
             }
         }
         public List<SocialMedia> GetSocialMediaList() {

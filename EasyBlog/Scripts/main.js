@@ -64,6 +64,7 @@ function HandshakeOptions(option) {
 
 //TODO
 function HandshakeTimer() {
+    $('#email-confirm').val("");
     if (window.lock != null) {
         return 0;
     }
@@ -115,12 +116,21 @@ function CheckCode() {
     var response = AjaxCall("User", "CheckCode", data);
     if (response == 'success') {
         window.lock = null;
+        if (window.location.href.includes("User")) {
+            let url = window.location.href;
+            url = url.replace('Login', 'Reset');
+            window.location.href = url;
+        } else
+        {
+            window.location.href = "User/Reset";
+        }
         console.log(response);
     }
     else {
         window.lock = null;
         console.log(response);
-    }    
+    }
+    $('#handshake-code').val("");
 }
 
 
@@ -167,7 +177,7 @@ function Register() {
 }
 //TODO
 window.addEventListener('load', (event) => {
-    if (window.location.href.includes("Register") || window.location.href.includes("Settings")) {
+    if (window.location.href.includes("Register") || window.location.href.includes("Settings") || window.location.href.includes("Reset")) {
         document.getElementById('password').addEventListener('input', function () {
             document.getElementById('strong-password').style.display = 'block';
             const password = document.querySelector('#password');
@@ -272,7 +282,7 @@ function CreateDialog(type, title, body, button, action, defaultAction){
                             <div class="modal-content">\
                                 <div class="modal-header" style="background:'+ color + '">\
                                     <h4 class="modal-title" id="myModalLabel">'+ FirstLetterUpperCase(title) +'</h4>\
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">\
+                                    <button type="button" class="close" data-dismiss="modal" onclick="' + defaultAction + '" aria-label="Close">\
                                         <span aria-hidden="true">&times;</span>\
                                     </button>\
                                 </div>\
@@ -1316,7 +1326,13 @@ function DisplayPhone(value) {
     $('#update-phone-element').val(value);
 }
 
-function ResetPassword() {
+function ResetPassword()
+{
+    let controller = 'Admin';
+    if (window.location.href.includes("User")) {
+        controller = 'User';
+    }
+
     let oldPassword = $('#old-password').val();
     let newPassword = $('#password').val();
     let confirmPassword = $('#confirm-password').val();
@@ -1330,15 +1346,22 @@ function ResetPassword() {
             data.oldPassword = oldPassword;
             data.newPassword = newPassword;
             data.email = $('#update-email-element').val();
-            var response = AjaxCall("Admin", "ResetPassword", data);
+            var response = AjaxCall(controller, "ResetPassword", data);
             if (response.Type == 'success') {
                 $('#old-password').val('');
                 $('#password').val('');
                 $('#confirm-password').val('');
                 document.getElementsByClassName('alert-danger')[0].style.display = 'none';
-                CreateDialog(response.Type, response.Type, response.Message, '', '', '');
+                if (controller == "User") {
+                    CreateDialog(response.Type, response.Type, response.Message, '', '', 'BackLoginPage()');
+                }
+                else
+                {
+                    CreateDialog(response.Type, response.Type, response.Message, '', '', '');
+                }
             } else {
                 document.getElementsByClassName('alert-danger')[0].style.display = 'block';
+                console.log(response.Message);
                 document.getElementById('reset-password-response').innerHTML = response.Message;
             }
         }
@@ -1346,6 +1369,13 @@ function ResetPassword() {
         document.getElementById('reset-password-response').innerHTML = "Confirm password is different!";
         document.getElementsByClassName('alert-danger')[0].style.display = 'block';
     }
+}
+
+function BackLoginPage()
+{
+    let url = window.location.href;
+    url = url.replace('Reset', 'Login');
+    window.location.href = url;
 }
 
 function AjaxCall(controller, method, data) {
@@ -1499,8 +1529,6 @@ function GetBlogStories() {
     var flag = false;
     Array.from($("#blog-settings :input")).forEach(function (input) {
         if (!(counter < 3)) {
-            console.log(input);
-            console.log(counter);
             if (input.type == 'textarea') {
                 newStory.body = input.value;
             }

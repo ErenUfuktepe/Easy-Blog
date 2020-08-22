@@ -1,0 +1,81 @@
+﻿@model EasyBlog.Models.UserInformationModel
+
+@{
+    ViewBag.Title = "Reset";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Easy Blog</title>
+    <link href="~/Content/Site.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container">
+        <div class="form-center">
+            <div class="login-form">
+                <form>
+                    <div class="form-group">
+                        <div class="mb-5">
+                            <h2>Reset Password</h2>
+                        </div>
+                        <div class="form-row text-left">
+                            <div class="alert alert-danger" role="alert" style="display:none; width:100%; text-align:center;"><i class="fa fa-info-circle"></i><a id="reset-password-response"></a></div>
+                            <div class="col-lg-12">
+                                <b>New Password</b>
+                            </div>
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                </div>
+                                <input type="password" class="form-control" placeholder="Password" id="password" required>
+                                <div class="col-lg-12" id="strong-password" style="padding:10px">
+                                    <small class="form-text text-muted red" id="char-limit">
+                                        Minimum 8 characters.
+                                        <span id="char-limit-icon">&#x2716;</span>
+                                    </small>
+                                    <small class="form-text text-muted red" id="uppercase">
+                                        Your password must contain at least one uppercase or a capital letter.
+                                        <span id="uppercase-icon">&#x2716;</span>
+                                    </small>
+                                    <small class="form-text text-muted red" id="lowercase">
+                                        Your password must contain at least one lowercase letter.
+                                        <span id="lowercase-icon">&#x2716;</span>
+                                    </small>
+                                    <small class="form-text text-muted red" id="number">
+                                        Your password must contain at least one number digit.
+                                        <span id="number-icon">&#x2716;</span>
+                                    </small>
+                                    <small class="form-text text-muted red" id="special">
+                                        Your password must contain at least one special character - For example: $, #, !, %, ^, &, *, (, )
+                                        <span id="special-icon">&#x2716;</span>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <b>Confırm Password</b>
+                            </div>
+                            <div class="input-group mb-4">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                </div>
+                                <input type="password" class="form-control" placeholder="Confirm Password" id="confirm-password" required>
+                            </div>
+                            <div class="input-group mb-4">
+                                <input type="button" value="Save And Reset" onclick="ResetPassword()" class="btn btn-primary form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <input type="email" class="form-control" value="@Model.email" id="update-email-element" style="display:none;">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="dialog"></div>
+    <a href="#" data-toggle="modal" data-target="#my-dialog" id="trigger-dialog" style="display: none;"></a>
+    <script src="~/Scripts/main.js"></script>
+
+</body>
+</html>
