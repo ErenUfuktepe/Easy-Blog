@@ -1,8 +1,8 @@
 CREATE DATABASE EasyBlog
-GO;
+GO
 
 USE EasyBlog
-Go;
+GO
 
 CREATE TABLE UserInformation
 (
