@@ -365,6 +365,7 @@ FodyWeavers.xsd
 *.jpeg
 *.jpg
 *.png
+!1.png
 
 #Private attributes
 PrivateSettings.config
