@@ -47,14 +47,17 @@ function ConfirmEmail() {
     }
 }
 
-//TODO
-function HandshakeOptions(option) {
-    console.log(option);
-    if (option == 'One') {
-
-    } else {
-        document.getElementById('email-checkbox-value').innerHTML = option[1] + " send message.";
-        document.getElementById('phone-checkbox-value').innerHTML = option[0] + " send mail.";
+function HandshakeOptions(option)
+{
+    if (option[0] == '')
+    {
+        document.getElementById('email-checkbox-value').innerHTML = option[1] + " send mail.";
+        HandshakeTimer();
+    }
+    else
+    {
+        document.getElementById('email-checkbox-value').innerHTML = option[1] + " send mail.";
+        document.getElementById('phone-checkbox-value').innerHTML = option[0] + " send message.";
         document.getElementById('confirm-email-button').style.display = 'none';
         document.getElementById('send-code-button').style.display = 'block';
         document.getElementsByClassName('email-phone-checkbox')[0].style.display = 'block';
@@ -62,8 +65,8 @@ function HandshakeOptions(option) {
 }
 
 
-//TODO
-function HandshakeTimer() {
+function HandshakeTimer()
+{
     $('#email-confirm').val("");
     if (window.lock != null) {
         return 0;
@@ -71,22 +74,24 @@ function HandshakeTimer() {
 
     let seconds = 60;
     let timer;
-    if (document.getElementById('email-checkbox').checked == true) {
-        window.lock = true;
-        var data = {};
-        data.method = 'email';
-        data.sendTo = window.email;
-        console.log(document.getElementById('email-checkbox'));
-        var response = AjaxCall("User", "Handshake", data);
-
-    }
+    let method = 'email';
 
     if (document.getElementById('phone-checkbox').checked == true) {
-        console.log('osman');
-
+        method = 'phone';
     }
 
-    if (!timer) {
+    window.lock = true;
+    var data = {};
+    data.method = method;
+    data.sendTo = window.email;
+    var response = AjaxCall("User", "Handshake", data);
+
+    if (response != 'success')
+    {
+        CreateDialog('error', 'Error', response, '', '', 'RefreshPage()');
+    }
+    else if (!timer) {
+        document.querySelector('#hidden-button').click();
         timer = window.setInterval(function () {
             if (seconds < 60) {
                 document.getElementById("timer").style.width = (seconds * 100 / 60).toString() + "%";
@@ -124,11 +129,9 @@ function CheckCode() {
         {
             window.location.href = "User/Reset";
         }
-        console.log(response);
     }
     else {
         window.lock = null;
-        console.log(response);
     }
     $('#handshake-code').val("");
 }
@@ -237,7 +240,6 @@ window.addEventListener('load', (event) => {
             } else if (xhr.status == 500) {
                 CreateDialog('error', 'Error', 'System upload file error!', '', '', 'window.history.back()');
             }
-            console.log(xhr.response)
         }    
     }
     if (window.location.href.includes("UpdatePage")) {
@@ -1361,7 +1363,6 @@ function ResetPassword()
                 }
             } else {
                 document.getElementsByClassName('alert-danger')[0].style.display = 'block';
-                console.log(response.Message);
                 document.getElementById('reset-password-response').innerHTML = response.Message;
             }
         }

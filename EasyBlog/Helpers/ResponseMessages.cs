@@ -75,5 +75,8 @@ namespace EasyBlog.Helpers
         public static string DeleteResumeSectionExplanation = "Resume section explanation deleted successfully!";
         public static string DeleteAboutInformationException = "An error occurred while deleting information!";
         public static string DeleteAboutInformation = "Information section explanation deleted successfully!";
+        public static string SMSException = "Error occured while sending SMS!";
+        public static string CodeGenerationException = "Code generation exception!";
+        public static string SendEmailException = "Can't send email!";
     }
 }

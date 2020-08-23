@@ -14,6 +14,7 @@ them according to their needs. Also, they can update their blog whenever they wa
 - Visual Studio
 - Microsoft SQL Server
 - Entity Framework
+- Twilio
 
 ## Run
 

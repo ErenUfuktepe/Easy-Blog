@@ -67,11 +67,11 @@
                         <small id="email-help" class="form-text text-muted">Please confirm your email address.</small>
                         <div class="email-phone-checkbox">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="exampleRadios" id="email-checkbox" value="email">
+                                <input class="form-check-input" type="radio" name="exampleRadios" id="email-checkbox" value="email" checked>
                                 <label class="form-check-label" for="email-checkbox" id="email-checkbox-value"></label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="exampleRadios" id="phone-checkbox" value="phone" checked>
+                                <input class="form-check-input" type="radio" name="exampleRadios" id="phone-checkbox" value="phone">
                                 <label class="form-check-label" for="phone-checkbox" id="phone-checkbox-value"></label>
                             </div>
                         </div>
@@ -80,7 +80,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="RefreshPage()">Close</button>
                     <button type="button" class="btn btn-primary" onclick="ConfirmEmail()" id="confirm-email-button">Confirm</button>
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#handshake" onclick="HandshakeTimer()" data-dismiss="modal" id="send-code-button">Send</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" onclick="HandshakeTimer()" data-dismiss="modal" id="send-code-button">Send</button>
+                    <button type="button" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#handshake" data-dismiss="modal" id="hidden-button"></button>
                 </div>
             </div>
         </div>
@@ -107,12 +108,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="RefreshPage()">Close</button>
-                    <input type="button" class="btn btn-primary" onclick="CheckCode()"  value="Confirm" />
+                    <input type="button" class="btn btn-primary" onclick="CheckCode()" value="Confirm" />
                 </div>
             </div>
         </div>
     </div>
-
+    <div id="dialog"></div>
+    <a href="#" data-toggle="modal" data-target="#my-dialog" id="trigger-dialog" style="display: none;"></a>
     <script src="~/Scripts/main.js"></script>
 
 </body>

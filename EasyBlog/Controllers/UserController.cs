@@ -1,11 +1,7 @@
 ﻿using EasyBlog.Helpers;
 using EasyBlog.Models;
 using EasyBlog.Models.RequestModels;
-using Microsoft.Ajax.Utilities;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Configuration;
-using System.EnterpriseServices;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -323,9 +319,10 @@ namespace EasyBlog.Controllers
         public JsonResult Handshake(string method, string sendTo)
         {
             try {
+                string code = CreateCookie("Handshake");
+                
                 if (method == "email")
                 {
-                    string code = CreateCookie("Handshake");
                     if (code != null)
                     {
                         EmailHandler emailHadler = new EmailHandler();
@@ -333,16 +330,46 @@ namespace EasyBlog.Controllers
                         request.toEmail = sendTo;
                         request.subject = "Verification";
                         request.body = "Verification code: " + code;
-                        emailHadler.SendEmail(request);
+                        if (!emailHadler.SendEmail(request)) 
+                        {
+                            return Json(ResponseMessages.SendEmailException, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else
+                    {
+                        return Json(ResponseMessages.CodeGenerationException, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                else
+                {
+                    if (code != null)
+                    {
+                        UserInformation userInformation = db.UserInformations.Where(x => x.email == sendTo).SingleOrDefault();
+                        if(userInformation != null)
+                        {
+                            PhoneHandler handler = new PhoneHandler();
+                            if (handler.SendSms(code, userInformation.phone) == ResponseMessages.SMSException) 
+                            {
+                                return Json(ResponseMessages.SMSException, JsonRequestBehavior.AllowGet);
+                            }
+                        }
+                        else
+                        {
+                            return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else
+                    {
+                        return Json(ResponseMessages.CodeGenerationException, JsonRequestBehavior.AllowGet);
                     }
                 }
 
-                return Json(ResponseMessages.LoginException, JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.Success, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return Json(ResponseMessages.LoginException, JsonRequestBehavior.AllowGet);
+                return Json(ResponseMessages.UnexpectedSystemException, JsonRequestBehavior.AllowGet);
             }
         }
 
