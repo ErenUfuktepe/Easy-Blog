@@ -18,4 +18,6 @@ them according to their needs. Also, they can update their blog whenever they wa
 
 ## Run
 
-- Delete existing database 
+1) Execute the script inside the Database folder.
+2) After executing scripts follow the bellow steps.
+
