@@ -17,17 +17,19 @@ them according to their needs. Also, they can update their blog whenever they wa
 - Twilio
 
 ## Run
-
 1) Execute the script inside the Database folder.
 2) After executing scripts follow the bellow steps.
-    - Right click Models folder in Visual Studio and click Add then New Item.
-❮img src="img/1.png" ❯
-    ![](img/1.png)
-    ![](img/2.png)
-    ![](img/3.png)
-    ![](img/4.png)
-    ![](img/5.png)
-    ![](img/6.png)
-
-
-
+* Right click Models folder in Visual Studio and click Add then New Item.
+* Add ADO.NET Entity Data Model. 
+    * <img src="img/1.png" width="400" height="400">
+* Pick EF Designer from database.    
+    * <img src="img/2.png" width="400" height="400">
+* New connection.   
+    * <img src="img/3.png" width="400" height="400">
+* Pick or enter the server name and pick EasyBlog database.    
+    * <img src="img/4.png" width="400" height="400">
+* Click next and continue.    
+    * <img src="img/5.png" width="400" height="400">
+* Pick all tables and finish.
+    * <img src="img/6.png" width="200" height="100">
+   
