@@ -21,6 +21,6 @@ them according to their needs. Also, they can update their blog whenever they wa
 1) Execute the script inside the Database folder.
 2) After executing scripts follow the bellow steps.
     - Right click Models folder in Visual Studio and click Add then New Item.
-    - ![Screenshot](https://github.com/ErenUfuktepe/Easy-Blog/blob/master/img/1.png)
+    ❮img src="images/1.png" width="100" ❯
 
 
