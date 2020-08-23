@@ -32,4 +32,16 @@ them according to their needs. Also, they can update their blog whenever they wa
     * <img src="img/5.png" width="400" height="400">
 * Pick all tables and finish.
     * <img src="img/6.png" width="200" height="100">
-   
+3) In order to use SMPTClient and Twilio SMS API you need to create 'PrivateSettings.config' inside the Easy-Blog folder and add the below code with necessary information.
+```
+   <appSettings>
+      <add key="SenderEmail" value="<YourEmailAddress>"/>
+      <add key="SenderPassword" value="<EmailAddressPassword>"/>
+      <add key="AccountSid" value="<TwilioAccountSid>"/>
+      <add key="AuthToken" value="<TwilioAuthToken>"/>
+      <add key="Phone" value="<TwilioPhoneNumber>"/>
+   </appSettings>
+```
+
+
+
