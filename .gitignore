@@ -366,9 +366,15 @@ FodyWeavers.xsd
 *.jpg
 *.png
 !1.png
+!2.png
+!3.png
+!4.png
+!5.png
+!6.png
 
 #Private attributes
 PrivateSettings.config
 
 #Database Connection
 *.edmx
+*.edmx.diagram
